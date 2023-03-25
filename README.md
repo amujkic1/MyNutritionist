@@ -1,17 +1,17 @@
 # OOAD_projekat
 ## O aplikaciji
-MyNutritionist je aplikacija za sve one koji žele znati više o pravilnoj ishrani,
-živjeti zdravije i ostvariti ciljeve, bilo da se tiču izgleda, nivoa aktivnosti
-ili zdravstvenog stanja općenito
+MyNutritionist je aplikacija koja omogućava korisniku unos dnevne ishrane, te računanje unesenih kalorija na osnovu unesenih podataka. Pored toga, omogućeno je i mnoštvo drugih opcija, kao što je kreiranje novog korisničkog računa, praćenje napretka, informacije o nutritivnim vrijednostima određenih namirnica. Korisniku je pružena mogućnost dodjeljivanja nutricioniste koji prati njegovu ishranu, kao što ga i savjetuje i izrađuje plan ishrane na osnovu njegovih rezultata. Personalizirani recepti olakšavaju korisniku postizanje cilja unosa broja kalorija. 
 
 ## Features
-- personalizovani profil
-- napravite vlatiti food diary 
-- provjerite nutritivnu vrijednost namirnica
-- pratite svoju fizičku aktivnost
-- skupljajte poene za ostvarene dnevne ciljeve 
+- personalizovani plan ishrane
+- praćenje unosa kalorija
+- izračunavanje kalorija na osnovu unesenih podataka ishrane
+- informisanje o nutritivnoj vrijednosti namirnica
+- praćenje napretka korisnika od strane nutricioniste 
 
 ## Akteri
 - Administrator
-- Korisnik
-  
+- Nutricionist
+- Premium korisnik
+- Registrovani korisnik
+- Neregistrovani korisnik
