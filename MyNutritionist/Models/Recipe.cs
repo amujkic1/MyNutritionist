@@ -10,10 +10,8 @@ namespace MyNutritionist.Models
         public string RecipeLink { get; set; }
         public Nutritionist Nutritionist { get; set; }
         public int TotalCalories { get; set; }
-        //public List<Ingredient> Ingredients { get; set; }
-
-        [ForeignKey("Nutritionist")]
-        public int NutritionistID { get; set; }
+        [ForeignKey("DietPlan")]
+        public int DietPlanID { get; set; }
         public Recipe() { }
     }
 }

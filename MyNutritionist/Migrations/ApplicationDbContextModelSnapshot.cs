@@ -17,7 +17,7 @@ namespace MyNutritionist.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.15")
+                .HasAnnotation("ProductVersion", "6.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -226,11 +226,11 @@ namespace MyNutritionist.Migrations
 
             modelBuilder.Entity("MyNutritionist.Models.Admin", b =>
                 {
-                    b.Property<int>("AdId")
+                    b.Property<int>("PID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PID"), 1L, 1);
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -240,9 +240,6 @@ namespace MyNutritionist.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -251,7 +248,7 @@ namespace MyNutritionist.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AdId");
+                    b.HasKey("PID");
 
                     b.ToTable("Admin", (string)null);
                 });
@@ -267,12 +264,12 @@ namespace MyNutritionist.Migrations
                     b.Property<int>("CardNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("OwnerUsId")
+                    b.Property<int>("OwnerPID")
                         .HasColumnType("int");
 
                     b.HasKey("CId");
 
-                    b.HasIndex("OwnerUsId");
+                    b.HasIndex("OwnerPID");
 
                     b.ToTable("Card", (string)null);
                 });
@@ -298,13 +295,7 @@ namespace MyNutritionist.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DPID"), 1L, 1);
 
-                    b.Property<int>("NutritionistID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PremiumUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecipeId")
+                    b.Property<int>("NutritionistPID")
                         .HasColumnType("int");
 
                     b.Property<int>("TotalCalories")
@@ -312,7 +303,7 @@ namespace MyNutritionist.Migrations
 
                     b.HasKey("DPID");
 
-                    b.HasIndex("NutritionistID");
+                    b.HasIndex("NutritionistPID");
 
                     b.ToTable("DietPlan", (string)null);
                 });
@@ -333,6 +324,9 @@ namespace MyNutritionist.Migrations
 
                     b.Property<double>("Carbs")
                         .HasColumnType("float");
+
+                    b.Property<int>("DailyDietId")
+                        .HasColumnType("int");
 
                     b.Property<double>("Fat")
                         .HasColumnType("float");
@@ -385,13 +379,29 @@ namespace MyNutritionist.Migrations
 
             modelBuilder.Entity("MyNutritionist.Models.Nutritionist", b =>
                 {
-                    b.Property<int>("NID")
+                    b.Property<int>("PID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PID"), 1L, 1);
 
-                    b.HasKey("NID");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PID");
 
                     b.ToTable("Nutritionist", (string)null);
                 });
@@ -432,18 +442,15 @@ namespace MyNutritionist.Migrations
                     b.Property<int>("ConsumedCalories")
                         .HasColumnType("int");
 
-                    b.Property<int>("DailyDietId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserUsId")
+                    b.Property<int>("UserPID")
                         .HasColumnType("int");
 
                     b.HasKey("PRId");
 
-                    b.HasIndex("UserUsId");
+                    b.HasIndex("UserPID");
 
                     b.ToTable("Progress", (string)null);
                 });
@@ -456,7 +463,10 @@ namespace MyNutritionist.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RID"), 1L, 1);
 
-                    b.Property<int>("NutritionistID")
+                    b.Property<int>("DietPlanID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NutritionistPID")
                         .HasColumnType("int");
 
                     b.Property<string>("RecipeLink")
@@ -468,18 +478,18 @@ namespace MyNutritionist.Migrations
 
                     b.HasKey("RID");
 
-                    b.HasIndex("NutritionistID");
+                    b.HasIndex("NutritionistPID");
 
                     b.ToTable("Recipe", (string)null);
                 });
 
             modelBuilder.Entity("MyNutritionist.Models.User", b =>
                 {
-                    b.Property<int>("UsId")
+                    b.Property<int>("PID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UsId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PID"), 1L, 1);
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
@@ -499,9 +509,6 @@ namespace MyNutritionist.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -516,7 +523,7 @@ namespace MyNutritionist.Migrations
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
-                    b.HasKey("UsId");
+                    b.HasKey("PID");
 
                     b.ToTable("User");
                 });
@@ -528,9 +535,6 @@ namespace MyNutritionist.Migrations
                     b.Property<string>("AccountNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DietPlanId")
-                        .HasColumnType("int");
 
                     b.Property<int>("LeaderboardId")
                         .HasColumnType("int");
@@ -605,7 +609,7 @@ namespace MyNutritionist.Migrations
                 {
                     b.HasOne("MyNutritionist.Models.PremiumUser", "Owner")
                         .WithMany()
-                        .HasForeignKey("OwnerUsId")
+                        .HasForeignKey("OwnerPID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -616,7 +620,7 @@ namespace MyNutritionist.Migrations
                 {
                     b.HasOne("MyNutritionist.Models.Nutritionist", "Nutritionist")
                         .WithMany()
-                        .HasForeignKey("NutritionistID")
+                        .HasForeignKey("NutritionistPID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -627,7 +631,7 @@ namespace MyNutritionist.Migrations
                 {
                     b.HasOne("MyNutritionist.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserUsId")
+                        .HasForeignKey("UserPID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -638,7 +642,7 @@ namespace MyNutritionist.Migrations
                 {
                     b.HasOne("MyNutritionist.Models.Nutritionist", "Nutritionist")
                         .WithMany()
-                        .HasForeignKey("NutritionistID")
+                        .HasForeignKey("NutritionistPID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -655,7 +659,7 @@ namespace MyNutritionist.Migrations
 
                     b.HasOne("MyNutritionist.Models.User", null)
                         .WithOne()
-                        .HasForeignKey("MyNutritionist.Models.PremiumUser", "UsId")
+                        .HasForeignKey("MyNutritionist.Models.PremiumUser", "PID")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
@@ -666,7 +670,7 @@ namespace MyNutritionist.Migrations
                 {
                     b.HasOne("MyNutritionist.Models.User", null)
                         .WithOne()
-                        .HasForeignKey("MyNutritionist.Models.RegisteredUser", "UsId")
+                        .HasForeignKey("MyNutritionist.Models.RegisteredUser", "PID")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
                 });

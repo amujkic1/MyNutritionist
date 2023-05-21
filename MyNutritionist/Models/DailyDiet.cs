@@ -6,7 +6,6 @@ namespace MyNutritionist.Models
     {
         [Key]
         public int DDID { get; set; }
-        //public Dictionary<Ingredient, Double> TakenFood { get; set; }
         public DailyDiet() { }
 
     }

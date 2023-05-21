@@ -4,8 +4,6 @@ namespace MyNutritionist.Models
 {
     public class User: Person
     {
-        [Key]
-        public int UsId { get; set; }
         public string City { get; set; }
         public int Age { get; set; }
         public double Weight { get; set; }

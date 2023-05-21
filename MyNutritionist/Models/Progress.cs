@@ -12,9 +12,6 @@ namespace MyNutritionist.Models
         public int BurnedCalories { get; set; }  
         public int ConsumedCalories { get; set; }
         
-        [ForeignKey("DailyDiet")]
-        public int DailyDietId { get; set; }
-        
         public Progress() { }
 
     }

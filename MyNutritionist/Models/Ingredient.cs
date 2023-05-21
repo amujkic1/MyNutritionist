@@ -22,6 +22,8 @@ namespace MyNutritionist.Models
         
         [ForeignKey("Recipe")]
         public int RecipeId { get; set; }
+        [ForeignKey("DailyDiet")]
+        public int DailyDietId { get; set; }
         public Ingredient() { }
 
     }

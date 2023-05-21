@@ -14,8 +14,6 @@ namespace MyNutritionist.Models
         [ForeignKey("Nutritionist")]
         public int NutritionistId { get; set; }
 
-        [ForeignKey("DietPlan")]
-        public int DietPlanId { get; set; }
         public PremiumUser() { }
     }
 }
