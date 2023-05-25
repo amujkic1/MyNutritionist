@@ -74,6 +74,42 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
+            [Required]
+            [PersonalData]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+
+            [Required]
+            [PersonalData]
+            [Display(Name = "Name")]
+            public string Name { get; set; }
+
+            [Required]
+            [PersonalData]
+            [Display(Name = "Surname")]
+            public string Surname { get; set; }
+
+            [Required]
+            [PersonalData]
+            [Display(Name = "City")]
+            public string City { get; set; }
+
+            [Required]
+            [Range(1, 300, ErrorMessage = "Please enter a valid height.")]
+            [Display(Name = "Height")]
+            public string Height { get; set; }
+
+            [Required]
+            [Range(1, 300, ErrorMessage = "Please enter a valid weight.")]
+            [Display(Name = "Weight")]
+            public string Weight { get; set; }
+
+            [Required]
+            [Range(1, 150, ErrorMessage = "Please enter a valid age.")]
+            [Display(Name = "Age")]
+            public string Age { get; set; }
+
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
