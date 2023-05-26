@@ -125,18 +125,18 @@ namespace MyNutritionist.Controllers
         // GET: PremiumUser/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.PremiumUser == null)
+         /*   if (id == null || _context.PremiumUser == null)
             {
                 return NotFound();
-            }
+            }*/
 
             var premiumUser = await _context.PremiumUser
                 .Include(p => p.Nutritionist)
                 .FirstOrDefaultAsync(m => m.PID == id);
-            if (premiumUser == null)
+           /* if (premiumUser == null)
             {
                 return NotFound();
-            }
+            }*/
 
             return View(premiumUser);
         }
