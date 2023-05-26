@@ -30,17 +30,17 @@ namespace MyNutritionist.Controllers
         // GET: DietPlan/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.DietPlan == null)
+           /* if (id == null || _context.DietPlan == null)
             {
                 return NotFound();
-            }
+            }*/
 
             var dietPlan = await _context.DietPlan
                 .FirstOrDefaultAsync(m => m.DPID == id);
-            if (dietPlan == null)
+           /* if (dietPlan == null)
             {
                 return NotFound();
-            }
+            }*/
 
             return View(dietPlan);
         }
@@ -70,16 +70,16 @@ namespace MyNutritionist.Controllers
         // GET: DietPlan/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.DietPlan == null)
+           /* if (id == null || _context.DietPlan == null)
             {
                 return NotFound();
-            }
+            }*/
 
             var dietPlan = await _context.DietPlan.FindAsync(id);
-            if (dietPlan == null)
+            /*if (dietPlan == null)
             {
                 return NotFound();
-            }
+            }*/
             return View(dietPlan);
         }
 
@@ -88,12 +88,12 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DPID,TotalCalories")] DietPlan dietPlan)
+       public async Task<IActionResult> Edit(int id, [Bind("DPID,TotalCalories")] DietPlan dietPlan)
         {
-            if (id != dietPlan.DPID)
+           /* if (id != dietPlan.DPID)
             {
                 return NotFound();
-            }
+            }*/
 
             if (ModelState.IsValid)
             {
@@ -104,14 +104,14 @@ namespace MyNutritionist.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DietPlanExists(dietPlan.DPID))
+                   /* if (!DietPlanExists(dietPlan.DPID))
                     {
                         return NotFound();
                     }
                     else
                     {
                         throw;
-                    }
+                    }*/
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -121,17 +121,17 @@ namespace MyNutritionist.Controllers
         // GET: DietPlan/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.DietPlan == null)
+          /* if (id == null || _context.DietPlan == null)
             {
                 return NotFound();
-            }
+            }*/
 
             var dietPlan = await _context.DietPlan
                 .FirstOrDefaultAsync(m => m.DPID == id);
-            if (dietPlan == null)
+           /* if (dietPlan == null)
             {
                 return NotFound();
-            }
+            }*/
 
             return View(dietPlan);
         }
