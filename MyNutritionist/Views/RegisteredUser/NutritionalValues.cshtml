@@ -1,0 +1,157 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Nutritional Values";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nutritional Values</title>
+    <style>
+        h2 {
+            text-align: center;
+        }
+
+        .form-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .form-column {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-field {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .table-section {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .table-container {
+            flex: 1;
+            position: relative;
+            margin-right: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .check-button-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .check-button {
+            margin-left: 10px;
+            padding: 8px 16px;
+            background-color: #56cc9d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            .check-button:hover {
+                background-color: #45a049;
+            }
+    </style>
+</head>
+<body>
+    <h2>Nutritional Values</h2>
+    <div class="form-section">
+        <div class="form-column">
+            <div>
+                <span class="form-label">Select food:</span>
+                <input class="form-field" type="text">
+            </div>
+            <div>
+                <span class="form-label">Serving size:</span>
+                <input class="form-field" type="text">
+            </div>
+        </div>
+        <div class="form-column">
+            <div class="table-section">
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Nutrient</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Total fat</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Saturated fat</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Sodium</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Total carbohydrate</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Sugars</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Protein</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Vitamin A</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Vitamin C</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Calcium</td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr>
+                            <td>Iron</td>
+                            <td><input type="text"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="check-button-container">
+                  
+                    <button class="check-button">Check</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
