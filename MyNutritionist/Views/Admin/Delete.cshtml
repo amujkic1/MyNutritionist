@@ -4,42 +4,31 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h1>Delete your account</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<p>If you submit a request to delete your account, you have 7 days to log into your account again, which will cancel the request for deletion and you will keep all data. Otherwise, after 7 days the account is permanently deleted along with all your data
+
+</p>
 <div>
-    <h4>Admin</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-    </dl>
+    <style>
+        input[type="text"], input[type="password"] {
+            width: 30%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+        <form>
+        <input type="text" id="username" name="username" placeholder="Username"><br>
+        <input type="password" id="password" name="password" placeholder="Password"><br>
+
+        </form>
+  
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="PID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input type="submit" value="Delete" class="btn btn-primary" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>

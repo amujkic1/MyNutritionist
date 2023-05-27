@@ -10,154 +10,154 @@ using MyNutritionist.Models;
 
 namespace MyNutritionist.Controllers
 {
-    public class DietPlanController : Controller
+    public class LeaderboardController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public DietPlanController(ApplicationDbContext context)
+        public LeaderboardController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: DietPlan
+        // GET: Leaderboard
         public async Task<IActionResult> Index()
         {
-              return _context.DietPlan != null ? 
-                          View(await _context.DietPlan.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.DietPlan'  is null.");
+              return _context.Leaderboard != null ? 
+                          View(await _context.Leaderboard.ToListAsync()) :
+                          Problem("Entity set 'ApplicationDbContext.Leaderboard'  is null.");
         }
 
-        // GET: DietPlan/Details/5
+        // GET: Leaderboard/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-           /* if (id == null || _context.DietPlan == null)
+            if (id == null || _context.Leaderboard == null)
             {
                 return NotFound();
-            }*/
+            }
 
-            var dietPlan = await _context.DietPlan
-                .FirstOrDefaultAsync(m => m.DPID == id);
-           /* if (dietPlan == null)
+            var leaderboard = await _context.Leaderboard
+                .FirstOrDefaultAsync(m => m.LID == id);
+            if (leaderboard == null)
             {
                 return NotFound();
-            }*/
+            }
 
-            return View(dietPlan);
+            return View(leaderboard);
         }
 
-        // GET: DietPlan/Create
+        // GET: Leaderboard/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: DietPlan/Create
+        // POST: Leaderboard/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DPID,TotalCalories")] DietPlan dietPlan)
+        public async Task<IActionResult> Create([Bind("LID")] Leaderboard leaderboard)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(dietPlan);
+                _context.Add(leaderboard);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(dietPlan);
+            return View(leaderboard);
         }
 
-        // GET: DietPlan/Edit/5
+        // GET: Leaderboard/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-           /* if (id == null || _context.DietPlan == null)
+            if (id == null || _context.Leaderboard == null)
             {
                 return NotFound();
-            }*/
+            }
 
-            var dietPlan = await _context.DietPlan.FindAsync(id);
-            /*if (dietPlan == null)
+            var leaderboard = await _context.Leaderboard.FindAsync(id);
+            if (leaderboard == null)
             {
                 return NotFound();
-            }*/
-            return View(dietPlan);
+            }
+            return View(leaderboard);
         }
 
-        // POST: DietPlan/Edit/5
+        // POST: Leaderboard/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-       public async Task<IActionResult> Edit(int id, [Bind("DPID,TotalCalories")] DietPlan dietPlan)
+        public async Task<IActionResult> Edit(int id, [Bind("LID")] Leaderboard leaderboard)
         {
-           /* if (id != dietPlan.DPID)
+            if (id != leaderboard.LID)
             {
                 return NotFound();
-            }*/
+            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(dietPlan);
+                    _context.Update(leaderboard);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                   /* if (!DietPlanExists(dietPlan.DPID))
+                    if (!LeaderboardExists(leaderboard.LID))
                     {
                         return NotFound();
                     }
                     else
                     {
                         throw;
-                    }*/
+                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(dietPlan);
+            return View(leaderboard);
         }
 
-        // GET: DietPlan/Delete/5
+        // GET: Leaderboard/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-          /* if (id == null || _context.DietPlan == null)
+            if (id == null || _context.Leaderboard == null)
             {
                 return NotFound();
-            }*/
+            }
 
-            var dietPlan = await _context.DietPlan
-                .FirstOrDefaultAsync(m => m.DPID == id);
-           /* if (dietPlan == null)
+            var leaderboard = await _context.Leaderboard
+                .FirstOrDefaultAsync(m => m.LID == id);
+            if (leaderboard == null)
             {
                 return NotFound();
-            }*/
+            }
 
-            return View(dietPlan);
+            return View(leaderboard);
         }
 
-        // POST: DietPlan/Delete/5
+        // POST: Leaderboard/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.DietPlan == null)
+            if (_context.Leaderboard == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.DietPlan'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Leaderboard'  is null.");
             }
-            var dietPlan = await _context.DietPlan.FindAsync(id);
-            if (dietPlan != null)
+            var leaderboard = await _context.Leaderboard.FindAsync(id);
+            if (leaderboard != null)
             {
-                _context.DietPlan.Remove(dietPlan);
+                _context.Leaderboard.Remove(leaderboard);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DietPlanExists(int id)
+        private bool LeaderboardExists(int id)
         {
-          return (_context.DietPlan?.Any(e => e.DPID == id)).GetValueOrDefault();
+          return (_context.Leaderboard?.Any(e => e.LID == id)).GetValueOrDefault();
         }
     }
 }
