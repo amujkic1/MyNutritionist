@@ -182,5 +182,24 @@ namespace MyNutritionist.Controllers
         {
           return (_context.RegisteredUser?.Any(e => e.PID == id)).GetValueOrDefault();
         }
+        // GET: RegisteredUser/DailyFoodAndActivity/5
+        public async Task<IActionResult> DailyFoodAndActivity(int? id)
+        {
+            /*
+            if (id == null || _context.RegisteredUser == null)
+            {
+                return NotFound();
+            }
+
+        */
+            var registeredUser = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.PID == id);
+            /*  if (registeredUser == null)
+              {
+                  return NotFound();
+              }*/
+
+            return View(registeredUser);
+        }
     }
 }

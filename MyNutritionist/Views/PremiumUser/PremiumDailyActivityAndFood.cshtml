@@ -1,0 +1,92 @@
+﻿<html>
+<head>
+    <title>Unos obroka i aktivnosti</title>
+    <style>
+        .input-container {
+            margin-bottom: 20px;
+            width: 90%;
+        }
+
+            .input-container label {
+                display: block;
+                font-weight: bold;
+                width: 90%;
+            }
+
+            .input-container input[type="text"],
+            .input-container select {
+                width: 90%;
+                padding: 6px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-right: 40px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="column">
+            <h1>Enter Food</h1>
+
+            <div class="input-container">
+                <label for="breakfast">Breakfast</label>
+                <input type="text" id="breakfast" name="breakfast">
+            </div>
+
+            <div class="input-container">
+                <label for="lunch">Lunch</label>
+                <input type="text" id="lunch" name="lunch">
+            </div>
+
+            <div class="input-container">
+                <label for="dinner">Dinner</label>
+                <input type="text" id="dinner" name="dinner">
+            </div>
+
+            <div class="input-container">
+                <label for="snacks">Snacks</label>
+                <input type="text" id="snacks" name="snacks">
+            </div>
+        </div>
+
+        <div class="column">
+            <h1>Enter Activity</h1>
+
+            <div class="input-container">
+                <label for="duration">Duration</label>
+                <input type="text" id="duration" name="duration" style="margin-bottom: 20px;">
+            </div>
+
+            <div class="input-container">
+                <label for="activity-type">Type of Activity</label>
+                <select id="activity-type" name="activity-type">
+                    <option value="running">Running</option>
+                    <option value="cycling">Cycling</option>
+                    <option value="swimming">Swimming</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" style="margin-top: 20px">
+        <input type="submit" value="Save" class="btn btn-primary" style="margin-top: 20px; margin-left:200px" />
+    </div>
+</body>
+</html>
