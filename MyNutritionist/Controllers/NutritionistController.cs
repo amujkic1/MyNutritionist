@@ -159,5 +159,25 @@ namespace MyNutritionist.Controllers
         {
           return (_context.Nutritionist?.Any(e => e.PID == id)).GetValueOrDefault();
         }
+        // GET: Nutritionist/AddRecipe/5
+        public async Task<IActionResult> AddRecipe(int? id)
+        {
+            /*
+            if (id == null || _context.Nutritionist == null)
+            {
+                return NotFound();
+            }
+
+        */
+            var nutritionist = await _context.Nutritionist
+                .FirstOrDefaultAsync(m => m.PID == id);
+            /*  if (nutritionist == null)
+              {
+                  return NotFound();
+              }*/
+
+            return View(nutritionist);
+        }
     }
+
 }

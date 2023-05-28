@@ -164,7 +164,7 @@ namespace MyNutritionist.Controllers
         {
           return (_context.PremiumUser?.Any(e => e.PID == id)).GetValueOrDefault();
         }
-        // GET: RegisteredUser/DailyFoodAndActivity/5
+        // GET: PremiumUser/DailyFoodAndActivity/5
         public async Task<IActionResult> PremiumDailyActivityAndFood(int? id)
         {
             /*
