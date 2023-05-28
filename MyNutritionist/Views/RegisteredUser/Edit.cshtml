@@ -3,71 +3,104 @@
 @{
     ViewData["Title"] = "Edit";
 }
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Profile</title>
+    <style>
+        /* CSS for the form section */
+        .form-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
 
-<h1>Edit</h1>
+        .form-column {
+            flex: 1;
+            margin-right: 20px;
+        }
 
-<h4>RegisteredUser</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="City" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Age" class="control-label"></label>
-                <input asp-for="Age" class="form-control" />
-                <span asp-validation-for="Age" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Weight" class="control-label"></label>
-                <input asp-for="Weight" class="form-control" />
-                <span asp-validation-for="Weight" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Height" class="control-label"></label>
-                <input asp-for="Height" class="form-control" />
-                <span asp-validation-for="Height" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Points" class="control-label"></label>
-                <input asp-for="Points" class="form-control" />
-                <span asp-validation-for="Points" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="PID" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        .form-field {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            width: 100%;
+        }
+
+        .rounded-button {
+            padding: 10px 20px;
+            background-color: #56cc9d;
+            color: black;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+            border: none;
+        }
+
+        /* CSS for the progress section */
+        .progress-section {
+            margin-bottom: 20px;
+        }
+
+        .progress-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background-color: #56cc9d;
+            height: 20px;
+        }
+
+        /* CSS for the points section */
+        .points-section {
+            margin-bottom: 20px;
+        }
+
+        .points-text {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .points-field {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h3>Edit profile</h3>
+    <div class="form-section">
+        <div class="form-column">
+            <input type="text" class="form-field" placeholder="Name">
+            <input type="text" class="form-field" placeholder="Surname">
+            <input type="email" class="form-field" placeholder="Email">
+            <input type="text" class="form-field" placeholder="Username">
+            <input type="password" class="form-field" placeholder="Password">
+        </div>
+        <div class="form-column">
+            <input type="text" class="form-field" placeholder="Height">
+            <input type="text" class="form-field" placeholder="Weight">
+            <input type="text" class="form-field" placeholder="City">
+            <input type="number" class="form-field" placeholder="Age">
+            <button class="rounded-button" style="float: right">Update</button>
+        </div>
     </div>
-</div>
+    </body>
+</html>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

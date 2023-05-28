@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewData["Title"] = "Upgrade to premium";
+}
+<style>
+    /* CSS for the form section */
+    .form-section {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .form-column {
+        flex: 1;
+        margin-right: 20px;
+    }
+
+    .form-field {
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 8px;
+        width: 100%;
+    }
+
+    .rounded-button {
+        padding: 10px 20px;
+        background-color: #56cc9d;
+        color: black;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+        border: none;
+    }
+
+    /* CSS for the progress section */
+    .progress-section {
+        margin-bottom: 20px;
+    }
+
+    .progress-text {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        background-color: #f0f0f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        background-color: #56cc9d;
+        height: 20px;
+    }
+
+    /* CSS for the points section */
+    .points-section {
+        margin-bottom: 20px;
+    }
+
+    .points-text {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .points-field {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 8px;
+        width: 100%;
+    }
+</style>
+<h3>Enter card informations</h3>
+<div class="form-label">
+    MyNutritionist is designed with your security and privacy in mind, making it a simpler and more secure way to pay using your physical credit, debit, and prepaid cards.
+    Information that you provide about your card may be provided by MyNutritionist to your card issuer, payment network, or any providers authorized by your card issuer,
+    to determine the eligibility of your card, and to prevent fraud.
+    After entering your information, you will be sent a verification email, as well as a confirmation email after a successful transaction.
+</div>
+<div class="form-section">
+    <div class="form-column">
+        <div>
+            <span class="form-label">Owner:</span>
+            <input class="form-field" type="text">
+        </div>
+        <div>
+            <span class="form-label">Card number:</span>
+            <input class="form-field" type="text">
+        </div>
+        <button class="rounded-button" style="float: right">Coniform</button>
+    </div>
+</div>

@@ -29,18 +29,18 @@ namespace MyNutritionist.Controllers
         // GET: PremiumUser/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.PremiumUser == null)
+            /*if (id == null || _context.PremiumUser == null)
             {
                 return NotFound();
-            }
+            }*/
 
             var premiumUser = await _context.PremiumUser
                 .Include(p => p.Nutritionist)
                 .FirstOrDefaultAsync(m => m.PID == id);
-            if (premiumUser == null)
+            /*if (premiumUser == null)
             {
                 return NotFound();
-            }
+            }*/
 
             return View(premiumUser);
         }
@@ -72,17 +72,17 @@ namespace MyNutritionist.Controllers
         // GET: PremiumUser/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.PremiumUser == null)
+            /*if (id == null || _context.PremiumUser == null)
             {
                 return NotFound();
-            }
+            }*/
 
             var premiumUser = await _context.PremiumUser.FindAsync(id);
-            if (premiumUser == null)
+            /*if (premiumUser == null)
             {
                 return NotFound();
             }
-            ViewData["NutritionistId"] = new SelectList(_context.Nutritionist, "PID", "PID", premiumUser.NutritionistId);
+            ViewData["NutritionistId"] = new SelectList(_context.Nutritionist, "PID", "PID", premiumUser.NutritionistId);*/
             return View(premiumUser);
         }
 
@@ -93,10 +93,10 @@ namespace MyNutritionist.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AccountNumber,LeaderboardId,NutritionistId,City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] PremiumUser premiumUser)
         {
-            if (id != premiumUser.PID)
+            /*if (id != premiumUser.PID)
             {
                 return NotFound();
-            }
+            }*/
 
             if (ModelState.IsValid)
             {
@@ -164,5 +164,25 @@ namespace MyNutritionist.Controllers
         {
           return (_context.PremiumUser?.Any(e => e.PID == id)).GetValueOrDefault();
         }
-    }
+        // GET: PremiumUser/DailyFoodAndActivity/5
+        public async Task<IActionResult> PremiumDailyActivityAndFood(int? id)
+        {
+            /*
+            if (id == null || _context.PremiumUser == null)
+            {
+                return NotFound();
+            }
+
+        */
+            var premiumUser = await _context.PremiumUser
+                .FirstOrDefaultAsync(m => m.PID == id);
+            /*  if (premiumUser == null)
+              {
+                  return NotFound();
+              }*/
+
+            return View(premiumUser);
+        }
+}
+
 }

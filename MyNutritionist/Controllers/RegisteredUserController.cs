@@ -30,17 +30,58 @@ namespace MyNutritionist.Controllers
         // GET: RegisteredUser/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            /*
             if (id == null || _context.RegisteredUser == null)
             {
                 return NotFound();
             }
 
+        */
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.PID == id);
-            if (registeredUser == null)
+          /*  if (registeredUser == null)
+            {
+                return NotFound();
+            }*/
+
+            return View(registeredUser);
+        }
+        // GET: RegisteredUser/NutritionalValues/5
+        public async Task<IActionResult> NutritionalValues(int? id)
+        {
+            /*
+            if (id == null || _context.RegisteredUser == null)
             {
                 return NotFound();
             }
+
+        */
+            var registeredUser = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.PID == id);
+            /*  if (registeredUser == null)
+              {
+                  return NotFound();
+              }*/
+
+            return View(registeredUser);
+        }
+
+        // GET: RegisteredUser/EditCard/5
+        public async Task<IActionResult> EditCard(int? id)
+        {
+            /*
+            if (id == null || _context.RegisteredUser == null)
+            {
+                return NotFound();
+            }
+
+        */
+            var registeredUser = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.PID == id);
+            /*  if (registeredUser == null)
+              {
+                  return NotFound();
+              }*/
 
             return View(registeredUser);
         }
@@ -69,17 +110,19 @@ namespace MyNutritionist.Controllers
 
         // GET: RegisteredUser/Edit/5
         public async Task<IActionResult> Edit(int? id)
-        {
+        {/*
             if (id == null || _context.RegisteredUser == null)
             {
                 return NotFound();
             }
-
+            */
             var registeredUser = await _context.RegisteredUser.FindAsync(id);
+            /*
             if (registeredUser == null)
             {
                 return NotFound();
             }
+            */
             return View(registeredUser);
         }
 
@@ -158,6 +201,25 @@ namespace MyNutritionist.Controllers
         private bool RegisteredUserExists(int id)
         {
           return (_context.RegisteredUser?.Any(e => e.PID == id)).GetValueOrDefault();
+        }
+        // GET: RegisteredUser/DailyFoodAndActivity/5
+        public async Task<IActionResult> DailyFoodAndActivity(int? id)
+        {
+            /*
+            if (id == null || _context.RegisteredUser == null)
+            {
+                return NotFound();
+            }
+
+        */
+            var registeredUser = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.PID == id);
+            /*  if (registeredUser == null)
+              {
+                  return NotFound();
+              }*/
+
+            return View(registeredUser);
         }
     }
 }
