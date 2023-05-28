@@ -1,90 +1,340 @@
 ﻿@model MyNutritionist.Models.PremiumUser
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Profile";
 }
 
-<h1>Details</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile Details</title>
+    <style>
+        /* CSS for the form section */
+        .main-container {
+            color: #abafc6;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 50px;
+            width: fit-content;
+            height: fit-content;
+            display: inline-block;
+            verticle-align: middle;
+        }
 
-<div>
-    <h4>PremiumUser</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nutritionist)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nutritionist.PID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AccountNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AccountNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LeaderboardId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LeaderboardId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Age)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Age)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Weight)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Weight)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Height)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Height)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Points)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Points)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.PID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+        .header {
+            font-size: 20px;
+            color: #000;
+            text-align: center;
+        }
+
+        .week-stats {
+            white-space: nowrap;
+            max-height: 170px;
+            overflow: hidden;
+        }
+
+            .week-stats:hover {
+                overflow-x: auto;
+            }
+
+        ::-webkit-scrollbar {
+            height: 5px;
+            width: 100%;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #444e80;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #abafc6;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #5397d6;
+        }
+
+        .day-group {
+            cursor: pointer;
+            max-width: 400px;
+            height: 110px;
+            margin: 10px;
+            display: inline-block;
+        }
+
+        .bar {
+            background-color: #abafc6;
+            width: 20px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .day-group:hover .bar,
+        .selected .bar {
+            background: #5397d6;
+        }
+
+        .day-group:hover p,
+        .selected p {
+            color: #000;
+        }
+
+        .h-0 {
+            height: 0%;
+        }
+
+        .h-25 {
+            height: 25%;
+        }
+
+        .h-50 {
+            height: 50%;
+        }
+
+        .h-75 {
+            height: 75%;
+        }
+
+        .h-100 {
+            height: 100%;
+        }
+
+        .stats-info {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            position: relative;
+        }
+
+        .graph-container {
+            position: relative;
+        }
+
+        .percent {
+            display: block;
+            width: 120px;
+            height: 120px;
+        }
+
+        .graph-container p {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .info p {
+            margin-bottom: 10px;
+        }
+
+        .info span {
+            color: #fff;
+        }
+
+        .form-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .form-column {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-value {
+            margin-bottom: 10px;
+        }
+
+        .form-field {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        /* CSS for progress bar and points section */
+        .progress-section {
+            margin-bottom: 20px;
+        }
+
+        .progress-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #56cc9d;
+        }
+
+        .points-section {
+            margin-top: 20px;
+        }
+
+        .points-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .points-field {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            width: 100%;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-section">
+        <div class="form-column">
+            <div>
+                <span class="form-label">Name:</span>
+                <input class="form-field" type="text" value="John" readonly>
+            </div>
+            <div>
+                <span class="form-label">Surname:</span>
+                <input class="form-field" type="text" value="Doe" readonly>
+            </div>
+            <div>
+                <span class="form-label">Email:</span>
+                <input class="form-field" type="text" value="john.doe@example.com" readonly>
+            </div>
+            <div>
+                <span class="form-label">Username:</span>
+                <input class="form-field" type="text" value="johndoe" readonly>
+            </div>
+            <div>
+                <span class="form-label">Password:</span>
+                <input class="form-field" type="password" value="********" readonly>
+            </div>
+            <div>
+                <span class="form-label">Nutritionist:</span>
+                <input class="form-field" type="text" value="John Doe" readonly>
+            </div>
+        </div>
+        <div class="form-column">
+            <div>
+                <span class="form-label">Height:</span>
+                <input class="form-field" type="text" value="180 cm" readonly>
+            </div>
+            <div>
+                <span class="form-label">Weight:</span>
+                <input class="form-field" type="text" value="75 kg" readonly>
+            </div>
+            <div>
+                <span class="form-label">Age:</span>
+                <input class="form-field" type="text" value="30" readonly>
+            </div>
+            <div>
+                <span class="form-label">City:</span>
+                <input class="form-field" type="text" value="New York" readonly>
+            </div>
+            <div>
+                <span class="form-label">Credit number:</span>
+                <input class="form-field" type="text" value="1111 1111 1111" readonly>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main-container">
+        <div class="header">
+            Daily activity last 7 days
+        </div>
+        <div class="week-stats">
+            <div class="day-group">
+                <div class="bar h-100"></div>
+                <p class="day">Mon</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-50"></div>
+                <p class="day">Tue</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-75"></div>
+                <p class="day">Wed</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-25"></div>
+                <p class="day">Thu</p>
+            </div>
+            <div class="day-group selected">
+                <div class="bar h-100"></div>
+                <p class="day">Fri</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-50"></div>
+                <p class="day">Sat</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-75"></div>
+                <p class="day">Sun</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="header">
+            Calories intake last 7 days
+        </div>
+        <div class="week-stats">
+            <div class="day-group">
+                <div class="bar h-75"></div>
+                <p class="day">Mon</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-75"></div>
+                <p class="day">Tue</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-50"></div>
+                <p class="day">Wed</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-0"></div>
+                <p class="day">Thu</p>
+            </div>
+            <div class="day-group selected">
+                <div class="bar h-100"></div>
+                <p class="day">Fri</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-50"></div>
+                <p class="day">Sat</p>
+            </div>
+            <div class="day-group">
+                <div class="bar h-75"></div>
+                <p class="day">Sun</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="points-section">
+        <span class="points-label">Current number of points:</span>
+        <input class="points-field" type="text" value="500" readonly>
+    </div>
+</body>
+</html>
