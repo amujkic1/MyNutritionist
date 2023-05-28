@@ -66,6 +66,26 @@ namespace MyNutritionist.Controllers
             return View(registeredUser);
         }
 
+        // GET: RegisteredUser/EditCard/5
+        public async Task<IActionResult> EditCard(int? id)
+        {
+            /*
+            if (id == null || _context.RegisteredUser == null)
+            {
+                return NotFound();
+            }
+
+        */
+            var registeredUser = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.PID == id);
+            /*  if (registeredUser == null)
+              {
+                  return NotFound();
+              }*/
+
+            return View(registeredUser);
+        }
+
         // GET: RegisteredUser/Create
         public IActionResult Create()
         {
