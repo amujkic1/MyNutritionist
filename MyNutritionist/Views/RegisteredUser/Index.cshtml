@@ -1,83 +1,229 @@
 ﻿@model IEnumerable<MyNutritionist.Models.RegisteredUser>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Dashboard Premium";
 }
+<!DOCTYPE html>
+<style>
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Age)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Weight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Height)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Points)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Age)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Weight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Height)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Points)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+
+	.main-container {
+		color: #abafc6;
+		border-radius: 5px;
+		padding: 40px;
+		margin: 50px;
+		width: fit-content;
+		height: fit-content;
+		display: inline-block;
+		verticle-align: middle;
+	}
+
+	.header {
+		font-size: 20px;
+		color: #000;
+		text-align: center;
+	}
+
+	.text1 {
+		font-size: 22px;
+		color: #000;
+	}
+
+	.text2 {
+		font-size: 18px;
+		color: #000;
+	}
+
+	.week-stats {
+		white-space: nowrap;
+		max-height: 170px;
+		overflow: hidden;
+	}
+
+		.week-stats:hover {
+			overflow-x: auto;
+		}
+
+	::-webkit-scrollbar {
+		height: 5px;
+		width: 100%;
+	}
+
+	/* Track */
+	::-webkit-scrollbar-track {
+		background: #444e80;
+	}
+
+	/* Handle */
+	::-webkit-scrollbar-thumb {
+		background: #abafc6;
+		border-radius: 10px;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #5397d6;
+	}
+
+	.day-group {
+		cursor: pointer;
+		max-width: 400px;
+		height: 110px;
+		margin: 10px;
+		display: inline-block;
+	}
+
+	.bar {
+		background-color: #abafc6;
+		width: 20px;
+		border-radius: 5px;
+		margin-bottom: 10px;
+	}
+
+	.day-group:hover .bar,
+	.selected .bar {
+		background: #5397d6;
+	}
+
+	.day-group:hover p,
+	.selected p {
+		color: #000;
+	}
+
+	.h-0 {
+		height: 0%;
+	}
+
+	.h-25 {
+		height: 25%;
+	}
+
+	.h-50 {
+		height: 50%;
+	}
+
+	.h-75 {
+		height: 75%;
+	}
+
+	.h-100 {
+		height: 100%;
+	}
+
+	.stats-info {
+		margin-top: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+		position: relative;
+	}
+
+	.graph-container {
+		position: relative;
+	}
+
+	.percent {
+		display: block;
+		width: 120px;
+		height: 120px;
+	}
+
+	.graph-container p {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 12px;
+		color: #fff;
+		text-align: center;
+	}
+
+	.info p {
+		margin-bottom: 10px;
+	}
+
+	.info span {
+		color: #fff;
+	}
+
+	
+</style>
+<body>
+	<h1 style="text-align:center">Check out your progress for this week!</h1>
+		
+	<div class="main-container">
+		<div class="header">
+            Daily activity last 7 days
+		</div>
+		<div class="week-stats">
+			<div class="day-group">
+				<div class="bar h-100"></div>
+				<p class="day">Mon</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-50"></div>
+				<p class="day">Tue</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-75"></div>
+				<p class="day">Wed</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-25"></div>
+				<p class="day">Thu</p>
+			</div>
+			<div class="day-group selected">
+				<div class="bar h-100"></div>
+				<p class="day">Fri</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-50"></div>
+				<p class="day">Sat</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-75"></div>
+				<p class="day">Sun</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="main-container">
+		<div class="header">
+			Calories intake last 7 days
+		</div>
+		<div class="week-stats">
+			<div class="day-group">
+				<div class="bar h-75"></div>
+				<p class="day">Mon</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-75"></div>
+				<p class="day">Tue</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-50"></div>
+				<p class="day">Wed</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-0"></div>
+				<p class="day">Thu</p>
+			</div>
+			<div class="day-group selected">
+				<div class="bar h-100"></div>
+				<p class="day">Fri</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-50"></div>
+				<p class="day">Sat</p>
+			</div>
+			<div class="day-group">
+				<div class="bar h-75"></div>
+				<p class="day">Sun</p>
+			</div>
+		</div>
+	</div>
+
+
+
+
+</body>
