@@ -16,3 +16,66 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.nutritionist-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .nutritionist-list li {
+        margin-bottom: 10px;
+        color: black;
+        font-size: 17px;
+        background: #addbb9;
+        padding: 10px;
+    }
+
+.nutritionist-list li input[type="checkbox"] {
+    margin-right: 5px;
+
+}
+
+.premium-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.premium-list li {
+    margin-bottom: 10px;
+    color: black;
+    font-size: 17px;
+    background: #addbb9;
+    padding: 10px;
+}
+
+.premium-list li input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+button[type="submit"] {
+    background-color: #293c6e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+     background-color: #addbb9;
+}
+
+button[type="button"] {
+    background-color: #293c6e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button[type="button"]:hover {
+    background-color: #addbb9;
+}

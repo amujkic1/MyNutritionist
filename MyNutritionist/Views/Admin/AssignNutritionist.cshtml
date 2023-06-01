@@ -10,7 +10,7 @@
 <br />
 
 <form>
-    <ul>
+    <ul class="nutritionist-list">
         @{
             // Set up connection string and SQL query
             string connectionString = "Data Source=SQL5110.site4now.net;Initial Catalog=db_a9938d_novabaza;User Id=db_a9938d_novabaza_admin;Password=smarterasp0605";
@@ -41,12 +41,47 @@
             }
         }
     </ul>
-
     <button type="submit">Submit</button>
+
+    <ul class="premium-list">
+        @{
+            // Set up connection string and SQL query
+            //string connectionString = "Data Source=SQL5110.site4now.net;Initial Catalog=db_a9938d_novabaza;User Id=db_a9938d_novabaza_admin;Password=smarterasp0605";
+            string query2 = "SELECT Name FROM PremiumUser";
+
+            // Connect to the database and execute the query
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(query2, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                int index = 0; // Index counter
+
+                // Iterate through the data and generate HTML list items with checkboxes
+                while (reader.Read())
+                {
+                    string itemName = reader["Name"].ToString(); // Replace "ColumnName" with the actual column name in your table
+
+                    // Generate list item with checkbox
+                    string listItem = $"<li><input type='checkbox' name='selectedItems' value='{index}' /> {itemName}</li>";
+                    @Html.Raw(listItem)
+
+                    index++;
+                }
+
+                reader.Close();
+            }
+        }
+    </ul>
+    <button type="submit">Submit</button>
+
+    
 </form>
  
-
+<!--
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.PID">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+-->

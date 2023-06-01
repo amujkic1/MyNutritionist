@@ -20,10 +20,6 @@ namespace MyNutritionist.Models
         public double Iron { get; set; }
         public double Sodium { get; set; }
         
-        [ForeignKey("Recipe")]
-        public int RecipeId { get; set; }
-        [ForeignKey("DailyDiet")]
-        public int DailyDietId { get; set; }
         public Ingredient() { }
 
     }

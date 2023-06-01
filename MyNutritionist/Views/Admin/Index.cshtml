@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<MyNutritionist.Models.Admin>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<h1>Index</h1>
+<h1>Admin Dashboard</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <button type="button">Create</button> <!-- Added "Create" button -->
+    <button type="button">Assign</button> <!-- Added "Assign" button -->
 </p>
 <table class="table">
     <thead>

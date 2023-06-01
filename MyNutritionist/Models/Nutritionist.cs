@@ -3,8 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNutritionist.Models
 {
-    public class Nutritionist: Person
+    [Table("Nutritionists")]
+    public class Nutritionist : Person
     {
-        public Nutritionist() { }
+       
+        public Nutritionist(): base() {
+        }
     }
 }

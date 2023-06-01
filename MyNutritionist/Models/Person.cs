@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using MessagePack;
+﻿using MessagePack;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyNutritionist.Models
 {
-    public class Person
+    public abstract class Person
     {
         [System.ComponentModel.DataAnnotations.Key]
         public int PID { get; set; }
@@ -14,5 +13,14 @@ namespace MyNutritionist.Models
         public string Password { get; set; }
             
         public Person() { }
+
+        /*public Person(int pID, string name, string email, string username, string password)
+        {
+            PID = pID;
+            Name = name;
+            Email = email;
+            Username = username;
+            Password = password;
+        }*/
     }
 }

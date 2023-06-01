@@ -1,53 +1,49 @@
-﻿@model IEnumerable<MyNutritionist.Models.Nutritionist>
+﻿@using Microsoft.Data.SqlClient;
+@model IEnumerable<MyNutritionist.Models.Nutritionist>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Dashboard";
 }
 
-<h1>Index</h1>
+<h2>Dashboard</h2>
 
+<!--
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+-->
+
+<form>
+    <ul class="premium-list">
+        @{
+            // Set up connection string and SQL query
+            string connectionString = "Data Source=SQL5110.site4now.net;Initial Catalog=db_a9938d_novabaza;User Id=db_a9938d_novabaza_admin;Password=smarterasp0605";
+            string query = "SELECT PID FROM PremiumUser";
+
+            // Connect to the database and execute the query
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(query, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                int index = 0; // Index counter
+
+                // Iterate through the data and generate HTML list items with checkboxes
+                while (reader.Read())
+                {
+                    string itemName = reader["Name"].ToString(); // Replace "ColumnName" with the actual column name in your table
+
+                    // Generate list item with checkbox
+                    string listItem = $"<li><input type='checkbox' name='selectedItems' value='{index}' /> {itemName}</li>";
+                    @Html.Raw(listItem)
+
+                    index++;
+                }
+
+                reader.Close();
+            }
+        }
+    </ul>
+    
+    </form>
