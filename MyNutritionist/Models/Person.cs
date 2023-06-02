@@ -8,7 +8,7 @@ namespace MyNutritionist.Models
         [System.ComponentModel.DataAnnotations.Key]
         public int PID { get; set; }
         [Required(ErrorMessage = "Invalid input")]
-        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "The City field can only contain letters.")]
+        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Invalid input")]
         public string Name { get; set; }
         [EmailAddress(ErrorMessage = "Invalid input")]
         public string Email { get; set; }

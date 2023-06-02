@@ -94,13 +94,14 @@ namespace MyNutritionist.Controllers
 
         // POST: RegisteredUser/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] RegisteredUser registeredUser)
         {
             if (ModelState.IsValid)
             {
+                registeredUser.Points = 0; // Postavljanje vrijednosti na 0
+
                 _context.Add(registeredUser);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

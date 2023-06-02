@@ -6,9 +6,11 @@ namespace MyNutritionist.Models
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Invalid input")]
 
         public string City { get; set; }
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Invalid input")]
+        [Range(6, 100, ErrorMessage = "The age must be between 6 and 100")]
         public int Age { get; set; }
+        [Range(0, 300, ErrorMessage = "The weight must be between 0 and 300")]
         public double Weight { get; set; }
+        [Range(0, 300, ErrorMessage = "The height must be between 0 and 300")]
         public double Height { get; set; }
         public int Points { get; set; }
         public RegisteredUser() { }
