@@ -94,20 +94,32 @@ namespace MyNutritionist.Controllers
 
         // POST: RegisteredUser/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // POST: RegisteredUser/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] RegisteredUser registeredUser)
         {
             if (ModelState.IsValid)
             {
-                registeredUser.Points = 0; // Postavljanje vrijednosti na 0
+                var existingUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Username == registeredUser.Username);
 
-                _context.Add(registeredUser);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (existingUser == null)
+                {
+                    registeredUser.Points = 0; // Postavljanje vrijednosti na 0
+
+                    _context.Add(registeredUser);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("Username", "A user with the same username already exists.");
+                }
             }
             return View(registeredUser);
         }
+
 
         // GET: RegisteredUser/Edit/5
         public async Task<IActionResult> Edit(int? id)
