@@ -5,7 +5,6 @@ namespace MyNutritionist.Models
 {
     public class PremiumUser: Person
     {
-        //public Nutritionist Nutritionist { get; set; }
         public string AccountNumber { get; set; }
 
         [ForeignKey("Leaderboard")]
@@ -18,7 +17,6 @@ namespace MyNutritionist.Models
         public double Weight { get; set; }
         public double Height { get; set; }
         public int Points { get; set; }
-
         public PremiumUser() { }
     }
 }
