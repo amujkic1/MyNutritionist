@@ -62,6 +62,7 @@ namespace MyNutritionist.Controllers
         {
             if (ModelState.IsValid)
             {
+                dietPlan.Nutritionist.PID = 11;
                 _context.Add(dietPlan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
