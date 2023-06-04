@@ -5,7 +5,7 @@ namespace MyNutritionist.Models
 {
     public class PremiumUser: Person
     {
-        public Nutritionist Nutritionist { get; set; }
+        //public Nutritionist Nutritionist { get; set; }
         public string AccountNumber { get; set; }
 
         [ForeignKey("Leaderboard")]

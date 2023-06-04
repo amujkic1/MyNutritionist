@@ -22,8 +22,8 @@ namespace MyNutritionist.Controllers
         // GET: PremiumUser
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.PremiumUser.Include(p => p.Nutritionist);
-            return View(await applicationDbContext.ToListAsync());
+            //var applicationDbContext = _context.PremiumUser.Include(p => p.Nutritionist);
+            return View(await _context.PremiumUser.ToListAsync());
         }
 
         // GET: PremiumUser/Details/5
@@ -35,7 +35,6 @@ namespace MyNutritionist.Controllers
             }*/
 
             var premiumUser = await _context.PremiumUser
-                .Include(p => p.Nutritionist)
                 .FirstOrDefaultAsync(m => m.PID == id);
             /*if (premiumUser == null)
             {
@@ -48,7 +47,7 @@ namespace MyNutritionist.Controllers
         // GET: PremiumUser/Create
         public IActionResult Create()
         {
-            ViewData["NutritionistId"] = new SelectList(_context.Nutritionist, "PID", "PID");
+            //ViewData["NutritionistId"] = new SelectList(_context.Nutritionist, "PID", "PID");
             return View();
         }
 
@@ -131,7 +130,6 @@ namespace MyNutritionist.Controllers
             }
 
             var premiumUser = await _context.PremiumUser
-                .Include(p => p.Nutritionist)
                 .FirstOrDefaultAsync(m => m.PID == id);
             if (premiumUser == null)
             {
