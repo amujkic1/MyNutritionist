@@ -9,8 +9,10 @@ namespace MyNutritionist.Models
         public int PID { get; set; }
         [Required(ErrorMessage = "Invalid input")]
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Invalid input")]
+        [Display(Name= "Name")]
         public string Name { get; set; }
         [EmailAddress(ErrorMessage = "Invalid input")]
+        [Display(Name = "E-mail address")]
         public string Email { get; set; }
         [Required(ErrorMessage = "Invalid input")]
         public string Username { get; set; }
