@@ -18,7 +18,7 @@
         @{
             // Set up connection string and SQL query
             string connectionString = "Data Source=SQL5110.site4now.net;Initial Catalog=db_a9938d_novabaza;User Id=db_a9938d_novabaza_admin;Password=smarterasp0605";
-            string query = "SELECT PID FROM PremiumUser";
+            string query = "SELECT Name FROM PremiumUser pu, Person per WHERE pu.pid = per.pid";
 
             // Connect to the database and execute the query
             using (SqlConnection connection = new SqlConnection(connectionString))

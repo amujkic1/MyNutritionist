@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyNutritionist.Data;
 
@@ -11,9 +12,10 @@ using MyNutritionist.Data;
 namespace MyNutritionist.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230604095139_netUsers")]
+    partial class netUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -473,12 +475,18 @@ namespace MyNutritionist.Migrations
                 {
                     b.HasBaseType("MyNutritionist.Models.Person");
 
+                    b.Property<int>("UsersID")
+                        .HasColumnType("int");
+
                     b.ToTable("Admin", (string)null);
                 });
 
             modelBuilder.Entity("MyNutritionist.Models.Nutritionist", b =>
                 {
                     b.HasBaseType("MyNutritionist.Models.Person");
+
+                    b.Property<int>("UsersID")
+                        .HasColumnType("int");
 
                     b.ToTable("Nutritionist", (string)null);
                 });
@@ -510,6 +518,9 @@ namespace MyNutritionist.Migrations
                     b.Property<int>("Points")
                         .HasColumnType("int");
 
+                    b.Property<int>("UsersID")
+                        .HasColumnType("int");
+
                     b.Property<double>("Weight")
                         .HasColumnType("float");
 
@@ -531,6 +542,9 @@ namespace MyNutritionist.Migrations
                         .HasColumnType("float");
 
                     b.Property<int>("Points")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersID")
                         .HasColumnType("int");
 
                     b.Property<double>("Weight")
