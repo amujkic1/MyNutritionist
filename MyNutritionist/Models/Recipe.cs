@@ -12,7 +12,13 @@ namespace MyNutritionist.Models
         public int TotalCalories { get; set; }
 
         [ForeignKey("DietPlan")]
-        public int DietPlanID { get; set; }
-        public Recipe() { }
+        public int DietPlanID { get; set; } = 0;
+        //public Recipe() { }
+        public Recipe()
+        {
+            // Postavi nutricionista s ID-om 11 kao zadani
+            Nutritionist = new Nutritionist { PID = 11 };
+        }
     }
+
 }

@@ -10,87 +10,102 @@ using MyNutritionist.Models;
 
 namespace MyNutritionist.Controllers
 {
-    public class NutritionistController : Controller
+    public class RecipesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public NutritionistController(ApplicationDbContext context)
+        public RecipesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Nutritionist
+        // GET: Recipes
         public async Task<IActionResult> Index()
         {
-              return _context.Nutritionist != null ? 
-                          View(await _context.Nutritionist.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Nutritionist'  is null.");
+              return _context.Recipe != null ? 
+                          View(await _context.Recipe.ToListAsync()) :
+                          Problem("Entity set 'ApplicationDbContext.Recipe'  is null.");
         }
 
-        // GET: Nutritionist/Details/5
+        // GET: Recipes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Nutritionist == null)
+            if (id == null || _context.Recipe == null)
             {
                 return NotFound();
             }
 
-            var nutritionist = await _context.Nutritionist
-                .FirstOrDefaultAsync(m => m.PID == id);
-            if (nutritionist == null)
+            var recipe = await _context.Recipe
+                .FirstOrDefaultAsync(m => m.RID == id);
+            if (recipe == null)
             {
                 return NotFound();
             }
 
-            return View(nutritionist);
+            return View(recipe);
         }
 
-        // GET: Nutritionist/Create
+        // GET: Recipes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Nutritionist/Create
+        // POST: Recipes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PID,Name,Email,Username,Password")] Nutritionist nutritionist)
+        public async Task<IActionResult> Create([Bind("RID,RecipeLink,TotalCalories,DietPlanID")] Recipe recipe)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(nutritionist);
+             
+  
+                // Pronađite nutricionista na temelju ID-a
+                var nutritionist = await _context.Nutritionist.FindAsync(recipe.Nutritionist.PID);
+                if (nutritionist == null)
+                {
+                    return NotFound("Nutritionist not found.");
+                }
+
+                // Povežite nutricionista s receptom
+                recipe.Nutritionist = nutritionist;
+
+                // Dodajte recept u kontekst i spremite promjene
+                _context.Add(recipe);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(nutritionist);
+
+            return View(recipe);
         }
 
-        // GET: Nutritionist/Edit/5
+        // GET: Recipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Nutritionist == null)
+            if (id == null || _context.Recipe == null)
             {
                 return NotFound();
             }
 
-            var nutritionist = await _context.Nutritionist.FindAsync(id);
-            if (nutritionist == null)
+            var recipe = await _context.Recipe.FindAsync(id);
+            if (recipe == null)
             {
                 return NotFound();
             }
-            return View(nutritionist);
+            return View(recipe);
         }
 
-        // POST: Nutritionist/Edit/5
+        // POST: Recipes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PID,Name,Email,Username,Password")] Nutritionist nutritionist)
+        public async Task<IActionResult> Edit(int id, [Bind("RID,RecipeLink,TotalCalories,DietPlanID")] Recipe recipe)
         {
-            if (id != nutritionist.PID)
+            if (id != recipe.RID)
             {
                 return NotFound();
             }
@@ -99,12 +114,12 @@ namespace MyNutritionist.Controllers
             {
                 try
                 {
-                    _context.Update(nutritionist);
+                    _context.Update(recipe);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NutritionistExists(nutritionist.PID))
+                    if (!RecipeExists(recipe.RID))
                     {
                         return NotFound();
                     }
@@ -115,52 +130,51 @@ namespace MyNutritionist.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(nutritionist);
+            return View(recipe);
         }
 
-        // GET: Nutritionist/Delete/5
+        // GET: Recipes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Nutritionist == null)
+            if (id == null || _context.Recipe == null)
             {
                 return NotFound();
             }
 
-            var nutritionist = await _context.Nutritionist
-                .FirstOrDefaultAsync(m => m.PID == id);
-            if (nutritionist == null)
+            var recipe = await _context.Recipe
+                .FirstOrDefaultAsync(m => m.RID == id);
+            if (recipe == null)
             {
                 return NotFound();
             }
 
-            return View(nutritionist);
+            return View(recipe);
         }
 
-        // POST: Nutritionist/Delete/5
+        // POST: Recipes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Nutritionist == null)
+            if (_context.Recipe == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Nutritionist'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Recipe'  is null.");
             }
-            var nutritionist = await _context.Nutritionist.FindAsync(id);
-            if (nutritionist != null)
+            var recipe = await _context.Recipe.FindAsync(id);
+            if (recipe != null)
             {
-                _context.Nutritionist.Remove(nutritionist);
+                _context.Recipe.Remove(recipe);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NutritionistExists(int id)
+        private bool RecipeExists(int id)
         {
-          return (_context.Nutritionist?.Any(e => e.PID == id)).GetValueOrDefault();
+          return (_context.Recipe?.Any(e => e.RID == id)).GetValueOrDefault();
         }
-        // GET: Nutritionist/AddRecipe/5
-        public async Task<IActionResult> AddRecipe(int? id)
+        public async Task<IActionResult> NAddRecipe(int? id)
         {
             /*
             if (id == null || _context.Nutritionist == null)
@@ -169,17 +183,16 @@ namespace MyNutritionist.Controllers
             }
 
         */
-            var nutritionist = await _context.Nutritionist
-                .FirstOrDefaultAsync(m => m.PID == id);
+            var recipe = await _context.Recipe
+                .FirstOrDefaultAsync(m => m.RID == id);
             /*  if (nutritionist == null)
               {
                   return NotFound();
               }*/
 
-            return View(nutritionist);
+            return View(recipe);
         }
-        // GET: RegisteredUser/EditCard/5
-        
+      
     }
 
 
