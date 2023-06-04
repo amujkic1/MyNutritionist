@@ -24,9 +24,9 @@ namespace MyNutritionist.Controllers
         // GET: RegisteredUser
         public async Task<IActionResult> Index()
         {
-              return _context.RegisteredUser != null ? 
-                          View(await _context.RegisteredUser.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.RegisteredUser'  is null.");
+            return _context.RegisteredUser != null ?
+                        View(await _context.RegisteredUser.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.RegisteredUser'  is null.");
         }
 
         // GET: RegisteredUser/Details/5
@@ -41,10 +41,10 @@ namespace MyNutritionist.Controllers
         */
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.PID == id);
-          /*  if (registeredUser == null)
-            {
-                return NotFound();
-            }*/
+            /*  if (registeredUser == null)
+              {
+                  return NotFound();
+              }*/
 
             return View(registeredUser);
         }
@@ -208,14 +208,14 @@ namespace MyNutritionist.Controllers
             {
                 _context.RegisteredUser.Remove(registeredUser);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool RegisteredUserExists(int id)
         {
-          return (_context.RegisteredUser?.Any(e => e.PID == id)).GetValueOrDefault();
+            return (_context.RegisteredUser?.Any(e => e.PID == id)).GetValueOrDefault();
         }
         // GET: RegisteredUser/DailyFoodAndActivity/5
         public async Task<IActionResult> DailyFoodAndActivity(int? id)
@@ -235,6 +235,23 @@ namespace MyNutritionist.Controllers
               }*/
 
             return View(registeredUser);
+        }
+        public IActionResult login()
+        {
+            return View("login");
+        }
+        public async Task<IActionResult> Loginn([Bind("Password,Username")] RegisteredUser korisnikSaNalogom)
+        {
+            
+            
+                // Provjeri podatke za prijavu u bazi podataka
+                Person korisnik = await _context.Person
+                    .FirstOrDefaultAsync(kr => kr.Username == korisnikSaNalogom.Username && kr.Password == korisnikSaNalogom.Password);
+            if (korisnik != null)
+                return RedirectToAction("Index", "RegisteredUser");
+            else return View("Create");
+            
+
         }
     }
 }
