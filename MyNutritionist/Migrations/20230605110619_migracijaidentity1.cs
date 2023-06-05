@@ -4,7 +4,7 @@
 
 namespace MyNutritionist.Migrations
 {
-    public partial class placembgm : Migration
+    public partial class migracijaidentity1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

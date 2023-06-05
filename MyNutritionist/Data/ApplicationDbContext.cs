@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using MyNutritionist.Models;
 using System;
 using System.Diagnostics;
+using System.Reflection.Emit;
 
 namespace MyNutritionist.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -29,6 +30,7 @@ namespace MyNutritionist.Data
         public DbSet<PhysicalActivity> PhysicalActivity { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            
             builder.Entity<Person>().ToTable("Person");
             builder.Entity<RegisteredUser>().ToTable("RegisteredUser");
             builder.Entity<PremiumUser>().ToTable("PremiumUser");
@@ -43,6 +45,18 @@ namespace MyNutritionist.Data
             builder.Entity<Leaderboard>().ToTable("Leaderboard");
             builder.Entity<PhysicalActivity>().ToTable("PhysicalActivity");
             builder.Entity<Nutritionist>().ToTable("Nutritionist");
+
+            builder.Entity<ApplicationUser>()
+                .Property(e => e.FullName);
+            builder.Entity<ApplicationUser>()
+                .Property(e => e.UserId);
+            builder.Entity<ApplicationUser>()
+                .Property(e => e.EmailAddress);
+            builder.Entity<ApplicationUser>()
+                .Property(e => e.NutriPassword);
+            builder.Entity<ApplicationUser>()
+                .Property(e => e.NutriUsername);
+
             base.OnModelCreating(builder);
 
         }
