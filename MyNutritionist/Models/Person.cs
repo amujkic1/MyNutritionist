@@ -21,7 +21,7 @@ namespace MyNutritionist.Models
         [RegularExpression(@"^(?=.*[A-Z])(?=.*\W).*$", ErrorMessage = "The Password field must contain at least one uppercase letter and one non-letter character.")]
         [StringLength(100, MinimumLength = 8, ErrorMessage = "The Password field must be between 8 and 100 characters long.")]
         public string Password { get; set; }
-            
+
         public Person() { }
 
         /*public Person(int pID, string name, string email, string username, string password)

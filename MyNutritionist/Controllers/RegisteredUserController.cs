@@ -249,7 +249,7 @@ namespace MyNutritionist.Controllers
                     .FirstOrDefaultAsync(kr => kr.Username == korisnikSaNalogom.Username && kr.Password == korisnikSaNalogom.Password);
             if (korisnik != null)
                 return RedirectToAction("Index", "RegisteredUser");
-            else return View("Create");
+            else return View("login");
             
 
         }
