@@ -12,8 +12,8 @@ using MyNutritionist.Data;
 namespace MyNutritionist.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230605110619_migracijaidentity1")]
-    partial class migracijaidentity1
+    [Migration("20230605111033_migracijaidentity2")]
+    partial class migracijaidentity2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
