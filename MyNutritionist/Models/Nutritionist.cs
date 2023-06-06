@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNutritionist.Models
 {
-    public class Nutritionist : Person
+    public class Nutritionist : ApplicationUser
     {
-
         public Nutritionist(): base() {
         }
     }

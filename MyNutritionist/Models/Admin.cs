@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MyNutritionist.Models
 {
 
-    public class Admin: Person
+    public class Admin: ApplicationUser
     {
         public Admin() { }
     }

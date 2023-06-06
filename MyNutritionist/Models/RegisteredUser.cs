@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNutritionist.Models
 {
-    public class RegisteredUser: Person
+    public class RegisteredUser: ApplicationUser
     {
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Invalid input")]
 
