@@ -240,18 +240,14 @@ namespace MyNutritionist.Controllers
         {
             return View("login");
         }
-        public async Task<IActionResult> Loginn([Bind("Password,Username")] RegisteredUser korisnikSaNalogom)
+        public async Task<IActionResult> Loginn([Bind("Password,Username")] RegisteredUser registeredUser)
         {
-            
-            
-                // Provjeri podatke za prijavu u bazi podataka
-                Person korisnik = await _context.Person
-                    .FirstOrDefaultAsync(kr => kr.Username == korisnikSaNalogom.Username && kr.Password == korisnikSaNalogom.Password);
-            if (korisnik != null)
+            Person user = await _context.Person
+                    .FirstOrDefaultAsync(u => u.Username == registeredUser.Username && u.Password == registeredUser.Password);
+            if (user != null)
                 return RedirectToAction("Index", "RegisteredUser");
-            else return View("Create");
-            
-
+            else return View("login");
         }
+
     }
 }
