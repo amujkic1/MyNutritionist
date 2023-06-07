@@ -170,11 +170,29 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private ApplicationUser CreateUser()
+        private RegisteredUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<ApplicationUser>();
+                var user = Activator.CreateInstance<RegisteredUser>();
+                user.FullName = Input.Name;
+                user.City = Input.City;
+
+                double tryParsedValue = 0;
+                double.TryParse(Input.Height, out tryParsedValue);
+                user.Height = tryParsedValue;
+                double.TryParse(Input.Weight, out tryParsedValue);
+                user.Weight = tryParsedValue;
+                int tryParsed = 0;
+                int.TryParse(Input.Age, out tryParsed);
+                user.Age = tryParsed;
+                user.NutriUsername = Input.Username;
+                user.NutriPassword = Input.Password;
+
+                return user;
+
+
+                return Activator.CreateInstance<RegisteredUser>();
             }
             catch
             {
