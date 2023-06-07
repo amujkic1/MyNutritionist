@@ -257,19 +257,6 @@ namespace MyNutritionist.Migrations
                     b.ToTable("Card", (string)null);
                 });
 
-            modelBuilder.Entity("MyNutritionist.Models.DailyDiet", b =>
-                {
-                    b.Property<int>("DDID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DDID"), 1L, 1);
-
-                    b.HasKey("DDID");
-
-                    b.ToTable("DailyDiet", (string)null);
-                });
-
             modelBuilder.Entity("MyNutritionist.Models.DietPlan", b =>
                 {
                     b.Property<int>("DPID")
@@ -349,31 +336,13 @@ namespace MyNutritionist.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LID"), 1L, 1);
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("LID");
 
                     b.ToTable("Leaderboard", (string)null);
-                });
-
-            modelBuilder.Entity("MyNutritionist.Models.PhysicalActivity", b =>
-                {
-                    b.Property<int>("PAID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PAID"), 1L, 1);
-
-                    b.Property<int>("ActivityType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NumberOfPoints")
-                        .HasColumnType("int");
-
-                    b.HasKey("PAID");
-
-                    b.ToTable("PhysicalActivity", (string)null);
                 });
 
             modelBuilder.Entity("MyNutritionist.Models.Progress", b =>
@@ -393,13 +362,17 @@ namespace MyNutritionist.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PUId")
-                        .HasColumnType("int");
+                    b.Property<string>("PremiumUserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("RId")
-                        .HasColumnType("int");
+                    b.Property<string>("RegisteredUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("PRId");
+
+                    b.HasIndex("PremiumUserId");
+
+                    b.HasIndex("RegisteredUserId");
 
                     b.ToTable("Progress", (string)null);
                 });
@@ -412,7 +385,7 @@ namespace MyNutritionist.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RID"), 1L, 1);
 
-                    b.Property<int>("DietPlanID")
+                    b.Property<int?>("DietPlanDPID")
                         .HasColumnType("int");
 
                     b.Property<string>("NutritionistId")
@@ -427,28 +400,11 @@ namespace MyNutritionist.Migrations
 
                     b.HasKey("RID");
 
+                    b.HasIndex("DietPlanDPID");
+
                     b.HasIndex("NutritionistId");
 
                     b.ToTable("Recipe", (string)null);
-                });
-
-            modelBuilder.Entity("MyNutritionist.Models.Recipe_Ingredient", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RecipeIngredient", (string)null);
                 });
 
             modelBuilder.Entity("MyNutritionist.Models.Admin", b =>
@@ -490,17 +446,21 @@ namespace MyNutritionist.Migrations
                     b.Property<double>("Height")
                         .HasColumnType("float");
 
-                    b.Property<int>("LeaderboardId")
+                    b.Property<int?>("LeaderboardLID")
                         .HasColumnType("int");
 
-                    b.Property<int>("NutritionistId")
-                        .HasColumnType("int");
+                    b.Property<string>("NutritionistId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Points")
                         .HasColumnType("int");
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
+
+                    b.HasIndex("LeaderboardLID");
+
+                    b.HasIndex("NutritionistId");
 
                     b.ToTable("PremiumUser", (string)null);
                 });
@@ -600,8 +560,27 @@ namespace MyNutritionist.Migrations
                     b.Navigation("Nutritionist");
                 });
 
+            modelBuilder.Entity("MyNutritionist.Models.Progress", b =>
+                {
+                    b.HasOne("MyNutritionist.Models.PremiumUser", "PremiumUser")
+                        .WithMany()
+                        .HasForeignKey("PremiumUserId");
+
+                    b.HasOne("MyNutritionist.Models.RegisteredUser", "RegisteredUser")
+                        .WithMany()
+                        .HasForeignKey("RegisteredUserId");
+
+                    b.Navigation("PremiumUser");
+
+                    b.Navigation("RegisteredUser");
+                });
+
             modelBuilder.Entity("MyNutritionist.Models.Recipe", b =>
                 {
+                    b.HasOne("MyNutritionist.Models.DietPlan", null)
+                        .WithMany("Recipes")
+                        .HasForeignKey("DietPlanDPID");
+
                     b.HasOne("MyNutritionist.Models.Nutritionist", "Nutritionist")
                         .WithMany()
                         .HasForeignKey("NutritionistId");
@@ -634,6 +613,14 @@ namespace MyNutritionist.Migrations
                         .HasForeignKey("MyNutritionist.Models.PremiumUser", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.HasOne("MyNutritionist.Models.Leaderboard", null)
+                        .WithMany("Users")
+                        .HasForeignKey("LeaderboardLID");
+
+                    b.HasOne("MyNutritionist.Models.Nutritionist", null)
+                        .WithMany("PremiumUsers")
+                        .HasForeignKey("NutritionistId");
                 });
 
             modelBuilder.Entity("MyNutritionist.Models.RegisteredUser", b =>
@@ -643,6 +630,21 @@ namespace MyNutritionist.Migrations
                         .HasForeignKey("MyNutritionist.Models.RegisteredUser", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MyNutritionist.Models.DietPlan", b =>
+                {
+                    b.Navigation("Recipes");
+                });
+
+            modelBuilder.Entity("MyNutritionist.Models.Leaderboard", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("MyNutritionist.Models.Nutritionist", b =>
+                {
+                    b.Navigation("PremiumUsers");
                 });
 #pragma warning restore 612, 618
         }

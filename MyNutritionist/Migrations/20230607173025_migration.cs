@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyNutritionist.Migrations
 {
-    public partial class foreignkeysadded2 : Migration
+    public partial class migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,18 +53,6 @@ namespace MyNutritionist.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DailyDiet",
-                columns: table => new
-                {
-                    DDID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DailyDiet", x => x.DDID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Ingredient",
                 columns: table => new
                 {
@@ -93,57 +81,12 @@ namespace MyNutritionist.Migrations
                 columns: table => new
                 {
                     LID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Leaderboard", x => x.LID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PhysicalActivity",
-                columns: table => new
-                {
-                    PAID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ActivityType = table.Column<int>(type: "int", nullable: false),
-                    Duration = table.Column<int>(type: "int", nullable: false),
-                    NumberOfPoints = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PhysicalActivity", x => x.PAID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Progress",
-                columns: table => new
-                {
-                    PRId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    BurnedCalories = table.Column<int>(type: "int", nullable: false),
-                    ConsumedCalories = table.Column<int>(type: "int", nullable: false),
-                    RId = table.Column<int>(type: "int", nullable: false),
-                    PUId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Progress", x => x.PRId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RecipeIngredient",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RecipeId = table.Column<int>(type: "int", nullable: false),
-                    IngredientId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RecipeIngredient", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -287,31 +230,6 @@ namespace MyNutritionist.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PremiumUser",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LeaderboardId = table.Column<int>(type: "int", nullable: false),
-                    NutritionistId = table.Column<int>(type: "int", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: false),
-                    Weight = table.Column<double>(type: "float", nullable: false),
-                    Height = table.Column<double>(type: "float", nullable: false),
-                    Points = table.Column<int>(type: "int", nullable: false),
-                    AspUserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PremiumUser", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PremiumUser_AspNetUsers_Id",
-                        column: x => x.Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RegisteredUser",
                 columns: table => new
                 {
@@ -353,6 +271,41 @@ namespace MyNutritionist.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PremiumUser",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Weight = table.Column<double>(type: "float", nullable: false),
+                    Height = table.Column<double>(type: "float", nullable: false),
+                    Points = table.Column<int>(type: "int", nullable: false),
+                    AspUserId = table.Column<int>(type: "int", nullable: false),
+                    LeaderboardLID = table.Column<int>(type: "int", nullable: true),
+                    NutritionistId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PremiumUser", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PremiumUser_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_PremiumUser_Leaderboard_LeaderboardLID",
+                        column: x => x.LeaderboardLID,
+                        principalTable: "Leaderboard",
+                        principalColumn: "LID");
+                    table.ForeignKey(
+                        name: "FK_PremiumUser_Nutritionist_NutritionistId",
+                        column: x => x.NutritionistId,
+                        principalTable: "Nutritionist",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Recipe",
                 columns: table => new
                 {
@@ -361,11 +314,16 @@ namespace MyNutritionist.Migrations
                     RecipeLink = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NutritionistId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TotalCalories = table.Column<int>(type: "int", nullable: false),
-                    DietPlanID = table.Column<int>(type: "int", nullable: false)
+                    DietPlanDPID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Recipe", x => x.RID);
+                    table.ForeignKey(
+                        name: "FK_Recipe_DietPlan_DietPlanDPID",
+                        column: x => x.DietPlanDPID,
+                        principalTable: "DietPlan",
+                        principalColumn: "DPID");
                     table.ForeignKey(
                         name: "FK_Recipe_Nutritionist_NutritionistId",
                         column: x => x.NutritionistId,
@@ -389,6 +347,33 @@ namespace MyNutritionist.Migrations
                         name: "FK_Card_PremiumUser_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "PremiumUser",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Progress",
+                columns: table => new
+                {
+                    PRId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BurnedCalories = table.Column<int>(type: "int", nullable: false),
+                    ConsumedCalories = table.Column<int>(type: "int", nullable: false),
+                    RegisteredUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PremiumUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Progress", x => x.PRId);
+                    table.ForeignKey(
+                        name: "FK_Progress_PremiumUser_PremiumUserId",
+                        column: x => x.PremiumUserId,
+                        principalTable: "PremiumUser",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Progress_RegisteredUser_RegisteredUserId",
+                        column: x => x.RegisteredUserId,
+                        principalTable: "RegisteredUser",
                         principalColumn: "Id");
                 });
 
@@ -442,6 +427,31 @@ namespace MyNutritionist.Migrations
                 column: "NutritionistId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PremiumUser_LeaderboardLID",
+                table: "PremiumUser",
+                column: "LeaderboardLID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PremiumUser_NutritionistId",
+                table: "PremiumUser",
+                column: "NutritionistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Progress_PremiumUserId",
+                table: "Progress",
+                column: "PremiumUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Progress_RegisteredUserId",
+                table: "Progress",
+                column: "RegisteredUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recipe_DietPlanDPID",
+                table: "Recipe",
+                column: "DietPlanDPID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Recipe_NutritionistId",
                 table: "Recipe",
                 column: "NutritionistId");
@@ -471,19 +481,7 @@ namespace MyNutritionist.Migrations
                 name: "Card");
 
             migrationBuilder.DropTable(
-                name: "DailyDiet");
-
-            migrationBuilder.DropTable(
-                name: "DietPlan");
-
-            migrationBuilder.DropTable(
                 name: "Ingredient");
-
-            migrationBuilder.DropTable(
-                name: "Leaderboard");
-
-            migrationBuilder.DropTable(
-                name: "PhysicalActivity");
 
             migrationBuilder.DropTable(
                 name: "Progress");
@@ -492,16 +490,19 @@ namespace MyNutritionist.Migrations
                 name: "Recipe");
 
             migrationBuilder.DropTable(
-                name: "RecipeIngredient");
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "PremiumUser");
 
             migrationBuilder.DropTable(
                 name: "RegisteredUser");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "DietPlan");
 
             migrationBuilder.DropTable(
-                name: "PremiumUser");
+                name: "Leaderboard");
 
             migrationBuilder.DropTable(
                 name: "Nutritionist");

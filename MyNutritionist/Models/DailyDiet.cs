@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNutritionist.Models
 {
+    [NotMapped]
     public class DailyDiet
     {
-        [Key]
-        public int DDID { get; set; }
+        public ICollection<KeyValuePair<Ingredient, Double>> FoodIntake { get; set; }
         public DailyDiet() { }
 
     }

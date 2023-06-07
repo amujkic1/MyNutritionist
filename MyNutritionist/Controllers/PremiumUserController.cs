@@ -45,30 +45,7 @@ namespace MyNutritionist.Controllers
 
             return View(premiumUser);
         }
-
-        // GET: PremiumUser/Create
-        public IActionResult Create()
-        {
-            //ViewData["NutritionistId"] = new SelectList(_context.Nutritionist, "PID", "PID");
-            return View();
-        }
-
-        // POST: PremiumUser/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AccountNumber,LeaderboardId,NutritionistId,City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] PremiumUser premiumUser)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(premiumUser);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["NutritionistId"] = new SelectList(_context.Nutritionist, "PID", "PID", premiumUser.NutritionistId);
-            return View(premiumUser);
-        }
+        
 
         // GET: PremiumUser/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -119,7 +96,7 @@ namespace MyNutritionist.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["NutritionistId"] = new SelectList(_context.Nutritionist, "PID", "PID", premiumUser.NutritionistId);
+
             return View(premiumUser);
         }
 

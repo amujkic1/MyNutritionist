@@ -7,11 +7,8 @@ namespace MyNutritionist.Models
     {
         public string? AccountNumber { get; set; }
 
-        [ForeignKey("Leaderboard")]
-        public int LeaderboardId { get; set; }
-
-        [ForeignKey("Nutritionist")]
-        public int NutritionistId { get; set; }
+       /* [ForeignKey("Nutritionist")]
+        public int NutritionistId { get; set; }*/
         public string? City { get; set; }
         public int Age { get; set; }
         public double Weight { get; set; }

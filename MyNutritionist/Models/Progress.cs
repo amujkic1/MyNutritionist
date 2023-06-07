@@ -11,11 +11,9 @@ namespace MyNutritionist.Models
         public int BurnedCalories { get; set; }  
         public int ConsumedCalories { get; set; }
 
-        [ForeignKey("RegisteredUser")]
-        public int RId { get; set; }
+        public RegisteredUser RegisteredUser { get; set; }
 
-        [ForeignKey("PremiumUser")]
-        public int PUId { get; set; }
+        public PremiumUser PremiumUser { get; set; }
         public Progress() { }
 
     }

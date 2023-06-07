@@ -7,6 +7,8 @@ namespace MyNutritionist.Models
     {
         [ForeignKey("ApplicationUser")]
         public int AspUserId { get; set; }
+
+        public ICollection<PremiumUser> PremiumUsers { get; set; }
         public Nutritionist(): base() {
         }
     }

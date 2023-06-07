@@ -10,6 +10,8 @@ namespace MyNutritionist.Models
         public Nutritionist Nutritionist { get; set; }
         public int TotalCalories { get; set; }
         
+        public ICollection<Recipe> Recipes { get; set; }
+
         public DietPlan() {
            
         }

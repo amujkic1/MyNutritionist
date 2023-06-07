@@ -8,7 +8,8 @@ namespace MyNutritionist.Models
     {
         [Key]
         public int LID { get; set; }
-        //public List<ApplicationUser> Users { get; set; }
+        public String City { get; set; }
+        public ICollection<PremiumUser> Users { get; set; }
         public Leaderboard() { }
     }
 }

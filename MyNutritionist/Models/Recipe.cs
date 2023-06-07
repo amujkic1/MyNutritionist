@@ -11,8 +11,7 @@ namespace MyNutritionist.Models
         public Nutritionist Nutritionist { get; set; }
         public int TotalCalories { get; set; }
 
-        [ForeignKey("DietPlan")]
-        public int DietPlanID { get; set; } = 0;
+       
         public Recipe() { }
         /*public Recipe()
         {

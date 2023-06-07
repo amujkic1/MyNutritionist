@@ -18,9 +18,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalCalories)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DietPlanID)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -32,9 +29,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TotalCalories)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DietPlanID)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.RID">Edit</a> |
