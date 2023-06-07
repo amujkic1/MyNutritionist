@@ -100,7 +100,7 @@ namespace MyNutritionist.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] RegisteredUser registeredUser)
+        public async Task<IActionResult> Create([Bind("City,Age,Weight,Height,Points,FullName,Email,NutriUsername,NutriPassword")] RegisteredUser registeredUser)
         {
             if (ModelState.IsValid)
             {
@@ -240,12 +240,14 @@ namespace MyNutritionist.Controllers
         {
             return View("login");
         }
-        public async Task<IActionResult> Loginn([Bind("Password,Username")] RegisteredUser registeredUser)
+        public async Task<IActionResult> Loginn([Bind("NutriPassword,NutriUsername")] ApplicationUser registeredUser)
         {
             ApplicationUser user = await _context.RegisteredUser
                     .FirstOrDefaultAsync(u => u.NutriUsername == registeredUser.NutriUsername && u.NutriPassword == registeredUser.NutriPassword);
-            if (user != null)
+            if (user != null) {
+                //HttpContext.Session.SetString("UserName", user.FullName);
                 return RedirectToAction("Index", "RegisteredUser");
+            }
             else return View("login");
         }
 
