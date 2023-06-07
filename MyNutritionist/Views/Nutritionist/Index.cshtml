@@ -18,7 +18,7 @@
         @{
             // Set up connection string and SQL query
             string connectionString = "Data Source=SQL5110.site4now.net;Initial Catalog=db_a9938d_novabaza;User Id=db_a9938d_novabaza_admin;Password=smarterasp0605";
-            string query = "SELECT Name FROM PremiumUser pu, Person per WHERE pu.pid = per.pid";
+            string query = "SELECT FullName FROM PremiumUser pu, AspNetUsers per WHERE pu.Id = per.Id";
 
             // Connect to the database and execute the query
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -32,7 +32,7 @@
                 // Iterate through the data and generate HTML list items with checkboxes
                 while (reader.Read())
                 {
-                    string itemName = reader["Name"].ToString(); // Replace "ColumnName" with the actual column name in your table
+                    string itemName = reader["FullName"].ToString(); // Replace "ColumnName" with the actual column name in your table
 
                     // Generate list item with checkbox
                     string listItem = $"<li><input type='checkbox' name='selectedItems' value='{index}' /> {itemName}</li>";
