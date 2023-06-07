@@ -15,6 +15,8 @@ namespace MyNutritionist.Models
         [Range(0, 300, ErrorMessage = "The height must be between 0 and 300")]
         public double Height { get; set; }
         public int Points { get; set; }
+        [ForeignKey("ApplicationUser")]
+        public int AspUserId { get; set; }
         public RegisteredUser() { }
     }
 }

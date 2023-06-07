@@ -3,10 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNutritionist.Models
 {
-    [NotMapped]
+    //[NotMapped]
     public class Leaderboard
     {
-        public List<ApplicationUser> Users { get; set; }
+        [Key]
+        public int LID { get; set; }
+        //public List<ApplicationUser> Users { get; set; }
         public Leaderboard() { }
     }
 }

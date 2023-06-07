@@ -14,7 +14,7 @@ namespace MyNutritionist.Data
         {
         }
 
-        public DbSet<Person> Person { get; set; }
+        //public DbSet<Person> Person { get; set; }
         public DbSet<RegisteredUser> RegisteredUser { get; set; }
         public DbSet<PremiumUser> PremiumUser { get; set; }
         public DbSet<Admin> Admin { get; set; }
@@ -31,7 +31,7 @@ namespace MyNutritionist.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             
-            builder.Entity<Person>().ToTable("Person");
+            //builder.Entity<Person>().ToTable("Person");
             builder.Entity<RegisteredUser>().ToTable("RegisteredUser");
             builder.Entity<PremiumUser>().ToTable("PremiumUser");
             builder.Entity<Admin>().ToTable("Admin");

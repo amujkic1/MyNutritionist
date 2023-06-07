@@ -5,6 +5,8 @@ namespace MyNutritionist.Models
 {
     public class Nutritionist : ApplicationUser
     {
+        [ForeignKey("ApplicationUser")]
+        public int AspUserId { get; set; }
         public Nutritionist(): base() {
         }
     }

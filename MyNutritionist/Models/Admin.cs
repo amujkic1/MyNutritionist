@@ -6,6 +6,8 @@ namespace MyNutritionist.Models
 
     public class Admin: ApplicationUser
     {
+        [ForeignKey("ApplicationUser")]
+        public int AspUserId { get; set; }
         public Admin() { }
     }
 }

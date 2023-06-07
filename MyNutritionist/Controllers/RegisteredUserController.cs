@@ -242,8 +242,8 @@ namespace MyNutritionist.Controllers
         }
         public async Task<IActionResult> Loginn([Bind("Password,Username")] RegisteredUser registeredUser)
         {
-            Person user = await _context.Person
-                    .FirstOrDefaultAsync(u => u.Username == registeredUser.NutriUsername && u.Password == registeredUser.NutriPassword);
+            ApplicationUser user = await _context.RegisteredUser
+                    .FirstOrDefaultAsync(u => u.NutriUsername == registeredUser.NutriUsername && u.NutriPassword == registeredUser.NutriPassword);
             if (user != null)
                 return RedirectToAction("Index", "RegisteredUser");
             else return View("login");
