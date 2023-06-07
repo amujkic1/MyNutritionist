@@ -37,7 +37,7 @@ namespace MyNutritionist.Controllers
             }*/
 
             var premiumUser = await _context.PremiumUser
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             /*if (premiumUser == null)
             {
                 return NotFound();
@@ -108,7 +108,7 @@ namespace MyNutritionist.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PremiumUserExists(premiumUser.PID))
+                    if (!PremiumUserExists(premiumUser.Id))
                     {
                         return NotFound();
                     }
@@ -132,7 +132,7 @@ namespace MyNutritionist.Controllers
             }
 
             var premiumUser = await _context.PremiumUser
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (premiumUser == null)
             {
                 return NotFound();
@@ -160,9 +160,9 @@ namespace MyNutritionist.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PremiumUserExists(int id)
+        private bool PremiumUserExists(string id)
         {
-          return (_context.PremiumUser?.Any(e => e.PID == id)).GetValueOrDefault();
+          return (_context.PremiumUser?.Any(e => e.Id.Equals(id))).GetValueOrDefault();
         }
         // GET: PremiumUser/DailyFoodAndActivity/5
         public async Task<IActionResult> PremiumDailyActivityAndFood(int? id)
@@ -175,7 +175,7 @@ namespace MyNutritionist.Controllers
 
         */
             var premiumUser = await _context.PremiumUser
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             /*  if (premiumUser == null)
               {
                   return NotFound();

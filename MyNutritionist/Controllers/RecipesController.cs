@@ -63,7 +63,7 @@ namespace MyNutritionist.Controllers
              
   
                 // Pronađite nutricionista na temelju ID-a
-                var nutritionist = await _context.Nutritionist.FindAsync(recipe.Nutritionist.PID);
+                var nutritionist = await _context.Nutritionist.FindAsync(recipe.Nutritionist.Id);
                 if (nutritionist == null)
                 {
                     return NotFound("Nutritionist not found.");

@@ -4,7 +4,7 @@ namespace MyNutritionist.Models
 {
     public class ApplicationUser: IdentityUser
     {
-        public int UserId { get; set; }
+        public override string Id { get; set; }
         public string? FullName { get; set; }
         public string? EmailAddress { get; set; }
         public string? NutriUsername { get; set; }

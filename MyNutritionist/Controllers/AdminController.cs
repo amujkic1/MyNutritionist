@@ -36,7 +36,7 @@ namespace MyNutritionist.Controllers
             }
 
             var admin = await _context.Admin
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (admin == null)
             {
                 return NotFound();
@@ -88,9 +88,9 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PID,Name,Email,Username,Password")] Admin admin)
+        public async Task<IActionResult> Edit(string id, [Bind("PID,Name,Email,Username,Password")] Admin admin)
         {
-            if (id != admin.PID)
+            if (id != admin.Id)
             {
                 return NotFound();
             }
@@ -104,7 +104,7 @@ namespace MyNutritionist.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AdminExists(admin.PID))
+                    if (!AdminExists(admin.Id))
                     {
                         return NotFound();
                     }
@@ -127,7 +127,7 @@ namespace MyNutritionist.Controllers
             }
 
             var admin = await _context.Admin
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (admin == null)
             {
                 return NotFound();
@@ -155,9 +155,9 @@ namespace MyNutritionist.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AdminExists(int id)
+        private bool AdminExists(string id)
         {
-          return (_context.Admin?.Any(e => e.PID == id)).GetValueOrDefault();
+          return (_context.Admin?.Any(e => e.Id.Equals(id))).GetValueOrDefault();
         }
     }
 }

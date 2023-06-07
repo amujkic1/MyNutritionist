@@ -40,7 +40,7 @@ namespace MyNutritionist.Controllers
 
         */
             var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             /*  if (registeredUser == null)
               {
                   return NotFound();
@@ -59,7 +59,7 @@ namespace MyNutritionist.Controllers
 
         */
             var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             /*  if (registeredUser == null)
               {
                   return NotFound();
@@ -79,7 +79,7 @@ namespace MyNutritionist.Controllers
 
         */
             var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             /*  if (registeredUser == null)
               {
                   return NotFound();
@@ -104,7 +104,7 @@ namespace MyNutritionist.Controllers
         {
             if (ModelState.IsValid)
             {
-                var existingUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Username == registeredUser.Username);
+                var existingUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.NutriUsername == registeredUser.NutriUsername);
 
                 if (existingUser == null)
                 {
@@ -146,9 +146,9 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] RegisteredUser registeredUser)
+        public async Task<IActionResult> Edit(string id, [Bind("City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] RegisteredUser registeredUser)
         {
-            if (id != registeredUser.PID)
+            if (id != registeredUser.Id)
             {
                 return NotFound();
             }
@@ -162,7 +162,7 @@ namespace MyNutritionist.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RegisteredUserExists(registeredUser.PID))
+                    if (!RegisteredUserExists(registeredUser.Id))
                     {
                         return NotFound();
                     }
@@ -185,7 +185,7 @@ namespace MyNutritionist.Controllers
             }
 
             var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (registeredUser == null)
             {
                 return NotFound();
@@ -213,9 +213,9 @@ namespace MyNutritionist.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RegisteredUserExists(int id)
+        private bool RegisteredUserExists(string id)
         {
-            return (_context.RegisteredUser?.Any(e => e.PID == id)).GetValueOrDefault();
+            return (_context.RegisteredUser?.Any(e => e.Id.Equals(id))).GetValueOrDefault();
         }
         // GET: RegisteredUser/DailyFoodAndActivity/5
         public async Task<IActionResult> DailyFoodAndActivity(int? id)
@@ -228,7 +228,7 @@ namespace MyNutritionist.Controllers
 
         */
             var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             /*  if (registeredUser == null)
               {
                   return NotFound();
@@ -243,7 +243,7 @@ namespace MyNutritionist.Controllers
         public async Task<IActionResult> Loginn([Bind("Password,Username")] RegisteredUser registeredUser)
         {
             Person user = await _context.Person
-                    .FirstOrDefaultAsync(u => u.Username == registeredUser.Username && u.Password == registeredUser.Password);
+                    .FirstOrDefaultAsync(u => u.Username == registeredUser.NutriUsername && u.Password == registeredUser.NutriPassword);
             if (user != null)
                 return RedirectToAction("Index", "RegisteredUser");
             else return View("login");

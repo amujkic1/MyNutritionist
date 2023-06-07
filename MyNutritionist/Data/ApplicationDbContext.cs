@@ -49,7 +49,7 @@ namespace MyNutritionist.Data
             builder.Entity<ApplicationUser>()
                 .Property(e => e.FullName);
             builder.Entity<ApplicationUser>()
-                .Property(e => e.UserId);
+                .Property(e => e.Id);
             builder.Entity<ApplicationUser>()
                 .Property(e => e.EmailAddress);
             builder.Entity<ApplicationUser>()

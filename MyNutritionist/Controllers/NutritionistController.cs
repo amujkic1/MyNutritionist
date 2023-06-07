@@ -38,7 +38,7 @@ namespace MyNutritionist.Controllers
             }
 
             var nutritionist = await _context.Nutritionist
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (nutritionist == null)
             {
                 return NotFound();
@@ -92,7 +92,7 @@ namespace MyNutritionist.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PID,Name,Email,Username,Password")] Nutritionist nutritionist)
         {
-            if (id != nutritionist.PID)
+            if (!id.Equals(nutritionist.Id))
             {
                 return NotFound();
             }
@@ -106,7 +106,7 @@ namespace MyNutritionist.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NutritionistExists(nutritionist.PID))
+                    if (!NutritionistExists(nutritionist.Id))
                     {
                         return NotFound();
                     }
@@ -129,7 +129,7 @@ namespace MyNutritionist.Controllers
             }
 
             var nutritionist = await _context.Nutritionist
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (nutritionist == null)
             {
                 return NotFound();
@@ -157,9 +157,9 @@ namespace MyNutritionist.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NutritionistExists(int id)
+        private bool NutritionistExists(string id)
         {
-          return (_context.Nutritionist?.Any(e => e.PID == id)).GetValueOrDefault();
+          return (_context.Nutritionist?.Any(e => e.Id.Equals(id))).GetValueOrDefault();
         }
         // GET: Nutritionist/AddRecipe/5
         public async Task<IActionResult> AddRecipe(int? id)
@@ -172,7 +172,7 @@ namespace MyNutritionist.Controllers
 
         */
             var nutritionist = await _context.Nutritionist
-                .FirstOrDefaultAsync(m => m.PID == id);
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             /*  if (nutritionist == null)
               {
                   return NotFound();
