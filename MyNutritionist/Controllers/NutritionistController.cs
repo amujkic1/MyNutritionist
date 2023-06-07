@@ -58,7 +58,7 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PID,Name,Email,Username,Password")] Nutritionist nutritionist)
+        public async Task<IActionResult> Create([Bind("Id,FullName,Email,NutriUsername,NutriPassword")] Nutritionist nutritionist)
         {
             if (ModelState.IsValid)
             {
