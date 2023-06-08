@@ -154,11 +154,10 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    user.EmailConfirmed = true;
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToPage("/Home/Index");
+                    var result1 = await _userManager.UpdateAsync(user);
                 }
                 foreach (var error in result.Errors)
                 {
@@ -188,7 +187,7 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
                 user.Age = tryParsed;
                 user.NutriUsername = Input.Username;
                 user.NutriPassword = Input.Password;
-
+                //user.EmailConfirmed = true;
                 return user;
 
 
