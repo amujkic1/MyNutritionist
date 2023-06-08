@@ -11,7 +11,7 @@ using MyNutritionist.Models;
 
 namespace MyNutritionist.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class RegisteredUserController : Controller
     {
         private readonly ApplicationDbContext _context;

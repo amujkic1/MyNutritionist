@@ -138,11 +138,11 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
                     }
                     else if(roles.Contains("RegisteredUser"))
                     {
-                        returnUrl = Url.Content("~/RegisteredUser/RegisteredUser");
+                        returnUrl = Url.Content("~/RegisteredUser/Index");
                     }
                     else if (roles.Contains("PremiumUser"))
                     {
-                        returnUrl = Url.Content("~/PremiumUser/PremiumUser");
+                        returnUrl = Url.Content("~/PremiumUser/Index");
                     }
 
                     _logger.LogInformation("User logged in.");
