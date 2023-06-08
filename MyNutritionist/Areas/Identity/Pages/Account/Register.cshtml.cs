@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using MyNutritionist.Data;
 using MyNutritionist.Models;
 
 namespace MyNutritionist.Areas.Identity.Pages.Account
@@ -30,13 +31,15 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +47,7 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -152,6 +156,7 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "RegisteredUser");
                     _logger.LogInformation("User created a new account with password.");
 
                     user.EmailConfirmed = true;
@@ -174,6 +179,7 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
             try
             {
                 var user = Activator.CreateInstance<RegisteredUser>();
+                
                 user.FullName = Input.Name;
                 user.City = Input.City;
 

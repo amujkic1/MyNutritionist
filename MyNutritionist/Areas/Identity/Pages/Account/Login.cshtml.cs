@@ -125,8 +125,26 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByNameAsync(Input.Username);
+                    var roles = await _userManager.GetRolesAsync(user);
 
-                    returnUrl ??= Url.Content("~/RegisteredUser/Index");
+                    if (roles.Contains("Administrator"))
+                    {
+                        returnUrl = Url.Content("~/Administrator/Administrator");
+                    }
+                    else if (roles.Contains("Nutritionist"))
+                    {
+                        returnUrl = Url.Content("~/Nutritionist/Nutritionist");
+                    }
+                    else if(roles.Contains("RegisteredUser"))
+                    {
+                        returnUrl = Url.Content("~/RegisteredUser/RegisteredUser");
+                    }
+                    else if (roles.Contains("PremiumUser"))
+                    {
+                        returnUrl = Url.Content("~/PremiumUser/PremiumUser");
+                    }
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
