@@ -130,11 +130,11 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
 
                     if (roles.Contains("Administrator"))
                     {
-                        returnUrl = Url.Content("~/Administrator/Administrator");
+                        returnUrl = Url.Content("~/Administrator/Index");
                     }
                     else if (roles.Contains("Nutritionist"))
                     {
-                        returnUrl = Url.Content("~/Nutritionist/Nutritionist");
+                        returnUrl = Url.Content("~/Nutritionist/Index");
                     }
                     else if(roles.Contains("RegisteredUser"))
                     {
