@@ -14,4 +14,10 @@ MyNutritionist je aplikacija koja omogućava korisniku unos dnevne ishrane, te r
 - Nutricionist
 - Premium korisnik
 - Registrovani korisnik
-- Sistem za kartično plaćanje
+
+## Članovi tima
+* Amina Bajrić
+* Edna Bašić
+* Esma Bajramović
+* Amna Hodžić
+* Ajna Mujkić
