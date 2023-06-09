@@ -37,9 +37,8 @@ namespace MyNutritionist.Controllers
         // GET: RegisteredUser/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-
             /*
-            if (id == null || _context.RegisteredUser == null)
+                        if (id == null || _context.RegisteredUser == null)
             {
                 return NotFound();
             }
@@ -48,10 +47,11 @@ namespace MyNutritionist.Controllers
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-            /*  if (registeredUser == null)
+           
+              if (registeredUser == null)
               {
                   return NotFound();
-              }*/
+              }
 
             return View(registeredUser);
         }
