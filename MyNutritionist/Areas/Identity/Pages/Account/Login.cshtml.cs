@@ -159,7 +159,7 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "poludicu");
+                    ModelState.AddModelError(string.Empty, "Incorrect username or password");
                     return Page();
                 }
             }
