@@ -1,4 +1,4 @@
-# OOAD_projekat
+# MyNutritionist
 ## O aplikaciji
 MyNutritionist je aplikacija koja omogućava korisniku unos dnevne ishrane, te računanje unesenih kalorija na osnovu unesenih podataka. Pored toga, omogućeno je i mnoštvo drugih opcija, kao što je kreiranje novog korisničkog računa, praćenje napretka, informacije o nutritivnim vrijednostima određenih namirnica. Korisniku je pružena mogućnost dodjeljivanja nutricioniste koji prati njegovu ishranu, savjetuje ga i izrađuje plan ishrane na osnovu njegovih rezultata, pod uslovom da korisnik uplati novac, te postane premium korisnik. Premium korisnicima će biti omogućeno praćenje rezultata drugih premium korisnika iz istog grada. Personalizirani recepti olakšavaju korisniku postizanje cilja unosa broja kalorija.
 
@@ -16,8 +16,8 @@ MyNutritionist je aplikacija koja omogućava korisniku unos dnevne ishrane, te r
 - Registrovani korisnik
 
 ## Članovi tima
-* Amina Bajrić
-* Edna Bašić
-* Esma Bajramović
-* Amna Hodžić
-* Ajna Mujkić
+* [Esma Bajramović](https://github.com/ebajramovi3) 
+* [Amina Bajrić](https://github.com/abajric2)
+* [Edna Bašić](https://github.com/Edna1010)
+* [Amna Hodžić](https://github.com/hodzicc)
+* [Ajna Mujkić](https://github.com/amujkic1)
