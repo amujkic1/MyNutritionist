@@ -1,5 +1,5 @@
 ﻿@using Microsoft.Data.SqlClient;
-@model IEnumerable<MyNutritionist.Models.Nutritionist>
+@model IEnumerable<MyNutritionist.Models.ApplicationUser>
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -14,37 +14,7 @@
 -->
 
 <form>
-    <ul class="premium-list">
-        @{
-            // Set up connection string and SQL query
-            string connectionString = "Data Source=SQL5110.site4now.net;Initial Catalog=db_a9938d_novabaza;User Id=db_a9938d_novabaza_admin;Password=smarterasp0605";
-            string query = "SELECT FullName FROM PremiumUser pu, AspNetUsers per WHERE pu.Id = per.Id";
-
-            // Connect to the database and execute the query
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                int index = 0; // Index counter
-
-                // Iterate through the data and generate HTML list items with checkboxes
-                while (reader.Read())
-                {
-                    string itemName = reader["FullName"].ToString(); // Replace "ColumnName" with the actual column name in your table
-
-                    // Generate list item with checkbox
-                    string listItem = $"<li><input type='checkbox' name='selectedItems' value='{index}' /> {itemName}</li>";
-                    @Html.Raw(listItem)
-
-                    index++;
-                }
-
-                reader.Close();
-            }
-        }
-    </ul>
+    
 
     <div class="row">
         <div class="col-md-8 offset-md-2">

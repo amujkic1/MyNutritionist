@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNutritionist.Models
 {
-    //[NotMapped]
     public class Leaderboard
     {
         [Key]

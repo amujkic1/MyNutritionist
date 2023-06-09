@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,18 +16,27 @@ namespace MyNutritionist.Controllers
     public class NutritionistController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public NutritionistController(ApplicationDbContext context)
+        public NutritionistController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Nutritionist
         public async Task<IActionResult> Index()
         {
-              return _context.Nutritionist != null ? 
-                          View(await _context.Nutritionist.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Nutritionist'  is null.");
+            var premiumUsers = _userManager.GetUsersInRoleAsync("PremiumUser").Result;
+            var idsOfPremiumUsers = premiumUsers.Select(u => u.Id);
+            var users = premiumUsers.OfType<ApplicationUser>();
+
+
+            return View(users);
+
+            /*return _context.Nutritionist != null ? 
+                        View(await _context.Nutritionist.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.Nutritionist'  is null.");*/
         }
 
         // GET: Nutritionist/Details/5
@@ -48,6 +58,7 @@ namespace MyNutritionist.Controllers
         }
 
         // GET: Nutritionist/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -58,12 +69,15 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FullName,Email,NutriUsername,NutriPassword")] Nutritionist nutritionist)
+        public async Task<IActionResult> Create([Bind("Id,FullName,Email,NutriUsername,NutriPassword")] ApplicationUser nutritionist)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(nutritionist);
                 await _context.SaveChangesAsync();
+                nutritionist.EmailConfirmed = true;
+                await _userManager.AddToRoleAsync(nutritionist, "Nutritionist");
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(nutritionist);
