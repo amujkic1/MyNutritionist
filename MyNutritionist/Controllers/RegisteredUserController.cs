@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,14 @@ namespace MyNutritionist.Controllers
     public class RegisteredUserController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private UserManager<ApplicationUser> _userManager;
 
-        public RegisteredUserController(ApplicationDbContext context)
+        public RegisteredUserController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
         // GET: RegisteredUser
@@ -32,6 +37,7 @@ namespace MyNutritionist.Controllers
         // GET: RegisteredUser/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             /*
             if (id == null || _context.RegisteredUser == null)
             {
@@ -39,8 +45,9 @@ namespace MyNutritionist.Controllers
             }
 
         */
+            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
             /*  if (registeredUser == null)
               {
                   return NotFound();
