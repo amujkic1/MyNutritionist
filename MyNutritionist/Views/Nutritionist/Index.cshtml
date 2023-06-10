@@ -1,4 +1,4 @@
-﻿@using Microsoft.Data.SqlClient;
+﻿﻿@using Microsoft.Data.SqlClient;
 @model IEnumerable<MyNutritionist.Models.ApplicationUser>
 
 @{
@@ -14,17 +14,18 @@
 -->
 
 <form>
-    
+
 
     <div class="row">
         <div class="col-md-8 offset-md-2">
 
             <table class="table">
                 <thead>
-                    <tr class="text-center">
+                    <tr class="text-lg-start">
+                        <th>Profile picture</th>
                         <th>@Html.DisplayNameFor(model => model.FullName)</th>
                         <th>@Html.DisplayNameFor(model => model.Email)</th>
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                         {
                             <th>Actions</th>
                         }
@@ -35,7 +36,7 @@
                     {
                         <tr>
                             <td class="align-middle">
-                                <img class="rounded-circle" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Cat_November_2010-1a.jpg/800px-Cat_November_2010-1a.jpg" style="max-width: 150px" />
+                                <img class="rounded-circle" src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHVwcHl8ZW58MHx8MHx8fDA%3D&w=1000&q=80" style="max-width: 100px" />
                             </td>
                             <td class="align-middle">
                                 @Html.DisplayFor(modelItem => item.FullName)
@@ -60,5 +61,5 @@
 
         </div>
     </div>
-    
-    </form>
+
+</form>
