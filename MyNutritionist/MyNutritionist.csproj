@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\PremiumUser\Leaderboard.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Views\Home\home.PNG" />
   </ItemGroup>
 
@@ -49,7 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Views\PremiumUser\Leaderboard.cshtml" />
+    <Content Update="Views\PremiumUser\Leaderboard.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

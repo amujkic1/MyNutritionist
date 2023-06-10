@@ -169,6 +169,8 @@ namespace MyNutritionist.Controllers
 
             return View(premiumUser);
         }
+
+        [ActionName("Leaderboard")]
         // GET: PremiumUser/Leaderboard
         public async Task<IActionResult> Leaderboard()
         {
