@@ -163,6 +163,10 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var result1 = await _userManager.UpdateAsync(user);
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    TempData["id"] = user.Id;
+                    return RedirectToPage("/RegisteredUser/Index");
                 }
                 foreach (var error in result.Errors)
                 {
