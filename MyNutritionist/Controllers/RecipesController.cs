@@ -58,7 +58,7 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RID,RecipeLink,TotalCalories,DietPlanID")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("RID,RecipeLink,TotalCalories,DietPlanDPID")] Recipe recipe)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace MyNutritionist.Controllers
 
                 // Povežite nutricionista s receptom
                 recipe.Nutritionist = nutritionist;
-
+                
                 // Dodajte recept u kontekst i spremite promjene
                 _context.Add(recipe);
                 await _context.SaveChangesAsync();
