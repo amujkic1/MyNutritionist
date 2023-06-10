@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\PremiumUser\Leaderboard.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Views\Home\home.PNG" />
   </ItemGroup>
 
@@ -34,6 +38,18 @@
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\PremiumUser\Leaderboard.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\PremiumUser\Leaderboard.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\PremiumUser\Leaderboard.cshtml" />
   </ItemGroup>
 
 </Project>
