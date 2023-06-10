@@ -8,6 +8,7 @@ namespace MyNutritionist.Models
         public int CId { get; set; }
         public int CardNumber { get; set; }
         public PremiumUser Owner { get; set; }
+        public double Balance { get; set; }
         public Card() { }
 
     }
