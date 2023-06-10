@@ -138,15 +138,12 @@ namespace MyNutritionist.Controllers
             return View(registeredUser);
         }
 
-       
-        // GET: RegisteredUser/Delete
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.RegisteredUser == null)
-            {
-                return NotFound();
-            }
 
+        // GET: RegisteredUser/Delete
+        [ActionName("Delete")]
+        public async Task<IActionResult> Delete()
+        {
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (registeredUser == null)
@@ -158,10 +155,11 @@ namespace MyNutritionist.Controllers
         }
 
         // POST: RegisteredUser/Delete/
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed()
         {
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             if (_context.RegisteredUser == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.RegisteredUser'  is null.");

@@ -81,61 +81,55 @@
     </style>
 </head>
     <h3>Edit profile</h3>
-    <h4>PremiumUser</h4>
     <hr />
     <div class="row">
         <div class="col-md-4">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-               
-                <div class="form-group">
+            <div class="form-group" style="margin-bottom:20px">
+                <label asp-for="FullName" class="control-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-bottom:20px">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-bottom:20px">
+                <label asp-for="NutriUsername" class="control-label"></label>
+                <input asp-for="NutriUsername" class="form-control" />
+                <span asp-validation-for="NutriUsername" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-bottom:20px">
+                <label asp-for="NutriPassword" class="control-label"></label>
+                <input asp-for="NutriPassword" class="form-control" />
+                <span asp-validation-for="NutriPassword" class="text-danger"></span>
+            </div>
+                <div class="form-group" style="margin-bottom:20px">
                     <label asp-for="City" class="control-label"></label>
                     <input asp-for="City" class="form-control" />
                     <span asp-validation-for="City" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+            <div class="form-group" style="margin-bottom:20px">
                     <label asp-for="Age" class="control-label"></label>
                     <input asp-for="Age" class="form-control" />
                     <span asp-validation-for="Age" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom:20px">
                     <label asp-for="Weight" class="control-label"></label>
                     <input asp-for="Weight" class="form-control" />
                     <span asp-validation-for="Weight" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+            <div class="form-group" style="margin-bottom:20px">
                     <label asp-for="Height" class="control-label"></label>
                     <input asp-for="Height" class="form-control" />
                     <span asp-validation-for="Height" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Points" class="control-label"></label>
-                    <input asp-for="Points" class="form-control" />
-                    <span asp-validation-for="Points" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="FullName" class="control-label"></label>
-                    <input asp-for="FullName" class="form-control" />
-                    <span asp-validation-for="FullName" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Email" class="control-label"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="NutriUsername" class="control-label"></label>
-                    <input asp-for="NutriUsername" class="form-control" />
-                    <span asp-validation-for="NutriUsername" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label class="control-label"></label>
-                    <input asp-for="NutriPassword" class="form-control" />
-                    <span asp-validation-for="NutriPassword" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" onclick="ButtonClicked(@Model.Age)" />
-                </div>
+            <div style="margin-top: 20px" class="form-group style="margin-bottom:20px">
+                <input type="submit" style="margin-left: 20px" value="Save" class="btn btn-primary"/>
+                <button style="margin-left: 20px" class="btn btn-outline-primary" asp-area="" asp-controller="RegisteredUser" asp-action="Delete"><i class="bi bi-pencil-square"></i>Delete account</button>
+            </div>
             </form>
         </div>
     </div>
@@ -147,4 +141,9 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function Delete(){
+            window.location.href = '@Url.Action("Delete", "RegisteredUser")'
+        }
+    </script>
 }
