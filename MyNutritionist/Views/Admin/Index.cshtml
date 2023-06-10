@@ -36,7 +36,7 @@
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                         {
                             <td class="align-middle">
-                                <button class="btn btn-outline-primary" onclick="UpgradeToPremium('@item.FullName')"><i class="bi bi-pencil-square"></i>Upgrade</button> 
+                                <button class="btn btn-outline-primary" onclick="UpgradeToPremium('@item.UserName')"><i class="bi bi-pencil-square"></i>Upgrade</button> 
                             </td>
                         }
 
@@ -54,7 +54,7 @@
     <script>
         function UpgradeToPremium(regName) {
             if (regName) {
-                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?regName=' + encodeURIComponent(regName);
+                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?userName=' + encodeURIComponent(regName);
             }
         }
     </script>

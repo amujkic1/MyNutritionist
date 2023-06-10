@@ -69,23 +69,88 @@ namespace MyNutritionist.Controllers
         }
 
         // GET: RegisteredUser/EditCard/5
-        public async Task<IActionResult> EditCard(int? id)
+        public async Task<IActionResult> EditCard()
         {
-            /*
-            if (id == null || _context.RegisteredUser == null)
-            {
-                return NotFound();
-            }
-
-        */
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            /*  if (registeredUser == null)
+              if (registeredUser == null)
               {
                   return NotFound();
-              }*/
+              }
 
-            return View(registeredUser);
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCard([Bind("Owner,CardNumber,Balance")] Card card)
+        {
+            //var user = Activator.CreateInstance<RegisteredUser>();
+            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var registeredUser = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+
+            if (registeredUser == null)
+            {
+                return NotFound("Registered user not found.");
+            }
+
+
+            var premiumUser = new PremiumUser();
+            try
+            {
+                premiumUser = Activator.CreateInstance<PremiumUser>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
+            
+            //premiumUser.AccountNumber = ;
+            premiumUser.City = registeredUser.City;
+            premiumUser.Height = registeredUser.Height;
+            premiumUser.Weight = registeredUser.Weight;
+            premiumUser.Age = registeredUser.Age;
+            premiumUser.Points = 0;
+            premiumUser.AspUserId = "null";
+            premiumUser.Age = registeredUser.Age;
+            premiumUser.UserName = registeredUser.UserName;
+            premiumUser.PasswordHash = registeredUser.PasswordHash;
+            premiumUser.NutriPassword = registeredUser.NutriPassword;
+            premiumUser.NutriUsername = registeredUser.NutriUsername;
+            premiumUser.EmailAddress = registeredUser.EmailAddress;
+            premiumUser.Email = registeredUser.EmailAddress;
+            premiumUser.EmailConfirmed = true;
+
+            var newCard = new Card();
+            try
+            {
+                newCard = Activator.CreateInstance<Card>();
+                newCard.Owner = premiumUser;
+                newCard.Balance = card.Balance;
+                newCard.CardNumber = card.CardNumber;
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
+
+            _context.RegisteredUser.Remove(registeredUser);
+            _context.PremiumUser.Add(premiumUser);
+            
+            _context.Card.Add(newCard);
+
+            await _userManager.RemoveFromRoleAsync(registeredUser, "RegisteredUser");
+            await _userManager.AddToRoleAsync(premiumUser, "PremiumUser");
+            
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

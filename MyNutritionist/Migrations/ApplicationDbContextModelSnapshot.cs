@@ -250,12 +250,7 @@ namespace MyNutritionist.Migrations
                     b.Property<int>("CardNumber")
                         .HasColumnType("int");
 
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("CId");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Card", (string)null);
                 });
@@ -436,15 +431,15 @@ namespace MyNutritionist.Migrations
                 {
                     b.HasBaseType("MyNutritionist.Models.ApplicationUser");
 
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("AspUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CardCId")
+                        .HasColumnType("int");
 
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
@@ -463,6 +458,8 @@ namespace MyNutritionist.Migrations
 
                     b.Property<double>("Weight")
                         .HasColumnType("float");
+
+                    b.HasIndex("CardCId");
 
                     b.HasIndex("LeaderboardLID");
 
@@ -549,15 +546,6 @@ namespace MyNutritionist.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyNutritionist.Models.Card", b =>
-                {
-                    b.HasOne("MyNutritionist.Models.PremiumUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
-
-                    b.Navigation("Owner");
-                });
-
             modelBuilder.Entity("MyNutritionist.Models.DietPlan", b =>
                 {
                     b.HasOne("MyNutritionist.Models.Nutritionist", "Nutritionist")
@@ -615,6 +603,12 @@ namespace MyNutritionist.Migrations
 
             modelBuilder.Entity("MyNutritionist.Models.PremiumUser", b =>
                 {
+                    b.HasOne("MyNutritionist.Models.Card", "Card")
+                        .WithMany()
+                        .HasForeignKey("CardCId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MyNutritionist.Models.ApplicationUser", null)
                         .WithOne()
                         .HasForeignKey("MyNutritionist.Models.PremiumUser", "Id")
@@ -628,6 +622,8 @@ namespace MyNutritionist.Migrations
                     b.HasOne("MyNutritionist.Models.Nutritionist", null)
                         .WithMany("PremiumUsers")
                         .HasForeignKey("NutritionistId");
+
+                    b.Navigation("Card");
                 });
 
             modelBuilder.Entity("MyNutritionist.Models.RegisteredUser", b =>
