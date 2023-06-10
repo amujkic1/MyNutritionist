@@ -169,7 +169,7 @@ namespace MyNutritionist.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> UpgradeToPremium(string regName)
+        public async Task<IActionResult> UpgradeToPremium(string regName, string nutriName)
         {
             if (string.IsNullOrEmpty(regName))
             {
@@ -195,6 +195,13 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
 
+            var nutritionist = await _context.Nutritionist.FirstOrDefaultAsync(n => n.FullName == nutriName);
+            if (nutritionist == null)
+            {
+                return NotFound("Nutritionist not found.");
+            }
+
+
             premiumUser.AccountNumber = "";
                 premiumUser.City = registeredUser.City;
                 premiumUser.Height = registeredUser.Height;
@@ -210,13 +217,7 @@ namespace MyNutritionist.Controllers
 
                 await _context.SaveChangesAsync();
 
-                var nutritionist = await _context.Nutritionist
-               .FirstOrDefaultAsync(m => m.NutriUsername.Equals("nutri123"));
-                if (nutritionist == null)
-                {
-                    return NotFound();
-                }
-
+                
                 nutritionist.PremiumUsers.Add(await _context.PremiumUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(premiumUser.Id)));
 
@@ -227,22 +228,6 @@ namespace MyNutritionist.Controllers
 
         }
 
-        public async Task<IActionResult> AssignNutritionist(int regId)
-        {
-            var nutritionist = await _context.Nutritionist
-               .FirstOrDefaultAsync(m => m.NutriUsername.Equals("nutri123"));
-            if (nutritionist == null)
-            {
-                return NotFound();
-            }
-
-            nutritionist.PremiumUsers.Add(await _context.PremiumUser
-            .FirstOrDefaultAsync(m => m.Id.Equals(regId)));
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
-        }
 
         private bool AdminExists(string id)
         {
@@ -252,12 +237,3 @@ namespace MyNutritionist.Controllers
     }
 
 }
-
-
-
-
-
-
-
-
-

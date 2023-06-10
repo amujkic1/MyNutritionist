@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MyNutritionist.Models.ApplicationUser>
+﻿<!-- AdminPanel.cshtml -->
+@model IEnumerable<MyNutritionist.Models.ApplicationUser>
 @{
     ViewData["Title"] = "Admin Panel";
 }
@@ -36,7 +37,7 @@
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                         {
                             <td class="align-middle">
-                                <button class="btn btn-outline-primary" onclick="UpgradeToPremium('@item.FullName')"><i class="bi bi-pencil-square"></i>Upgrade</button> 
+                                <button class="btn btn-outline-primary" onclick="showNutritionistPrompt('@item.FullName')"><i class="bi bi-pencil-square"></i>Upgrade</button>
                             </td>
                         }
 
@@ -52,11 +53,11 @@
 
 @section Scripts {
     <script>
-        function UpgradeToPremium(regName) {
-            if (regName) {
-                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?regName=' + encodeURIComponent(regName);
+        function showNutritionistPrompt(regName) {
+            var nutritionistName = prompt("Enter the name of the nutritionist:");
+            if (nutritionistName) {
+                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?regName=' + encodeURIComponent(regName) + '&nutriName=' + encodeURIComponent(nutritionistName);
             }
         }
     </script>
 }
-
