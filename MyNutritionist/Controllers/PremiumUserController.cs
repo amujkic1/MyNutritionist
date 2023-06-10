@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 namespace MyNutritionist.Controllers
 {
@@ -15,10 +22,12 @@ namespace MyNutritionist.Controllers
     public class PremiumUserController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private UserManager<ApplicationUser> _userManager;
 
-        public PremiumUserController(ApplicationDbContext context)
+        public PremiumUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: PremiumUser
@@ -37,7 +46,7 @@ namespace MyNutritionist.Controllers
             }*/
 
             var premiumUser = await _context.PremiumUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            .FirstOrDefaultAsync(m => m.Id.Equals(id));
             /*if (premiumUser == null)
             {
                 return NotFound();
@@ -45,7 +54,7 @@ namespace MyNutritionist.Controllers
 
             return View(premiumUser);
         }
-        
+
 
         // GET: PremiumUser/Edit/5
         public async Task<IActionResult> Edit(int? id)
