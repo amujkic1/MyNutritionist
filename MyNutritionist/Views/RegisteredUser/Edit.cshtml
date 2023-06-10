@@ -133,9 +133,10 @@
                     <input asp-for="NutriPassword" class="form-control" />
                     <span asp-validation-for="NutriPassword" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" onclick="ButtonClicked(@Model.Age)" />
-                </div>
+            <div style="margin-top: 20px" class="form-group">
+                <input type="submit" style="margin-left: 20px" value="Save" class="btn btn-primary"/>
+                <button style="margin-left: 20px" class="btn btn-outline-primary" asp-area="" asp-controller="RegisteredUser" asp-action="Delete"><i class="bi bi-pencil-square"></i>Delete account</button>
+            </div>
             </form>
         </div>
     </div>
@@ -147,4 +148,9 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function Delete(){
+            window.location.href = '@Url.Action("Delete", "RegisteredUser")'
+        }
+    </script>
 }
