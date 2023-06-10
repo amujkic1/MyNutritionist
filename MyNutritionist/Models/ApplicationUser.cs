@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyNutritionist.Models
 {
@@ -17,6 +18,7 @@ namespace MyNutritionist.Models
         public string? NutriUsername { get; set; }
 
         [DisplayName("Password")]
+        [DataType(DataType.Password)]
         public string? NutriPassword { get; set; }
         public ApplicationUser() { }
 

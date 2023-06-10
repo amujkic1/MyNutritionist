@@ -34,20 +34,13 @@ namespace MyNutritionist.Controllers
                         Problem("Entity set 'ApplicationDbContext.RegisteredUser'  is null.");
         }
 
-        // GET: RegisteredUser/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: RegisteredUser/Details/
+        public async Task<IActionResult> Details()
         {
-            /*
-                        if (id == null || _context.RegisteredUser == null)
-            {
-                return NotFound();
-            }
-
-        */
-            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+       
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-           
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
               if (registeredUser == null)
               {
                   return NotFound();
@@ -95,75 +88,72 @@ namespace MyNutritionist.Controllers
             return View(registeredUser);
         }
 
-        // GET: RegisteredUser/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: RegisteredUser/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // POST: RegisteredUser/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("City,Age,Weight,Height,Points,FullName,Email,NutriUsername,NutriPassword")] RegisteredUser registeredUser)
+        public async Task<IActionResult> Edit([Bind("City,Age,Weight,Height,FullName,Email,NutriUsername,NutriPassword")] RegisteredUser Reguser)
         {
-            if (ModelState.IsValid)
-            {
-                var existingUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.NutriUsername == registeredUser.NutriUsername);
-
-                if (existingUser == null)
-                {
-                    registeredUser.Points = 0; // Postavljanje vrijednosti na 0
-
-                    _context.Add(registeredUser);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    ModelState.AddModelError("Username", "A user with the same username already exists.");
-                }
+            //var user = Activator.CreateInstance<RegisteredUser>();
+            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var user = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+             if (Reguser.NutriPassword != null) {
+                await _userManager.ChangePasswordAsync(user, user.NutriPassword, Reguser.NutriPassword);
+                user.NutriPassword = Reguser.NutriPassword;
             }
-            return View(registeredUser);
+             if(Reguser.FullName != null) user.FullName = Reguser.FullName;
+             if (Reguser.Email != null)
+             {
+                 user.EmailAddress = Reguser.Email;
+                 user.Email = Reguser.Email;
+             }
+             if (Reguser.NutriUsername != null)
+             {
+                 user.UserName = Reguser.NutriUsername;
+                 user.NutriUsername = Reguser.NutriUsername;
+             }
+             if (Reguser.Weight != 0) user.Weight = Reguser.Weight;
+             if (Reguser.Height != 0) user.Height = Reguser.Height;
+             if (Reguser.City != null) user.City = Reguser.City;
+             if (Reguser.Age != 0) user.Age = Reguser.Age;
+             user.Id = usrId;
+
+            var result = await _userManager.UpdateAsync(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
 
         // GET: RegisteredUser/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {/*
-            if (id == null || _context.RegisteredUser == null)
-            {
-                return NotFound();
-            }
-            */
-            var registeredUser = await _context.RegisteredUser.FindAsync(id);
-            /*
+        public async Task<IActionResult> Edit()
+        {
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var registeredUser = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            
             if (registeredUser == null)
             {
                 return NotFound();
             }
-            */
+            
             return View(registeredUser);
         }
 
         // POST: RegisteredUser/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+       /* [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] RegisteredUser registeredUser)
+        public async Task<IActionResult> Edit([Bind("City,Age,Weight,Height,Points,FullName,Email,NutriUsername,NutriPassword")] RegisteredUser registeredUser)
         {
-            if (id != registeredUser.Id)
-            {
-                return NotFound();
-            }
+            
+            //id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            //registeredUser.Id = id;
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    //registeredUser.Id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
                     _context.Update(registeredUser);
                     await _context.SaveChangesAsync();
                 }
@@ -182,7 +172,7 @@ namespace MyNutritionist.Controllers
             }
             return View(registeredUser);
         }
-
+       */
         // GET: RegisteredUser/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -227,35 +217,25 @@ namespace MyNutritionist.Controllers
         // GET: RegisteredUser/DailyFoodAndActivity/5
         public async Task<IActionResult> DailyFoodAndActivity(int? id)
         {
-            /*
+            
             if (id == null || _context.RegisteredUser == null)
             {
                 return NotFound();
             }
 
-        */
+       
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            /*  if (registeredUser == null)
+              if (registeredUser == null)
               {
                   return NotFound();
-              }*/
+              }
 
             return View(registeredUser);
         }
         public IActionResult login()
         {
             return View("login");
-        }
-        public async Task<IActionResult> Loginn([Bind("NutriPassword,NutriUsername")] ApplicationUser registeredUser)
-        {
-            ApplicationUser user = await _context.RegisteredUser
-                    .FirstOrDefaultAsync(u => u.NutriUsername == registeredUser.NutriUsername && u.NutriPassword == registeredUser.NutriPassword);
-            if (user != null) {
-                //HttpContext.Session.SetString("UserName", user.FullName);
-                return RedirectToAction("Index", "RegisteredUser");
-            }
-            else return View("login");
         }
 
     }
