@@ -3,10 +3,14 @@
 
 @{
     ViewData["Title"] = "Nutritionist Dashboard";
+    var loggedInNutritionist = ViewData["LoggedInNutritionist"] as MyNutritionist.Models.ApplicationUser;
 }
 
 <h2>Dashboard</h2>
-
+@if (loggedInNutritionist != null)
+{
+    <p>Welcome, @loggedInNutritionist.FullName</p>
+}
 <!--
 <p>
     <a asp-action="Create">Create New</a>

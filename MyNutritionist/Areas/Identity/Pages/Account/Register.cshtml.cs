@@ -197,6 +197,7 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
                 user.Age = tryParsed;
                 user.NutriUsername = Input.Username;
                 user.NutriPassword = Input.Password;
+                user.AspUserId = "null";
                 //user.EmailConfirmed = true;
                 return user;
 

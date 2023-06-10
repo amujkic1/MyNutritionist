@@ -16,7 +16,7 @@ namespace MyNutritionist.Models
         public double Height { get; set; }
         public int Points { get; set; }
         [ForeignKey("ApplicationUser")]
-        public int AspUserId { get; set; }
+        public string AspUserId { get; set; }
         public RegisteredUser() { }
     }
 }
