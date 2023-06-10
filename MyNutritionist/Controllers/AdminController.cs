@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -188,8 +189,21 @@ namespace MyNutritionist.Controllers
                 premiumUser.AspUserId = 0;
 
                 _context.PremiumUser.Add(premiumUser);
+
                 await _userManager.RemoveFromRoleAsync(registeredUser, "RegisteredUser");
                 await _userManager.AddToRoleAsync(registeredUser, "PremiumUser");
+
+                await _context.SaveChangesAsync();
+
+                var nutritionist = await _context.Nutritionist
+               .FirstOrDefaultAsync(m => m.NutriUsername.Equals("nutri123"));
+                if (nutritionist == null)
+                {
+                    return NotFound();
+                }
+
+                nutritionist.PremiumUsers.Add(await _context.PremiumUser
+                .FirstOrDefaultAsync(m => m.Id.Equals(registeredUser.Id)));
 
                 await _context.SaveChangesAsync();
 
@@ -202,6 +216,23 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
 
+        }
+
+        public async Task<IActionResult> AssignNutritionist(int regId)
+        {
+            var nutritionist = await _context.Nutritionist
+               .FirstOrDefaultAsync(m => m.NutriUsername.Equals("nutri123"));
+            if (nutritionist == null)
+            {
+                return NotFound();
+            }
+
+            nutritionist.PremiumUsers.Add(await _context.PremiumUser
+            .FirstOrDefaultAsync(m => m.Id.Equals(regId)));
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         private bool AdminExists(string id)
