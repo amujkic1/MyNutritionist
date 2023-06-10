@@ -201,7 +201,7 @@ namespace MyNutritionist.Controllers
                 premiumUser.Weight = registeredUser.Weight;
                 premiumUser.Age = registeredUser.Age;
                 premiumUser.Points = 0;
-                premiumUser.AspUserId = 0;
+                premiumUser.AspUserId = "null";
 
                 _context.PremiumUser.Add(premiumUser);
 
@@ -218,13 +218,12 @@ namespace MyNutritionist.Controllers
                 }
 
                 nutritionist.PremiumUsers.Add(await _context.PremiumUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(registeredUser.Id)));
+                .FirstOrDefaultAsync(m => m.Id.Equals(premiumUser.Id)));
 
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
-            
-            
+           
 
         }
 

@@ -27,16 +27,20 @@ namespace MyNutritionist.Controllers
         // GET: Nutritionist
         public async Task<IActionResult> Index()
         {
-            var premiumUsers = _userManager.GetUsersInRoleAsync("PremiumUser").Result;
+            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            ViewData["LoggedInNutritionist"] = loggedInNutritionist;
+
+            var premiumUsers = _context.Nutritionist
+            .Include(n => n.PremiumUsers)
+            .Where(n => n.Id == loggedInNutritionist.Id)
+            .SelectMany(n => n.PremiumUsers);
+
+            /*var premiumUsers = _userManager.GetUsersInRoleAsync("PremiumUser").Result;
             var idsOfPremiumUsers = premiumUsers.Select(u => u.Id);
-            var users = premiumUsers.OfType<ApplicationUser>();
+            var users = premiumUsers.OfType<ApplicationUser>();*/
 
+            return View(premiumUsers);
 
-            return View(users);
-
-            /*return _context.Nutritionist != null ? 
-                        View(await _context.Nutritionist.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Nutritionist'  is null.");*/
         }
 
         // GET: Nutritionist/Details/5

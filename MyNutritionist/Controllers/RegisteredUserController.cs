@@ -123,7 +123,7 @@ namespace MyNutritionist.Controllers
         }
 
 
-        // GET: RegisteredUser/Edit/5
+        // GET: RegisteredUser/Edit
         public async Task<IActionResult> Edit()
         {
             var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
@@ -138,42 +138,8 @@ namespace MyNutritionist.Controllers
             return View(registeredUser);
         }
 
-        // POST: RegisteredUser/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-       /* [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind("City,Age,Weight,Height,Points,FullName,Email,NutriUsername,NutriPassword")] RegisteredUser registeredUser)
-        {
-            
-            //id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-            //registeredUser.Id = id;
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    //registeredUser.Id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-                    _context.Update(registeredUser);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RegisteredUserExists(registeredUser.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(registeredUser);
-        }
-       */
-        // GET: RegisteredUser/Delete/5
+       
+        // GET: RegisteredUser/Delete
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.RegisteredUser == null)
@@ -191,7 +157,7 @@ namespace MyNutritionist.Controllers
             return View(registeredUser);
         }
 
-        // POST: RegisteredUser/Delete/5
+        // POST: RegisteredUser/Delete/
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -210,20 +176,10 @@ namespace MyNutritionist.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RegisteredUserExists(string id)
+        // GET: RegisteredUser/DailyFoodAndActivity
+        public async Task<IActionResult> DailyFoodAndActivity()
         {
-            return (_context.RegisteredUser?.Any(e => e.Id.Equals(id))).GetValueOrDefault();
-        }
-        // GET: RegisteredUser/DailyFoodAndActivity/5
-        public async Task<IActionResult> DailyFoodAndActivity(int? id)
-        {
-            
-            if (id == null || _context.RegisteredUser == null)
-            {
-                return NotFound();
-            }
-
-       
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
               if (registeredUser == null)
