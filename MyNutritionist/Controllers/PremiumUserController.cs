@@ -169,6 +169,24 @@ namespace MyNutritionist.Controllers
 
             return View(premiumUser);
         }
-}
+
+        [ActionName("Leaderboard")]
+        // GET: PremiumUser/Leaderboard
+        public async Task<IActionResult> Leaderboard()
+        {
+            var premiumUsers = await _context.PremiumUser
+                .OrderByDescending(u => u.Points)
+                .ToListAsync();
+
+            var leaderboard = new Leaderboard
+            {
+                Users = premiumUsers
+            };
+
+            return View(leaderboard);
+        }
+
+
+    }
 
 }
