@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<MyNutritionist.Models.ApplicationUser>
 @{
-    ViewData["Title"] = "Admin Dashboard";
+    ViewData["Title"] = "Admin Panel";
 }
 
 <h1>Admin Panel</h1>
@@ -33,7 +33,7 @@
                         <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                         {
                             <td class="align-middle">
                                 <button class="btn btn-outline-primary" onclick="UpgradeToPremium('@item.FullName')"><i class="bi bi-pencil-square"></i>Upgrade</button> 
