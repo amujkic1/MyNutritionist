@@ -171,6 +171,7 @@ namespace MyNutritionist.Controllers
 
         public async Task<IActionResult> UpgradeToPremium(string regName, string nutriName)
         {
+            
             if (string.IsNullOrEmpty(regName))
             {
                 return BadRequest("Invalid name.");
@@ -195,35 +196,42 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
 
+            
             var nutritionist = await _context.Nutritionist.FirstOrDefaultAsync(n => n.FullName == nutriName);
             if (nutritionist == null)
             {
                 return NotFound("Nutritionist not found.");
             }
 
-
-            premiumUser.AccountNumber = "";
+                premiumUser.AccountNumber = "";
                 premiumUser.City = registeredUser.City;
                 premiumUser.Height = registeredUser.Height;
                 premiumUser.Weight = registeredUser.Weight;
                 premiumUser.Age = registeredUser.Age;
                 premiumUser.Points = 0;
-                premiumUser.AspUserId = "null";
+                premiumUser.AspUserId = "null";            
 
+                //add registered user to premium table 
                 _context.PremiumUser.Add(premiumUser);
 
+                //switch roles
                 await _userManager.RemoveFromRoleAsync(registeredUser, "RegisteredUser");
                 await _userManager.AddToRoleAsync(registeredUser, "PremiumUser");
 
                 await _context.SaveChangesAsync();
 
-                
+                //add premium user to nutritionist' list
                 nutritionist.PremiumUsers.Add(await _context.PremiumUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(premiumUser.Id)));
 
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                // Remove the registered user instance
+                _context.RegisteredUser.Remove(registeredUser); 
+
+                await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
            
 
         }
