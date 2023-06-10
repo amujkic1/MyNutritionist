@@ -58,9 +58,33 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RID,RecipeLink,TotalCalories,DietPlanDPID")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("TotalCalories,RecipeLink")] Recipe recipe)
         {
-            if (ModelState.IsValid)
+            var nutritionist = await _context.Nutritionist.FindAsync(11111);
+            if (nutritionist == null)
+            {
+                return NotFound("Nutritionist not found.");
+            }
+
+            // Povežite nutricionista s receptom
+            
+            recipe = Activator.CreateInstance<Recipe>();
+            //recipe.RID = 1;
+            recipe.RecipeLink = "link";
+            recipe.TotalCalories = 34;
+            recipe.Nutritionist = nutritionist;
+            var DietPlan = await _context.DietPlan
+                .FirstOrDefaultAsync(m => m.DPID == 1);
+            if (DietPlan == null)
+            {
+                return NotFound();
+            }
+            DietPlan.Recipes.Add(await _context.Recipe.FirstOrDefaultAsync(m => m.RID == 1));
+
+            await _context.SaveChangesAsync();
+            _context.Add(recipe);
+            await _context.SaveChangesAsync();
+            /*if (ModelState.IsValid)
             {
              
   
@@ -73,13 +97,21 @@ namespace MyNutritionist.Controllers
 
                 // Povežite nutricionista s receptom
                 recipe.Nutritionist = nutritionist;
-                
+                var DietPlan = await _context.DietPlan
+                .FirstOrDefaultAsync(m => m.DPID == 1);
+                if (DietPlan == null)
+                {
+                    return NotFound();
+                }
+                DietPlan.Recipes.Add(await _context.Recipe.FirstOrDefaultAsync(m => m.RID == 1));
+
+                await _context.SaveChangesAsync();
                 // Dodajte recept u kontekst i spremite promjene
                 _context.Add(recipe);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
-            }
+            }*/
 
             return View(recipe);
         }
@@ -194,8 +226,31 @@ namespace MyNutritionist.Controllers
 
             return View(recipe);
         }
-      
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddRecipe([Bind("TotalCalories,RecipeLink")] Recipe recipe)
+        {
+            var nutritionist = await _context.Nutritionist.FindAsync(11111);
+            if (nutritionist == null)
+            {
+                return NotFound("Nutritionist not found.");
+            }
+
+            recipe.Nutritionist = nutritionist;
+            var DietPlan = await _context.DietPlan.FirstOrDefaultAsync(m => m.DPID == 1);
+            if (DietPlan == null)
+            {
+                return NotFound();
+            }
+            DietPlan.Recipes.Add(recipe);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
     }
 
-
 }
+

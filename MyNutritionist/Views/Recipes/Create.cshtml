@@ -48,7 +48,7 @@
 </head>
 <body>
     <h1>Add Recipe</h1>
-
+   <form action="/Recipes/Create" method="post">
     <div class="input-container">
         <input type="text" id="recipeName" name="recipeName" placeholder="Enter recipe name">
     </div>
@@ -61,9 +61,9 @@
     <div class="input-container">
         <input type="text" id="recipeLink" name="recipeLink" placeholder="Enter recipe link">
     </div>
-
+    </form>
     <div class="form-group" style="margin-top: 20px">
-        <input type="submit" value="Add Recipe" class="btn btn-primary" style="margin-top: 20px; margin-left: 200px" onclick="Create()"  />
+       <input type="submit" value="Add Recipe" class="btn btn-primary" style="margin-top: 20px; margin-left: 200px" formaction="/Recipes/AddRecipe" />
     </div>
 
     <div class="recipe-list">
@@ -74,5 +74,6 @@
             <li>Recipe 3</li>
         </ul>
     </div>
+
 </body>
 </html>

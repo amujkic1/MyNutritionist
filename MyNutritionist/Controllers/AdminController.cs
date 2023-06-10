@@ -62,12 +62,3 @@ namespace MyNutritionist.Controllers
     }
 
 }
-
-
-
-
-
-
-
-
-
