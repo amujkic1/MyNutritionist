@@ -340,11 +340,14 @@ namespace MyNutritionist.Controllers
                         return NotFound();
                     }
 
+                    // Izračunaj sagorene kalorije na temelju aktivnosti
+                    var burnedCalories = CalculateBurnedCalories(model.PhysicalActivity);
+
                     // Stvaranje novog unosa napretka
                     var progress = new Progress
                     {
                         Date = DateTime.Now,
-                        BurnedCalories = 0,
+                        BurnedCalories = burnedCalories,
                         ConsumedCalories = consumedCalories,
                         RegisteredUser = currentUser,
                         PremiumUser = null
@@ -362,6 +365,33 @@ namespace MyNutritionist.Controllers
             // Možete vratiti pogled s greškom ili poduzeti druge odgovarajuće radnje
             return View(model);
         }
+
+        private int CalculateBurnedCalories(PhysicalActivity activity)
+        {
+            // Pretpostavljamo da 1 minutna aktivnost odgovara određenom broju potrošenih kalorija
+            const int RunningCaloriesPerMinute = 10;
+            const int WalkingCaloriesPerMinute = 5;
+            const int CyclingCaloriesPerMinute = 8;
+
+            var durationInMinutes = activity.Duration;
+
+            switch (activity.ActivityType)
+            {
+                case ActivityType.RUNNING:
+                    return durationInMinutes * RunningCaloriesPerMinute;
+
+                case ActivityType.WALKING:
+                    return durationInMinutes * WalkingCaloriesPerMinute;
+
+                case ActivityType.CYCLING:
+                    return durationInMinutes * CyclingCaloriesPerMinute;
+
+                default:
+                    return 0; // Nepoznata aktivnost, nema sagorenih kalorija
+            }
+        }
+
+
 
     }
 }
