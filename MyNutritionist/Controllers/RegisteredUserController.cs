@@ -271,6 +271,10 @@ namespace MyNutritionist.Controllers
 
             return RedirectToAction("Index");
         }
-
+        public IActionResult DailyActivityAndFood()
+        {
+            var model = new EnterActivityAndFoodViewModel();
+            return View("~/Views/PremiumUser/DailyActivityAndFood.cshtml", model);
+        }
     }
 }

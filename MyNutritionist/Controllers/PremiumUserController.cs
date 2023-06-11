@@ -194,11 +194,24 @@ namespace MyNutritionist.Controllers
 
             return View(leaderboard);
         }
+        public IActionResult DailyActivityAndFood()
+        {
+            var model = new EnterActivityAndFoodViewModel();
+            return View("~/Views/PremiumUser/DailyActivityAndFood.cshtml", model);
+        }
 
+        [HttpPost]
+        public IActionResult DailyActivityAndFood(EnterActivityAndFoodViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Ovdje dodajte logiku za spremanje podataka u bazu ili izvršavanje drugih potrebnih radnji
 
+                return RedirectToAction("Index", "Home"); // Preusmjerite na odgovarajuću stranicu nakon uspješnog spremanja
+            }
 
-
-
+            return View("~/Views/PremiumUser/DailyActivityAndFood.cshtml", model);
+        }
     }
 
 }
