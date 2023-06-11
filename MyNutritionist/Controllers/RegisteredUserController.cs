@@ -110,6 +110,7 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
             
+            premiumUser.FullName = registeredUser.FullName;
             premiumUser.City = registeredUser.City;
             premiumUser.Height = registeredUser.Height;
             premiumUser.Weight = registeredUser.Weight;
@@ -121,8 +122,8 @@ namespace MyNutritionist.Controllers
             premiumUser.PasswordHash = registeredUser.PasswordHash;
             premiumUser.NutriPassword = registeredUser.NutriPassword;
             premiumUser.NutriUsername = registeredUser.NutriUsername;
-            premiumUser.EmailAddress = registeredUser.EmailAddress;
-            premiumUser.Email = registeredUser.EmailAddress;
+            premiumUser.EmailAddress = registeredUser.Email;
+            premiumUser.Email = registeredUser.Email;
             premiumUser.EmailConfirmed = true;
 
             var newCard = new Card();

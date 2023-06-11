@@ -51,9 +51,9 @@
 
 @section Scripts {
     <script>
-        function UpgradeToPremium(regName) {
-            if (regName) {
-                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?userName=' + encodeURIComponent(regName);
+        function UpgradeToPremium(userName) {
+            if (userName) {
+                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?userName=' + encodeURIComponent(userName);
             }
         }
     </script>
