@@ -172,17 +172,31 @@ namespace MyNutritionist.Controllers
         // GET: PremiumUser/Leaderboard
         public async Task<IActionResult> Leaderboard()
         {
-            var premiumUsers = await _context.PremiumUser
+            var currentUser = await _userManager.GetUserAsync(User);
+            var premiumUser = await _context.PremiumUser
+                .FirstOrDefaultAsync(u => u.Id == currentUser.Id);
+
+            if (premiumUser == null)
+            {
+                // Trenutno ulogovani korisnik nije premium korisnik
+                return NotFound();
+            }
+
+            var usersFromSameCity = await _context.PremiumUser
+                .Where(u => u.City == premiumUser.City)
                 .OrderByDescending(u => u.Points)
                 .ToListAsync();
 
             var leaderboard = new Leaderboard
             {
-                Users = premiumUsers
+                Users = usersFromSameCity
             };
 
             return View(leaderboard);
         }
+
+
+
 
 
     }
