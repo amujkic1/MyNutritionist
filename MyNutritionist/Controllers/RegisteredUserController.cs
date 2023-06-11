@@ -179,7 +179,7 @@ namespace MyNutritionist.Controllers
                   return NotFound();
               }
 
-            return View();
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
