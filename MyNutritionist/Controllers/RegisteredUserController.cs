@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
+using MyNutritionist.Utilities;
 
 namespace MyNutritionist.Controllers
 {
@@ -90,7 +91,12 @@ namespace MyNutritionist.Controllers
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-            
+
+            if (card.Balance < 50)
+            {
+                TempData["NotificationMessage"] = "Your card balance has to be 50 or above to finish this transaction.";
+                return RedirectToAction("Index");
+            }
 
             if (registeredUser == null)
             {
@@ -98,10 +104,17 @@ namespace MyNutritionist.Controllers
             }
 
 
-            var premiumUser = new PremiumUser();
+            //var premiumUser = new PremiumUser();
+            var builder = new PremiumUserBuilder();
+            // var premiumUser = builder
+            builder.InitializeCity(registeredUser.City);
+            builder.InitializeHeight(registeredUser.Height);
+            builder.InitializeWeight(registeredUser.Weight);
+
+            var premiumUser = builder.Build();
             try
             {
-                premiumUser = Activator.CreateInstance<PremiumUser>();
+                //premiumUser = Activator.CreateInstance<PremiumUser>();
             }
             catch
             {
@@ -110,10 +123,8 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
             
+            
             premiumUser.FullName = registeredUser.FullName;
-            premiumUser.City = registeredUser.City;
-            premiumUser.Height = registeredUser.Height;
-            premiumUser.Weight = registeredUser.Weight;
             premiumUser.Age = registeredUser.Age;
             premiumUser.Points = 0;
             premiumUser.AspUserId = "null";
@@ -140,6 +151,8 @@ namespace MyNutritionist.Controllers
                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
+
+
 
             _context.RegisteredUser.Remove(registeredUser);
             await _context.SaveChangesAsync();

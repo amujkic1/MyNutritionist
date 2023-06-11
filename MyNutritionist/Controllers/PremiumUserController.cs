@@ -1,20 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Security.Principal;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Net.WebRequestMethods;
 
 namespace MyNutritionist.Controllers
 {
@@ -42,13 +31,20 @@ namespace MyNutritionist.Controllers
         // GET: PremiumUser/Details/5
         public async Task<IActionResult> Details()
         {
-            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+
+          
             var premiumUser = await _context.PremiumUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                .FirstOrDefaultAsync(m => m.Id.Equals(userId));
+
+            var nutritionist = _context.Nutritionist.FirstOrDefault(n => n.PremiumUsers.Any(p => p.Id.Equals(userId)));
+
             if (premiumUser == null)
             {
                 return NotFound();
             }
+
+            ViewBag.NUTRITIONIST = nutritionist;
 
             return View(premiumUser);
         }
@@ -178,17 +174,18 @@ namespace MyNutritionist.Controllers
                 // Trenutno ulogovani korisnik nije premium korisnik
                 return NotFound();
             }
-
+            
+            Leaderboard leaderboard = MyNutritionist.Models.Leaderboard.getInstance();
+            
+            if (leaderboard.City == null || leaderboard.City != premiumUser.City) {
             var usersFromSameCity = await _context.PremiumUser
                 .Where(u => u.City == premiumUser.City)
                 .OrderByDescending(u => u.Points)
                 .ToListAsync();
 
-            var leaderboard = new Leaderboard
-            {
-                Users = usersFromSameCity
-            };
-
+            leaderboard.Users = usersFromSameCity;
+                leaderboard.City = premiumUser.City;
+            }
             return View(leaderboard);
         }
         public IActionResult DailyActivityAndFood()

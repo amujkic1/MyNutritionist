@@ -1,4 +1,6 @@
-﻿namespace MyNutritionist.Models
+﻿using MyNutritionist.Models;
+
+namespace MyNutritionist.Utilities
 {
     public class RecipeViewModel
     {

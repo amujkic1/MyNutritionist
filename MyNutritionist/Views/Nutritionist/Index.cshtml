@@ -14,53 +14,39 @@
 
 
 <form>
-
-
     <div class="row">
-        <div class="col-md-8 offset-md-2">
-             <div class="col-md-8 offset-md-2">
-        <div class="d-flex justify-content-between mb-3">
-            <div>
-                <a class="btn btn-primary"  asp-controller="Recipes" asp-action="Create">New Recipe</a>
-            </div>
-            <div>
-            </div>
-        </div>
-            <table class="table">
-                <thead>
-                    <tr class="text-lg-start">
-                        <th>@Html.DisplayNameFor(model => model.FullName)</th>
-                        <th>@Html.DisplayNameFor(model => model.Email)</th>
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+        <div class="col-md-8 offset-md-2 text-end">
+           
+            <div class="col-md-8 offset-md-2">
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <a class="btn btn-primary" asp-controller="Recipes" asp-action="Create">New Recipe</a>
+                    </div>
+                    <div>
+                    </div>
+                </div>
+                <table class="table">
+                    <tbody>
+                        @foreach (var item in Model.PremiumUsers)
                         {
-                            <th>Actions</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.PremiumUsers)
-                    {
-                        <tr>
-                            <td class="align-middle">
-                                @item.FullName
-                            </td>
-                            <td class="align-middle">
-                                @item.Email
-                            </td>
-                            @if (User.Identity.IsAuthenticated && User.IsInRole("Nutritionist"))
-                            {
+                            <tr>
                                 <td class="align-middle">
-                                        <a class="btn btn-outline-primary" asp-area="" asp-controller="DietPlan" asp-action="Create" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i>Add diet plan</a>
+                                    @item.FullName
                                 </td>
-                            }
-
-                        </tr>
-                    }
-                </tbody>
-
-            </table>
-
+                                <td class="align-middle">
+                                    @item.Email
+                                </td>
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Nutritionist"))
+                                {
+                                    <td class="align-middle">
+                                        <a class="btn btn-outline-primary" asp-area="" asp-controller="DietPlan" asp-action="Create" asp-route-RegUser="@item.Id"><i class="bi bi-pencil-square"></i>Add diet plan</a>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
 </form>
