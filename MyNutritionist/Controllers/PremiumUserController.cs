@@ -55,19 +55,17 @@ namespace MyNutritionist.Controllers
 
 
         // GET: PremiumUser/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit()
         {
-            /*if (id == null || _context.PremiumUser == null)
-            {
-                return NotFound();
-            }*/
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var premiumUser = await _context.PremiumUser
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
 
-            var premiumUser = await _context.PremiumUser.FindAsync(id);
-            /*if (premiumUser == null)
+            if (premiumUser == null)
             {
                 return NotFound();
             }
-            ViewData["NutritionistId"] = new SelectList(_context.Nutritionist, "PID", "PID", premiumUser.NutritionistId);*/
+
             return View(premiumUser);
         }
 
@@ -76,35 +74,36 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AccountNumber,LeaderboardId,NutritionistId,City,Age,Weight,Height,Points,PID,Name,Email,Username,Password")] PremiumUser premiumUser)
+        public async Task<IActionResult> Edit([Bind("City,Age,Weight,Height,Name,Email,NutriUsername,NutriPassword")] PremiumUser Premuser)
         {
-            /*if (id != premiumUser.PID)
+            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var user = await _context.PremiumUser
+                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+            if (Premuser.NutriPassword != null)
             {
-                return NotFound();
-            }*/
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(premiumUser);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PremiumUserExists(premiumUser.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _userManager.ChangePasswordAsync(user, user.NutriPassword, Premuser.NutriPassword);
+                user.NutriPassword = Premuser.NutriPassword;
             }
+            if (Premuser.FullName != null) user.FullName = Premuser.FullName;
+            if (Premuser.Email != null)
+            {
+                user.EmailAddress = Premuser.Email;
+                user.Email = Premuser.Email;
+            }
+            if (Premuser.NutriUsername != null)
+            {
+                user.UserName = Premuser.NutriUsername;
+                user.NutriUsername = Premuser.NutriUsername;
+            }
+            if (Premuser.Weight != 0) user.Weight = Premuser.Weight;
+            if (Premuser.Height != 0) user.Height = Premuser.Height;
+            if (Premuser.City != null) user.City = Premuser.City;
+            if (Premuser.Age != 0) user.Age = Premuser.Age;
 
-            return View(premiumUser);
+
+            var result = await _userManager.UpdateAsync(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         // GET: PremiumUser/Delete/5
