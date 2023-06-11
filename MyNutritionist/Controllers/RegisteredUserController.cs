@@ -91,7 +91,12 @@ namespace MyNutritionist.Controllers
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-            
+
+            if (card.Balance < 50)
+            {
+                TempData["NotificationMessage"] = "Your card balance has to be 50 or above to finish this transaction.";
+                return RedirectToAction("Index");
+            }
 
             if (registeredUser == null)
             {
@@ -146,6 +151,8 @@ namespace MyNutritionist.Controllers
                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
+
+
 
             _context.RegisteredUser.Remove(registeredUser);
             await _context.SaveChangesAsync();
@@ -345,6 +352,11 @@ namespace MyNutritionist.Controllers
                     }
 
                     var burnedCalories = CalculateBurnedCalories(model.PhysicalActivity);
+                    var points = CalculatePoints(consumedCalories, burnedCalories);
+
+                  
+                    currentUser.Points += points;
+                    _context.SaveChanges();
 
                     var progress = new Progress
                     {
@@ -364,6 +376,20 @@ namespace MyNutritionist.Controllers
 
             return View(model);
         }
+        private int CalculatePoints(int consumedCalories, int burnedCalories)
+        {
+            const int NormalDailyCalories = 2000;
+            const int MaxPoints = 20;
+            const int MinPoints = 0;
+
+            var deviationPercentage = Math.Abs((consumedCalories - burnedCalories) / (double)NormalDailyCalories) * 100;
+            var deviationPoints = MaxPoints - (int)Math.Round(deviationPercentage / 100 * MaxPoints);
+
+            deviationPoints = Math.Max(MinPoints, Math.Min(MaxPoints, deviationPoints));
+
+            return deviationPoints;
+        }
+
 
         private int CalculateBurnedCalories(PhysicalActivity activity)
         {
