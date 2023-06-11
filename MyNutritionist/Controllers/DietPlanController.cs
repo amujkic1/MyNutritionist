@@ -44,7 +44,7 @@ namespace MyNutritionist.Controllers
             if (dietPlan == null)
             {
                 // Handle the case when the diet plan is not found
-                return NotFound();
+                return StatusCode(503, "Page is currently unavailable. Diet Plan will be availabe soon. Our nutritionist is working on that.");
             }
 
             return View(dietPlan);
@@ -56,7 +56,7 @@ namespace MyNutritionist.Controllers
         {
             var dietPlan = new DietPlanViewModel();
             dietPlan.PremiumUserId = RegUser;
-            
+
             return View(dietPlan);
         }
 
@@ -73,7 +73,7 @@ namespace MyNutritionist.Controllers
                 var dietPlan = dietPlanvm.DietPlan;
 
 
-                for(var i = 0; i < 28; i++)
+                for (var i = 0; i < 28; i++)
                 {
                     if (dietPlan.Recipes[i].NameOfRecipe != null)
                     {
@@ -86,7 +86,7 @@ namespace MyNutritionist.Controllers
                 var user = await _context.Nutritionist.FindAsync(loggedInNutritionist.Id);
                 dietPlan.PremiumUser = await _context.PremiumUser
                     .FirstOrDefaultAsync(m => m.Id.Equals(RegUser));
-                
+
                 var deletePlans = _context.DietPlan.Where(d => d.PremiumUser.Id == RegUser).ToList();
                 if (deletePlans != null)
                 {

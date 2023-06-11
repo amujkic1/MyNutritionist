@@ -12,7 +12,8 @@ namespace MyNutritionist.Models
         public PremiumUser PremiumUser { get; set; }
         public List<Recipe> Recipes { get; set; } = new List<Recipe>();
 
-        public DietPlan() {
+        public DietPlan()
+        {
             Recipes.Capacity = 28;
         }
     }

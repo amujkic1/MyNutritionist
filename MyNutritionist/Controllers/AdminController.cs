@@ -15,12 +15,14 @@ using MyNutritionist.Models;
 
 namespace MyNutritionist.Controllers
 {
+
     [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
         private UserManager<ApplicationUser> _userManager;
-
+        private string premiumUserName;
+        
         public AdminController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -36,18 +38,31 @@ namespace MyNutritionist.Controllers
             return View(premiumUsers);
         }
 
-        public async Task<IActionResult> UpgradeToPremium(string userName)
+        [HttpGet]
+        public async Task<IActionResult> AssignNutritionist(string premiumUserName)
+        {
+            ViewData["PremiumUserName"] = premiumUserName;
+            var nutritionists = await _userManager.GetUsersInRoleAsync("Nutritionist");
+            var users = nutritionists.Select(u => (Nutritionist)u).ToList();
+
+            return View(nutritionists);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpgradeToPremium(string nutriUserName, string premiumUserName)
         {
             
-            if (string.IsNullOrEmpty(userName))
+            if (string.IsNullOrEmpty(premiumUserName) || string.IsNullOrEmpty(nutriUserName))
             {
                 return BadRequest("Invalid name.");
             }
-            var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.UserName == userName);
+            
+            var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.UserName == premiumUserName);
             
 
             var nutritionist = await _context.Nutritionist
-               .FirstOrDefaultAsync(m => m.NutriUsername.Equals("nutri123"));
+               .FirstOrDefaultAsync(m => m.NutriUsername.Equals(nutriUserName));
                 if (nutritionist == null)
                 {
                     return NotFound();
