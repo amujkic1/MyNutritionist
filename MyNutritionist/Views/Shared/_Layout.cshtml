@@ -31,6 +31,10 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Nutritionist" asp-action="Index">Dashboard</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Recipes" asp-action="Create">Recipes</a>
+                            </li>
+
                         }
                         @if (User.IsInRole("PremiumUser"))
                         {
