@@ -11,10 +11,10 @@ namespace MyNutritionist.Models
         public int TotalCalories { get; set; }
         
         public PremiumUser PremiumUser { get; set; }
-        public ICollection<Recipe> Recipes { get; set; }
+        public List<Recipe> Recipes { get; set; } = new List<Recipe>();
 
         public DietPlan() {
-           
+            Recipes.Capacity = 28;
         }
     }
 }

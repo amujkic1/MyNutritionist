@@ -30,10 +30,10 @@ namespace MyNutritionist.Controllers
         // GET: Admin
         public async Task<IActionResult> Index()
         {
-            var premiumUsers = _userManager.GetUsersInRoleAsync("PremiumUser").Result;
-            var idsOfPremiumUsers = premiumUsers.Select(u => u.Id);
-            var users = premiumUsers.OfType<ApplicationUser>();
-            return View(users);
+            var premiumUsers = await _userManager.GetUsersInRoleAsync("PremiumUser");
+            var users = premiumUsers.Select(u => (PremiumUser)u).ToList();
+
+            return View(premiumUsers);
         }
 
         public async Task<IActionResult> UpgradeToPremium(string userName)

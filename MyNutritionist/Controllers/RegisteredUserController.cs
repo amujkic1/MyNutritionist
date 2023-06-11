@@ -111,7 +111,6 @@ namespace MyNutritionist.Controllers
             }
             
             //premiumUser.AccountNumber = ;
-            premiumUser.FullName = registeredUser.FullName;
             premiumUser.City = registeredUser.City;
             premiumUser.Height = registeredUser.Height;
             premiumUser.Weight = registeredUser.Weight;

@@ -211,49 +211,39 @@
         <div class="form-column">
             <div>
                 <span class="form-label">Name:</span>
-                <input class="form-field" type="text" value="John" readonly>
-            </div>
-            <div>
-                <span class="form-label">Surname:</span>
-                <input class="form-field" type="text" value="Doe" readonly>
+                <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.FullName)" readonly>
             </div>
             <div>
                 <span class="form-label">Email:</span>
-                <input class="form-field" type="text" value="john.doe@example.com" readonly>
+                <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.Email)" readonly>
             </div>
             <div>
                 <span class="form-label">Username:</span>
-                <input class="form-field" type="text" value="johndoe" readonly>
-            </div>
-            <div>
-                <span class="form-label">Password:</span>
-                <input class="form-field" type="password" value="********" readonly>
+                <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.NutriUsername)" readonly>
             </div>
             <div>
                 <span class="form-label">Nutritionist:</span>
                 <input class="form-field" type="text" value="John Doe" readonly>
             </div>
+
         </div>
         <div class="form-column">
             <div>
                 <span class="form-label">Height:</span>
-                <input class="form-field" type="text" value="180 cm" readonly>
+                <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.Height) cm" readonly>
             </div>
             <div>
                 <span class="form-label">Weight:</span>
-                <input class="form-field" type="text" value="75 kg" readonly>
+                <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.Weight) kg" readonly>
             </div>
-            <div>
-                <span class="form-label">Age:</span>
-                <input class="form-field" type="text" value="30" readonly>
-            </div>
+
             <div>
                 <span class="form-label">City:</span>
-                <input class="form-field" type="text" value="New York" readonly>
-            </div>
-            <div>
-                <span class="form-label">Credit number:</span>
-                <input class="form-field" type="text" value="1111 1111 1111" readonly>
+                <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.City)" readonly>
+           </div>
+                <div>
+               <span class="form-label">Age:</span>
+               <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.Age)" readonly>
             </div>
         </div>
     </div>
@@ -334,7 +324,7 @@
 
     <div class="points-section">
         <span class="points-label">Current number of points:</span>
-        <input class="points-field" type="text" value="500" readonly>
+        <input class="points-field" type="text" value="@Html.DisplayFor(ru=>ru.Points)" readonly>
     </div>
 </body>
 </html>
