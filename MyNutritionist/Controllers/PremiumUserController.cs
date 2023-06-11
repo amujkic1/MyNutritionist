@@ -107,13 +107,10 @@ namespace MyNutritionist.Controllers
         }
 
         // GET: PremiumUser/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [ActionName("Delete")]
+        public async Task<IActionResult> Delete()
         {
-           if (id == null || _context.PremiumUser == null)
-            {
-                return NotFound();
-            }
-
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var premiumUser = await _context.PremiumUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (premiumUser == null)
@@ -125,10 +122,11 @@ namespace MyNutritionist.Controllers
         }
 
         // POST: PremiumUser/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed()
         {
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             if (_context.PremiumUser == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.PremiumUser'  is null.");
@@ -138,9 +136,9 @@ namespace MyNutritionist.Controllers
             {
                 _context.PremiumUser.Remove(premiumUser);
             }
-            
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index)); 
         }
 
         private bool PremiumUserExists(string id)

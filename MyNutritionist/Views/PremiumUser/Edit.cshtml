@@ -129,6 +129,7 @@
                     <span asp-validation-for="Height" class="text-danger"></span>
                 </div>
             <button class="rounded-button" style="float: right">Update</button>
+            <button style="margin-left: 20px" class="btn btn-outline-primary" asp-area="" asp-controller="PremiumUser" asp-action="Delete"><i class="bi bi-pencil-square"></i>Delete account</button>
         </form>
         </div>
     </div>
@@ -140,4 +141,9 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        function Delete() {
+            window.location.href = '@Url.Action("Delete", "PremiumUser")'
+        }
+    </script>
 }
