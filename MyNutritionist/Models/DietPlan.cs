@@ -26,7 +26,7 @@ namespace MyNutritionist.Models
             {
                 throw new ArgumentNullException(nameof(recipes));
             }
-            iterator = new CaloriesIterator(Recipe);
+            return new CaloriesIterator(recipes);
         }
     }
 }

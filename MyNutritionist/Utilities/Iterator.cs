@@ -1,6 +1,9 @@
-﻿namespace MyNutritionist.Utilities
+﻿using MyNutritionist.Models;
+
+namespace MyNutritionist.Utilities
 {
-    public class Iterator
+    public interface Iterator
     {
+        public Recipe findNextRecipe();
     }
 }
