@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
+using MyNutritionist.Utilities;
 
 namespace MyNutritionist.Controllers
 {
@@ -34,31 +35,25 @@ namespace MyNutritionist.Controllers
             return View(user);
         }
 
-        // GET: Nutritionist/Create
-        public IActionResult Create()
+        public async Task<IActionResult> SortByNames()
         {
-            return View();
+            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var user = await _context.Nutritionist
+                .Include(n => n.PremiumUsers) // Include the PremiumUsers list
+                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+            user.SortUsers(new SortByNames());
+            return View("Index", user);
         }
 
-        // POST: Nutritionist/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FullName,Email,NutriUsername,NutriPassword")] ApplicationUser nutritionist)
+        public async Task<IActionResult> SortByPoints()
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(nutritionist);
-                await _context.SaveChangesAsync();
-                nutritionist.EmailConfirmed = true;
-                await _userManager.AddToRoleAsync(nutritionist, "Nutritionist");
-                
-                return RedirectToAction(nameof(Index));
-            }
-            return View(nutritionist);
+            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var user = await _context.Nutritionist
+                .Include(n => n.PremiumUsers) // Include the PremiumUsers list
+                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+            user.SortUsers(new SortByPoints());
+            return View("Index", user);
         }
-
     }
 
 
