@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
+using MyNutritionist.Utilities;
 
 namespace MyNutritionist.Controllers
 {
@@ -103,10 +104,17 @@ namespace MyNutritionist.Controllers
             }
 
 
-            var premiumUser = new PremiumUser();
+            //var premiumUser = new PremiumUser();
+            var builder = new PremiumUserBuilder();
+            // var premiumUser = builder
+            builder.InitializeCity(registeredUser.City);
+            builder.InitializeHeight(registeredUser.Height);
+            builder.InitializeWeight(registeredUser.Weight);
+
+            var premiumUser = builder.Build();
             try
             {
-                premiumUser = Activator.CreateInstance<PremiumUser>();
+                //premiumUser = Activator.CreateInstance<PremiumUser>();
             }
             catch
             {
@@ -115,10 +123,8 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
             
+            
             premiumUser.FullName = registeredUser.FullName;
-            premiumUser.City = registeredUser.City;
-            premiumUser.Height = registeredUser.Height;
-            premiumUser.Weight = registeredUser.Weight;
             premiumUser.Age = registeredUser.Age;
             premiumUser.Points = 0;
             premiumUser.AspUserId = "null";

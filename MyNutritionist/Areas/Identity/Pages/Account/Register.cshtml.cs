@@ -106,7 +106,7 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
             public string Weight { get; set; }
 
             
-            [Range(1, 150, ErrorMessage = "Please enter a valid age.")]
+            [Range(1, 120, ErrorMessage = "Please enter a valid age.")]
             [Display(Name = "Age")]
             public string Age { get; set; }
 

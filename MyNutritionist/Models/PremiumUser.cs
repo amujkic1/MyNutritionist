@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MyNutritionist.Utilities;
 
 namespace MyNutritionist.Models
 {
@@ -19,5 +20,12 @@ namespace MyNutritionist.Models
         public string AspUserId { get; set; }
 
         public PremiumUser() { }
+
+        public PremiumUser(iUser initializer)
+        {
+            initializer.InitializeCity(City);
+            initializer.InitializeWeight(Weight);
+            initializer.InitializeHeight(Height);
+        }
     }
 }
