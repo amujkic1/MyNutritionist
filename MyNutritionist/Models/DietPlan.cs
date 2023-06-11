@@ -26,6 +26,10 @@ namespace MyNutritionist.Models
             {
                 throw new ArgumentNullException(nameof(recipes));
             }
+            recipes.Sort((recipe1, recipe2) =>
+            {
+                return recipe1.TotalCalories - recipe2.TotalCalories;
+            });
             return new CaloriesIterator(recipes);
         }
     }

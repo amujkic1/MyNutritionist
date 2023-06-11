@@ -5,5 +5,6 @@ namespace MyNutritionist.Utilities
     public interface Iterator
     {
         public Recipe findNextRecipe();
+        public Recipe getRecipe();
     }
 }

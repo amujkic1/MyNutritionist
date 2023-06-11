@@ -8,20 +8,15 @@ namespace MyNutritionist.Utilities
         private List<Recipe> recipes { get; set; } = new List<Recipe>();
         public Recipe findNextRecipe()
         {
-            if (recipes.Count == 0) return null;
+            if (recipes.Count == 0 || recipes.Count == currentRecipe + 1) return null;
 
-            int calories = recipes[currentRecipe].TotalCalories;
-            recipes.Sort((recipe1, recipe2) => recipe2.TotalCalories - recipe1.TotalCalories);
-                for(int i = 0; i < recipes.Count; i++)
-                {
-                    if(i != currentRecipe && recipes[i].TotalCalories < calories)
-                {
-                    currentRecipe = i;
-                    return recipes[i];
-                }
-                    
-                }
-            return null;
+            return recipes[currentRecipe++];
+        }
+
+        public Recipe getRecipe()
+        {
+            if (recipes.Count == 0) return null;
+            return recipes[currentRecipe];
         }
 
         public CaloriesIterator(List<Recipe> recipes)

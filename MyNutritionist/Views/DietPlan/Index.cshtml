@@ -43,16 +43,23 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Recipes.Count; i += 4)
+        @{
+            var it = Model.CreateIterator(Model.Recipes);
+            var i = 0;
+        }
+        @do
         {
             <tr>
-                <td>@((DayOfWeek)(i / 4))</td>
-                <td><a href="@Model.Recipes[i].RecipeLink">@Model.Recipes[i].NameOfRecipe</a></td>
-                <td><a href="@Model.Recipes[i + 1].RecipeLink">@Model.Recipes[i + 1].NameOfRecipe</a></td>
-                <td><a href="@Model.Recipes[i + 2].RecipeLink">@Model.Recipes[i + 2].NameOfRecipe</a></td>
-                <td><a href="@Model.Recipes[i + 3].RecipeLink">@Model.Recipes[i + 3].NameOfRecipe</a></td>
+                @if(i % 4 == 0)
+                {
+                    <td>@((DayOfWeek)(i / 4))</td>
+                }
 
+                <td><a href="@it.getRecipe().RecipeLink">@it.getRecipe().NameOfRecipe</a></td>
+                @{
+                    i++;
+                }
             </tr>
-        }
+        }while (it.findNextRecipe != null);
     </tbody>
 </table>
