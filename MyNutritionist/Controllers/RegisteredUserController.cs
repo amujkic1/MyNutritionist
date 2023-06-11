@@ -296,7 +296,6 @@ namespace MyNutritionist.Controllers
         [HttpPost]
         public async Task<IActionResult> Save(EnterActivityAndFoodViewModel model)
         {
-            // Pronađi namirnice iz obrasca i izračunaj ukupne kalorije
             var breakfastIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Breakfast.FoodName);
             var lunchIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Lunch.FoodName);
             var dinnerIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Dinner.FoodName);
@@ -309,7 +308,6 @@ namespace MyNutritionist.Controllers
 
             if (ModelState.IsValid)
             {
-                // Provjeri je li količina unesena kao broj i pravilno ju dodijeli varijablama
                 if (int.TryParse(Request.Form["breakfast-quantity"], out breakfastQuantity) &&
                     int.TryParse(Request.Form["lunch-quantity"], out lunchQuantity) &&
                     int.TryParse(Request.Form["dinner-quantity"], out dinnerQuantity) &&
@@ -331,19 +329,17 @@ namespace MyNutritionist.Controllers
 
                     var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
 
-                    // Dohvati trenutnog korisnika iz baze podataka na temelju ID-a
+
                     var currentUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Id == userId);
 
-                    // Provjeri je li trenutni korisnik pronađen
+
                     if (currentUser == null)
                     {
                         return NotFound();
                     }
 
-                    // Izračunaj sagorene kalorije na temelju aktivnosti
                     var burnedCalories = CalculateBurnedCalories(model.PhysicalActivity);
 
-                    // Stvaranje novog unosa napretka
                     var progress = new Progress
                     {
                         Date = DateTime.Now,
@@ -353,7 +349,6 @@ namespace MyNutritionist.Controllers
                         PremiumUser = null
                     };
 
-                    // Dodaj napredak u bazu
                     _context.Progress.Add(progress);
                     _context.SaveChanges();
 
@@ -361,14 +356,11 @@ namespace MyNutritionist.Controllers
                 }
             }
 
-            // Ako dođe do ove točke, dogodila se greška u obradi obrasca
-            // Možete vratiti pogled s greškom ili poduzeti druge odgovarajuće radnje
             return View(model);
         }
 
         private int CalculateBurnedCalories(PhysicalActivity activity)
         {
-            // Pretpostavljamo da 1 minutna aktivnost odgovara određenom broju potrošenih kalorija
             const int RunningCaloriesPerMinute = 10;
             const int WalkingCaloriesPerMinute = 5;
             const int CyclingCaloriesPerMinute = 8;
@@ -387,7 +379,7 @@ namespace MyNutritionist.Controllers
                     return durationInMinutes * CyclingCaloriesPerMinute;
 
                 default:
-                    return 0; // Nepoznata aktivnost, nema sagorenih kalorija
+                    return 0; 
             }
         }
 
