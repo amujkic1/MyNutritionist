@@ -23,9 +23,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        
                         @if (User.IsInRole("Nutritionist"))
                         {
                             <li class="nav-item">
@@ -60,6 +58,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="DietPlan" asp-action="Index">Diet plan</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="PremiumUser" asp-action="NutritionalValues">Nutritional values</a>
+                            </li>
                         }
                         @if (User.IsInRole("RegisteredUser"))
                         {
@@ -77,6 +78,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="RegisteredUser" asp-action="EditCard">Upgrade to premium</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RegisteredUser" asp-action="NutritionalValues">Nutritional values</a>
                             </li>
                         }
                         @if (User.IsInRole("Administrator"))
