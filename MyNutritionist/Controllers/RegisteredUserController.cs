@@ -30,23 +30,122 @@ namespace MyNutritionist.Controllers
         // GET: RegisteredUser
         public async Task<IActionResult> Index()
         {
-            return _context.RegisteredUser != null ?
-                        View(await _context.RegisteredUser.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.RegisteredUser'  is null.");
-        }
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var registeredUser = await _context.RegisteredUser.FirstOrDefaultAsync(p => p.Id == userId);
 
+            if (registeredUser == null)
+            {
+                return NotFound();
+            }
+
+            var currentDate = DateTime.Now.Date;
+            var currentDayOfWeek = (int)currentDate.DayOfWeek;
+
+            var progressList = await _context.Progress
+                .Where(p => p.RegisteredUser.Id == userId && p.Date.Year == currentDate.Year && p.Date.Month == currentDate.Month && p.Date.Day >= currentDate.AddDays(-6).Day && p.Date.Day <= currentDate.Day)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+
+
+            var averageConsumedCalories = 2000;
+            var averageBurnedCalories = 300;
+
+            var consumedCaloriesProgressData = new List<object>();
+            var burnedCaloriesProgressData = new List<object>();
+
+            for (var i = 0; i < 7; i++)
+            {
+                var date = currentDate.AddDays(i);
+                var dayOfWeek = (int)date.DayOfWeek;
+                var progress = progressList.FirstOrDefault(p => p.Date.Year == date.Year && p.Date.Month == date.Month && p.Date.Day == date.Day);
+
+                var consumedCalories = progress?.ConsumedCalories ?? 0;
+                var burnedCalories = progress?.BurnedCalories ?? 0;
+
+                var consumedCaloriesProgressPercentage = (int)CalculateProgressPercentage(consumedCalories, averageConsumedCalories);
+                var burnedCaloriesProgressPercentage = (int)CalculateProgressPercentage(burnedCalories, averageBurnedCalories);
+                var isSelectedDay = dayOfWeek == currentDayOfWeek;
+
+                consumedCaloriesProgressData.Add(new
+                {
+                    DayOfWeek = date.ToString("ddd"),
+                    HeightPercentage = consumedCaloriesProgressPercentage,
+                    IsSelectedDay = isSelectedDay
+                });
+
+                burnedCaloriesProgressData.Add(new
+                {
+                    DayOfWeek = date.ToString("ddd"),
+                    HeightPercentage = burnedCaloriesProgressPercentage,
+                    IsSelectedDay = isSelectedDay
+                });
+            }
+
+            ViewBag.ConsumedCaloriesProgressData = consumedCaloriesProgressData;
+            ViewBag.BurnedCaloriesProgressData = burnedCaloriesProgressData;
+            return View(registeredUser);
+        }
+        private double CalculateProgressPercentage(double value, double averageValue)
+        {
+            double progress = value / averageValue * 100;
+            return progress > 100 ? 100 : (progress < 0 ? 0 : progress);
+        }
         // GET: RegisteredUser/Details/
         public async Task<IActionResult> Details()
         {
        
-            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                .FirstOrDefaultAsync(m => m.Id.Equals(userId));
               if (registeredUser == null)
               {
                   return NotFound();
               }
+            var currentDate = DateTime.Now.Date;
+            var currentDayOfWeek = (int)currentDate.DayOfWeek;
 
+            var progressList = await _context.Progress
+                .Where(p => p.RegisteredUser.Id == userId && p.Date.Year == currentDate.Year && p.Date.Month == currentDate.Month && p.Date.Day >= currentDate.AddDays(-6).Day && p.Date.Day <= currentDate.Day)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+
+
+            var averageConsumedCalories = 2000;
+            var averageBurnedCalories = 300;
+
+            var consumedCaloriesProgressData = new List<object>();
+            var burnedCaloriesProgressData = new List<object>();
+
+            for (var i = 0; i < 7; i++)
+            {
+                var date = currentDate.AddDays(i);
+                var dayOfWeek = (int)date.DayOfWeek;
+                var progress = progressList.FirstOrDefault(p => p.Date.Year == date.Year && p.Date.Month == date.Month && p.Date.Day == date.Day);
+
+                var consumedCalories = progress?.ConsumedCalories ?? 0;
+                var burnedCalories = progress?.BurnedCalories ?? 0;
+
+                var consumedCaloriesProgressPercentage = (int)CalculateProgressPercentage(consumedCalories, averageConsumedCalories);
+                var burnedCaloriesProgressPercentage = (int)CalculateProgressPercentage(burnedCalories, averageBurnedCalories);
+                var isSelectedDay = dayOfWeek == currentDayOfWeek;
+
+                consumedCaloriesProgressData.Add(new
+                {
+                    DayOfWeek = date.ToString("ddd"),
+                    HeightPercentage = consumedCaloriesProgressPercentage,
+                    IsSelectedDay = isSelectedDay
+                });
+
+                burnedCaloriesProgressData.Add(new
+                {
+                    DayOfWeek = date.ToString("ddd"),
+                    HeightPercentage = burnedCaloriesProgressPercentage,
+                    IsSelectedDay = isSelectedDay
+                });
+            }
+
+            ViewBag.ConsumedCaloriesProgressData = consumedCaloriesProgressData;
+            ViewBag.BurnedCaloriesProgressData = burnedCaloriesProgressData;
             return View(registeredUser);
         }
 
@@ -190,9 +289,8 @@ namespace MyNutritionist.Controllers
             await _context.SaveChangesAsync();
             await _userManager.AddToRoleAsync(premiumUser, "PremiumUser");
            
-            
-
             await _context.SaveChangesAsync();
+
             return RedirectToAction("Index");
         }
 
@@ -261,7 +359,7 @@ namespace MyNutritionist.Controllers
                 return NotFound();
             }
 
-            return View(registeredUser);
+            return RedirectToAction("Index", "Home");
         }
 
         // POST: RegisteredUser/Delete/
@@ -281,7 +379,7 @@ namespace MyNutritionist.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: RegisteredUser/DailyFoodAndActivity

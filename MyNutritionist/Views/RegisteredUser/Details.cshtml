@@ -247,78 +247,44 @@
     </div>
 
    
-    <div class="main-container">
-        <div class="header">
-            Daily activity last 7 days
-        </div>
-        <div class="week-stats">
-            <div class="day-group">
-                <div class="bar h-100"></div>
-                <p class="day">Mon</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-50"></div>
-                <p class="day">Tue</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-75"></div>
-                <p class="day">Wed</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-25"></div>
-                <p class="day">Thu</p>
-            </div>
-            <div class="day-group selected">
-                <div class="bar h-100"></div>
-                <p class="day">Fri</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-50"></div>
-                <p class="day">Sat</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-75"></div>
-                <p class="day">Sun</p>
-            </div>
-        </div>
+ <div class="main-container">
+    <div class="header">
+        Daily activity last 7 days
     </div>
+    <div class="week-stats">
+		@foreach (var progressData in ViewBag.BurnedCaloriesProgressData as List<object>)
+		{
+			var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
+			var heightPercentage = (int)progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
+			var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
 
-    <div class="main-container">
-        <div class="header">
-            Calories intake last 7 days
-        </div>
-        <div class="week-stats">
-            <div class="day-group">
-                <div class="bar h-75"></div>
-                <p class="day">Mon</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-75"></div>
-                <p class="day">Tue</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-50"></div>
-                <p class="day">Wed</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-0"></div>
-                <p class="day">Thu</p>
-            </div>
-            <div class="day-group selected">
-                <div class="bar h-100"></div>
-                <p class="day">Fri</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-50"></div>
-                <p class="day">Sat</p>
-            </div>
-            <div class="day-group">
-                <div class="bar h-75"></div>
-                <p class="day">Sun</p>
-            </div>
-        </div>
+			<div class="day-group @(isSelectedDay ? "selected" : "")">
+				<div class="bar" style="height: @(heightPercentage)%"></div>
+				<p class="day">@dayOfWeek</p>
+			</div>
+		}
     </div>
+</div>
 
+
+<div class="main-container">
+    <div class="header">
+        Calories intake last 7 days
+    </div>
+    <div class="week-stats">
+		 @foreach (var progressData in ViewBag.ConsumedCaloriesProgressData as List<object>)
+		{
+			var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
+			var heightPercentage = (int)progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
+			var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
+
+			<div class="day-group @(isSelectedDay ? "selected" : "")">
+				<div class="bar" style="height: @(heightPercentage)%"></div>
+				<p class="day">@dayOfWeek</p>
+			</div>
+		}
+    </div>
+</div>
 
     <div class="points-section">
         <span class="points-label">Current number of points:</span>
