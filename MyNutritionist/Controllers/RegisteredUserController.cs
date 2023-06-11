@@ -141,14 +141,18 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
 
-            //_context.Users.Remove(registeredUser);
-            await _userManager.DeleteAsync(registeredUser);
+            _context.RegisteredUser.Remove(registeredUser);
+            await _context.SaveChangesAsync();
             _context.PremiumUser.Add(premiumUser);
-            
+            await _context.SaveChangesAsync();
+
             _context.Card.Add(newCard);
+            await _context.SaveChangesAsync();
 
             await _userManager.RemoveFromRoleAsync(registeredUser, "RegisteredUser");
+            await _context.SaveChangesAsync();
             await _userManager.AddToRoleAsync(premiumUser, "PremiumUser");
+           
             
 
             await _context.SaveChangesAsync();
