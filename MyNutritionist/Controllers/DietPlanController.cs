@@ -44,7 +44,7 @@ namespace MyNutritionist.Controllers
             if (dietPlan == null)
             {
                 // Handle the case when the diet plan is not found
-                return NotFound();
+                return StatusCode(503, "Page is currently unavailable. Diet Plan will be availabe soon. Our nutritionist is working on that.");
             }
 
             return View(dietPlan);
