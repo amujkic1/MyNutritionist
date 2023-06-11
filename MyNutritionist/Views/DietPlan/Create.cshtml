@@ -3,7 +3,7 @@
 <h1>DietPlan</h1>
 
 <form asp-action="Create" asp-controller="DietPlan" method="post">
-    
+    <input type="hidden" name="RegUser" value="@Model.PremiumUserId" />
 
     <table class="table table-striped">
         <thead>
@@ -19,7 +19,7 @@
             @for (int i = 0; i < 7; i++)
             {
                 <tr>
-                    <td>@((DayOfWeek)(i+1))</td>
+                    <td>@((DayOfWeek)(i))</td>
                     <td><input type="text" asp-for="@Model.DietPlan.Recipes[i * 4].NameOfRecipe" class="form-control" /></td>
                     <td><input type="text" asp-for="@Model.DietPlan.Recipes[i * 4 + 1].NameOfRecipe" class="form-control" /></td>
                     <td><input type="text" asp-for="@Model.DietPlan.Recipes[i * 4 + 2].NameOfRecipe" class="form-control" /></td>
@@ -33,19 +33,25 @@
 
     <div class="row" style="margin-top: 20px">
         <div class="col-md-4">
-            <form asp-action="Create" asp-controller="ControllerName" method="post" asp-route-id="@Model.PremiumUserId">
+            <form asp-action="Create" asp-controller="DietPlan" method="post" asp-route-RegUser="@Model.PremiumUserId">
                 <div class="form-group" style="margin-right: 20px">
                     <label for="totalCalories">Total Calories:</label>
                     <input type="number" name="totalCalories" id="totalCalories" asp-for="@Model.DietPlan.TotalCalories" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <input type="submit" value="Save" class="btn btn-primary" onclick="Create('@Model.PremiumUserId')" />
                 </div>
             </form>
         </div>
     </div>
-
-    <div>
-        <a href="@Url.Action("ActionName", "ControllerName")" class="btn btn-secondary">Back to List</a>
-    </div>
 </form>
+
+@section Scripts {
+    <script>
+        function Create(id) {
+            if (id) {
+                window.location.href = '@Url.Action("Create", "DietPlan")' + '?RegUser=' + encodeURIComponent(id);
+            }
+        }
+    </script>
+}
