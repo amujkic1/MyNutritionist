@@ -12,13 +12,13 @@ using MyNutritionist.Models;
 
 namespace MyNutritionist.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "RegisteredUser")]
     public class RegisteredUserController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private UserManager<ApplicationUser> _userManager;
-
+        private readonly UserManager<ApplicationUser> _userManager;
+        private List<Ingredient> _ingredients = new List<Ingredient>();
         public RegisteredUserController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -90,6 +90,7 @@ namespace MyNutritionist.Controllers
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+            
 
             if (registeredUser == null)
             {
@@ -129,7 +130,7 @@ namespace MyNutritionist.Controllers
             try
             {
                 newCard = Activator.CreateInstance<Card>();
-                newCard.Owner = premiumUser;
+                newCard.PremiumUser = premiumUser;
                 newCard.Balance = card.Balance;
                 newCard.CardNumber = card.CardNumber;
             }
@@ -140,7 +141,8 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
 
-            _context.RegisteredUser.Remove(registeredUser);
+            //_context.Users.Remove(registeredUser);
+            await _userManager.DeleteAsync(registeredUser);
             _context.PremiumUser.Add(premiumUser);
             
             _context.Card.Add(newCard);
@@ -252,9 +254,18 @@ namespace MyNutritionist.Controllers
 
             return View(registeredUser);
         }
-        public IActionResult login()
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DailyFoodAndActivity([Bind("Breakfast,Lunch,Dinner,Snacks,PhysicalActivity")] EnterActivityAndFoodViewModel input)
         {
-            return View("login");
+            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var user = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+
+            
+
+            return RedirectToAction("Index");
         }
 
     }

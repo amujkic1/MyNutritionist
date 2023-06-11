@@ -12,7 +12,7 @@ using MyNutritionist.Models;
 
 namespace MyNutritionist.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Nutritionist")]
     public class NutritionistController : Controller
     {
         private readonly ApplicationDbContext _context;

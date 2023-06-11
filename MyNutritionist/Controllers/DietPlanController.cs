@@ -62,7 +62,7 @@ namespace MyNutritionist.Controllers
         {
             if (ModelState.IsValid)
             {
-                dietPlan.Nutritionist.Id = "11";
+                //dietPlan.Nutritionist.Id = "11";
                 _context.Add(dietPlan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

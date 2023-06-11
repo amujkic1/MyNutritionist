@@ -7,9 +7,10 @@ namespace MyNutritionist.Models
     {
         [Key]
         public int DPID { get; set; }
-        public Nutritionist Nutritionist { get; set; }
+        //public Nutritionist Nutritionist { get; set; }
         public int TotalCalories { get; set; }
         
+        public PremiumUser PremiumUser { get; set; }
         public ICollection<Recipe> Recipes { get; set; }
 
         public DietPlan() {
