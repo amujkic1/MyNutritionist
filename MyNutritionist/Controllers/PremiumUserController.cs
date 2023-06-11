@@ -208,6 +208,96 @@ namespace MyNutritionist.Controllers
 
             return View(model);
         }
+        [HttpPost]
+        public async Task<IActionResult> Save(EnterActivityAndFoodViewModel model)
+        {
+            var breakfastIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Breakfast.FoodName);
+            var lunchIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Lunch.FoodName);
+            var dinnerIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Dinner.FoodName);
+            var snacksIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Snacks.FoodName);
+
+            var breakfastQuantity = 0;
+            var lunchQuantity = 0;
+            var dinnerQuantity = 0;
+            var snacksQuantity = 0;
+
+            if (ModelState.IsValid)
+            {
+                if (int.TryParse(Request.Form["breakfast-quantity"], out breakfastQuantity) &&
+                    int.TryParse(Request.Form["lunch-quantity"], out lunchQuantity) &&
+                    int.TryParse(Request.Form["dinner-quantity"], out dinnerQuantity) &&
+                    int.TryParse(Request.Form["snacks-quantity"], out snacksQuantity))
+                {
+                    var consumedCalories = 0;
+
+                    if (breakfastIngredient != null)
+                        consumedCalories += breakfastQuantity * breakfastIngredient.Calories;
+
+                    if (lunchIngredient != null)
+                        consumedCalories += lunchQuantity * lunchIngredient.Calories;
+
+                    if (dinnerIngredient != null)
+                        consumedCalories += dinnerQuantity * dinnerIngredient.Calories;
+
+                    if (snacksIngredient != null)
+                        consumedCalories += snacksQuantity * snacksIngredient.Calories;
+
+                    var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+
+
+                    var currentUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.Id == userId);
+
+
+                    if (currentUser == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var burnedCalories = CalculateBurnedCalories(model.PhysicalActivity);
+
+                    var progress = new Progress
+                    {
+                        Date = DateTime.Now,
+                        BurnedCalories = burnedCalories,
+                        ConsumedCalories = consumedCalories,
+                        RegisteredUser = null,
+                        PremiumUser = currentUser
+                    };
+
+                    _context.Progress.Add(progress);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+
+            return View(model);
+        }
+
+        private int CalculateBurnedCalories(PhysicalActivity activity)
+        {
+            const int RunningCaloriesPerMinute = 10;
+            const int WalkingCaloriesPerMinute = 5;
+            const int CyclingCaloriesPerMinute = 8;
+
+            var durationInMinutes = activity.Duration;
+
+            switch (activity.ActivityType)
+            {
+                case ActivityType.RUNNING:
+                    return durationInMinutes * RunningCaloriesPerMinute;
+
+                case ActivityType.WALKING:
+                    return durationInMinutes * WalkingCaloriesPerMinute;
+
+                case ActivityType.CYCLING:
+                    return durationInMinutes * CyclingCaloriesPerMinute;
+
+                default:
+                    return 0;
+            }
+        }
+
     }
 
 }

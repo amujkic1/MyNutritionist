@@ -1,46 +1,111 @@
 ﻿@model MyNutritionist.Models.EnterActivityAndFoodViewModel
-<h1>Create Meal and Activity</h1>
+<html>
+<head>
+    <title>Unos obroka i aktivnosti</title>
+    <style>
+        .input-container {
+            margin-bottom: 20px;
+            width: 90%;
+        }
 
-<form asp-action="Create" method="post">
-    <div class="input-container">
-        <label asp-for="Breakfast">Breakfast</label>
-        <input asp-for="Breakfast" class="form-control" />
-        <span asp-validation-for="Breakfast" class="text-danger"></span>
-    </div>
+            .input-container label {
+                display: block;
+                font-weight: bold;
+                width: 90%;
+            }
 
-    <div class="input-container">
-        <label asp-for="Lunch">Lunch</label>
-        <input asp-for="Lunch" class="form-control" />
-        <span asp-validation-for="Lunch" class="text-danger"></span>
-    </div>
+            .input-container input[type="text"],
+            .input-container select {
+                width: 90%;
+                padding: 6px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
 
-    <div class="input-container">
-        <label asp-for="Dinner">Dinner</label>
-        <input asp-for="Dinner" class="form-control" />
-        <span asp-validation-for="Dinner" class="text-danger"></span>
-    </div>
+        .column {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-right: 40px;
+        }
 
-    <div class="input-container">
-        <label asp-for="Snacks">Snacks</label>
-        <input asp-for="Snacks" class="form-control" />
-        <span asp-validation-for="Snacks" class="text-danger"></span>
-    </div>
+        .row {
+            display: flex;
+            justify-content: space-between;
+        }
 
-    <div class="input-container">
-        <label asp-for="PhysicalActivity.Duration">Duration</label>
-        <input asp-for="PhysicalActivity.Duration" class="form-control" />
-        <span asp-validation-for="PhysicalActivity.Duration" class="text-danger"></span>
-    </div>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
 
-    <div class="input-container">
-        <label asp-for="PhysicalActivity.ActivityType">Type of Activity</label>
-        <select asp-for="PhysicalActivity.ActivityType" class="form-control">
-            <option value="Running">Running</option>
-            <option value="Cycling">Cycling</option>
-            <option value="Swimming">Swimming</option>
-        </select>
-        <span asp-validation-for="PhysicalActivity.ActivityType" class="text-danger"></span>
-    </div>
+      
+    </style>
+</head>
+<body>
+    <form action="Save" method="post">
+        <div class="container">
+            <div class="column">
+                <h1>Enter Food</h1>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+                <div class="input-container">
+                    <label asp-for="Breakfast.FoodName"></label>
+                    <div class="input-group">
+                        <input asp-for="Breakfast.FoodName" class="form-control" />
+                        <label for="breakfast-quantity">Quantity:</label>
+                        <input type="text" id="breakfast-quantity" name="breakfast-quantity" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label asp-for="Lunch.FoodName"></label>
+                    <div class="input-group">
+                        <input asp-for="Lunch.FoodName" class="form-control" />
+                        <label for="lunch-quantity">Quantity:</label>
+                        <input type="text" id="lunch-quantity" name="lunch-quantity" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label asp-for="Dinner.FoodName"></label>
+                    <div class="input-group">
+                        <input asp-for="Dinner.FoodName" class="form-control" />
+                        <label for="dinner-quantity">Quantity:</label>
+                        <input type="text" id="dinner-quantity" name="dinner-quantity" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label asp-for="Snacks.FoodName"></label>
+                    <div class="input-group">
+                        <input asp-for="Snacks.FoodName" class="form-control" />
+                        <label for="snacks-quantity">Quantity:</label>
+                        <input type="text" id="snacks-quantity" name="snacks-quantity" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <h1>Enter Activity</h1>
+
+                <div class="input-container">
+                    <label asp-for="PhysicalActivity.Duration"></label>
+                    <input asp-for="PhysicalActivity.Duration" class="form-control" style="margin-bottom: 20px;" />
+                </div>
+
+                <div class="input-container">
+                    <label asp-for="PhysicalActivity.ActivityType"></label>
+                    <select asp-for="PhysicalActivity.ActivityType" class="form-control">
+                        <option value="running">Running</option>
+                        <option value="cycling">Cycling</option>
+                        <option value="swimming">Swimming</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 20px">
+            <button type="submit" class="btn btn-primary" style="margin-top: 20px; margin-left:200px">Save</button>
+        </div>
+    </form>
+</body>
+</html>
