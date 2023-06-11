@@ -90,7 +90,12 @@ namespace MyNutritionist.Controllers
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-            
+
+            if (card.Balance < 50)
+            {
+                TempData["NotificationMessage"] = "Your card balance has to be 50 or above to finish this transaction.";
+                return RedirectToAction("Index");
+            }
 
             if (registeredUser == null)
             {
@@ -140,6 +145,8 @@ namespace MyNutritionist.Controllers
                     $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
+
+
 
             _context.RegisteredUser.Remove(registeredUser);
             await _context.SaveChangesAsync();
