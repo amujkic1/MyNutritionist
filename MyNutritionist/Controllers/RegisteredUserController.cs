@@ -293,5 +293,52 @@ namespace MyNutritionist.Controllers
 
             return View(model);
         }
+        [HttpPost]
+        public async Task<IActionResult> Save(EnterActivityAndFoodViewModel model)
+        {
+            // Pronađi namirnice iz obrasca i izračunaj ukupne kalorije
+            var breakfastIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Breakfast.FoodName);
+            var lunchIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Lunch.FoodName);
+            var dinnerIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Dinner.FoodName);
+            var snacksIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Snacks.FoodName);
+
+            var consumedCalories = 0;
+            if (breakfastIngredient != null)
+                consumedCalories += breakfastIngredient.Calories;
+
+            if (lunchIngredient != null)
+                consumedCalories += lunchIngredient.Calories;
+
+            if (dinnerIngredient != null)
+                consumedCalories += dinnerIngredient.Calories;
+
+            if (snacksIngredient != null)
+                consumedCalories += snacksIngredient.Calories;
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+
+            // Dohvati trenutnog korisnika iz baze podataka na temelju ID-a
+            var currentUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Id == userId);
+
+            // Provjeri je li trenutni korisnik pronađen
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+            // Stvaranje novog unosa napretka
+            var progress = new Progress
+            {
+                Date = DateTime.Now,
+                BurnedCalories = 0,
+                ConsumedCalories = consumedCalories,
+                RegisteredUser = currentUser,
+                PremiumUser =null
+            };
+
+            // Dodaj napredak u bazu
+            _context.Progress.Add(progress);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
     }
 }
