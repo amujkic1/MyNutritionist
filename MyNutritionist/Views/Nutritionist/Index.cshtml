@@ -1,5 +1,5 @@
 ﻿﻿@using Microsoft.Data.SqlClient;
-@model IEnumerable<MyNutritionist.Models.ApplicationUser>
+@model MyNutritionist.Models.Nutritionist
 
 @{
     ViewData["Title"] = "Nutritionist Dashboard";
@@ -11,11 +11,7 @@
 {
     <p>Welcome, @loggedInNutritionist.FullName</p>
 }
-<!--
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
--->
+
 
 <form>
 
@@ -26,7 +22,6 @@
         <div class="d-flex justify-content-between mb-3">
             <div>
                 <a class="btn btn-primary"  asp-controller="Recipes" asp-action="Create">New Recipe</a>
-                <a class="btn btn-primary" style="margin-left:200px"  asp-controller="DietPlan" asp-action="Create">New Diet Plan</a>
             </div>
             <div>
             </div>
@@ -34,7 +29,6 @@
             <table class="table">
                 <thead>
                     <tr class="text-lg-start">
-                        <th>Profile picture</th>
                         <th>@Html.DisplayNameFor(model => model.FullName)</th>
                         <th>@Html.DisplayNameFor(model => model.Email)</th>
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
@@ -44,24 +38,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.PremiumUsers)
                     {
                         <tr>
                             <td class="align-middle">
-                                <img class="rounded-circle" src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHVwcHl8ZW58MHx8MHx8fDA%3D&w=1000&q=80" style="max-width: 100px" />
+                                @item.FullName
                             </td>
                             <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.FullName)
+                                @item.Email
                             </td>
-                            <td class="align-middle">
-                                @Html.DisplayFor(modelItem => item.Email)
-                            </td>
-                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Nutritionist"))
                             {
                                 <td class="align-middle">
-                                    <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i>Edit </a> |
-                                    <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye"></i>Details </a> |
-                                    <a class="btn btn-danger text-white" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash"></i>Delete </a>
+                                        <a class="btn btn-outline-primary" asp-area="" asp-controller="DietPlan" asp-action="Create" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i>Add diet plan</a>
                                 </td>
                             }
 

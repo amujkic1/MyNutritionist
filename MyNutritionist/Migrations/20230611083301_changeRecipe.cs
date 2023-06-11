@@ -4,23 +4,23 @@
 
 namespace MyNutritionist.Migrations
 {
-    public partial class changeCard : Migration
+    public partial class changeRecipe : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<double>(
-                name: "Balance",
-                table: "Card",
-                type: "float",
+            migrationBuilder.AddColumn<string>(
+                name: "NameOfRecipe",
+                table: "Recipe",
+                type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: 0.0);
+                defaultValue: "");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Balance",
-                table: "Card");
+                name: "NameOfRecipe",
+                table: "Recipe");
         }
     }
 }

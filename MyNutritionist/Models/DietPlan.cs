@@ -7,13 +7,14 @@ namespace MyNutritionist.Models
     {
         [Key]
         public int DPID { get; set; }
-        public Nutritionist Nutritionist { get; set; }
+        //public Nutritionist Nutritionist { get; set; }
         public int TotalCalories { get; set; }
         
-        public ICollection<Recipe> Recipes { get; set; }
+        public PremiumUser PremiumUser { get; set; }
+        public List<Recipe> Recipes { get; set; } = new List<Recipe>();
 
         public DietPlan() {
-           
+            Recipes.Capacity = 28;
         }
     }
 }

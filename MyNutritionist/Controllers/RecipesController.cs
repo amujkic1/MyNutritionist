@@ -21,32 +21,7 @@ namespace MyNutritionist.Controllers
             _context = context;
         }
 
-        // GET: Recipes
-        public async Task<IActionResult> Index()
-        {
-              return _context.Recipe != null ? 
-                          View(await _context.Recipe.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Recipe'  is null.");
-        }
-
-        // GET: Recipes/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Recipe == null)
-            {
-                return NotFound();
-            }
-
-            var recipe = await _context.Recipe
-                .FirstOrDefaultAsync(m => m.RID == id);
-            if (recipe == null)
-            {
-                return NotFound();
-            }
-
-            return View(recipe);
-        }
-
+        [Authorize(Roles = "Nutritionist")]
         // GET: Recipes/Create
         public IActionResult Create()
         {
@@ -58,32 +33,37 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RID,RecipeLink,TotalCalories,DietPlanDPID")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("TotalCalories,RecipeLink")] Recipe recipe)
         {
-            if (ModelState.IsValid)
+            var nutritionist = await _context.Nutritionist.FindAsync(11111);
+            if (nutritionist == null)
             {
-             
-  
-                // Pronađite nutricionista na temelju ID-a
-                var nutritionist = await _context.Nutritionist.FindAsync(recipe.Nutritionist.Id);
-                if (nutritionist == null)
-                {
-                    return NotFound("Nutritionist not found.");
-                }
-
-                // Povežite nutricionista s receptom
-                recipe.Nutritionist = nutritionist;
-                
-                // Dodajte recept u kontekst i spremite promjene
-                _context.Add(recipe);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
+                return NotFound("Nutritionist not found.");
             }
+
+            // Povežite nutricionista s receptom
+            
+            recipe = Activator.CreateInstance<Recipe>();
+            //recipe.RID = 1;
+            recipe.RecipeLink = "link";
+            recipe.TotalCalories = 34;
+            recipe.Nutritionist = nutritionist;
+            var DietPlan = await _context.DietPlan
+                .FirstOrDefaultAsync(m => m.DPID == 1);
+            if (DietPlan == null)
+            {
+                return NotFound();
+            }
+            DietPlan.Recipes.Add(await _context.Recipe.FirstOrDefaultAsync(m => m.RID == 1));
+
+            await _context.SaveChangesAsync();
+            _context.Add(recipe);
+            await _context.SaveChangesAsync();
 
             return View(recipe);
         }
 
+        [Authorize(Roles = "Nutritionist")]
         // GET: Recipes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -135,67 +115,36 @@ namespace MyNutritionist.Controllers
             return View(recipe);
         }
 
-        // GET: Recipes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Recipe == null)
-            {
-                return NotFound();
-            }
-
-            var recipe = await _context.Recipe
-                .FirstOrDefaultAsync(m => m.RID == id);
-            if (recipe == null)
-            {
-                return NotFound();
-            }
-
-            return View(recipe);
-        }
-
-        // POST: Recipes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Recipe == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Recipe'  is null.");
-            }
-            var recipe = await _context.Recipe.FindAsync(id);
-            if (recipe != null)
-            {
-                _context.Recipe.Remove(recipe);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
         private bool RecipeExists(int id)
         {
           return (_context.Recipe?.Any(e => e.RID == id)).GetValueOrDefault();
         }
-        public async Task<IActionResult> NAddRecipe(int? id)
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddRecipe([Bind("TotalCalories,RecipeLink")] Recipe recipe)
         {
-            /*
-            if (id == null || _context.Nutritionist == null)
+            var nutritionist = await _context.Nutritionist.FindAsync(11111);
+            if (nutritionist == null)
+            {
+                return NotFound("Nutritionist not found.");
+            }
+
+            recipe.Nutritionist = nutritionist;
+            var DietPlan = await _context.DietPlan.FirstOrDefaultAsync(m => m.DPID == 1);
+            if (DietPlan == null)
             {
                 return NotFound();
             }
+            DietPlan.Recipes.Add(recipe);
 
-        */
-            var recipe = await _context.Recipe
-                .FirstOrDefaultAsync(m => m.RID == id);
-            /*  if (nutritionist == null)
-              {
-                  return NotFound();
-              }*/
+            await _context.SaveChangesAsync();
 
-            return View(recipe);
+            return RedirectToAction(nameof(Index));
         }
-      
+
+
     }
 
-
 }
+

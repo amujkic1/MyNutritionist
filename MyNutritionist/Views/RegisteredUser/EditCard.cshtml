@@ -1,4 +1,4 @@
-﻿
+﻿@model MyNutritionist.Models.Card
 @{
     ViewData["Title"] = "Upgrade to premium";
 }
@@ -83,18 +83,20 @@
 </div>
 <div class="form-section">
     <div class="form-column">
+        <form asp-action="EditCard">
         <div>
             <span class="form-label">Owner:</span>
-            <input class="form-field" type="text">
+            <input class="form-field" asp-for="PremiumUser" type="text">
         </div>
         <div>
             <span class="form-label">Card number:</span>
-            <input class="form-field" type="text">
+            <input class="form-field" asp-for="CardNumber" type="text">
         </div>
         <div>
-            <span class="form-label">Card number:</span>
-            <input class="form-field" type="text">
+            <span class="form-label">Balance:</span>
+            <input class="form-field" asp-for="Balance" type="number">
         </div>
-        <button class="rounded-button" style="float: right">Coniform</button>
+        <button class="rounded-button" style="float: right">Confirm</button>
+        </form>
     </div>
 </div>

@@ -12,7 +12,7 @@ using MyNutritionist.Models;
 
 namespace MyNutritionist.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Nutritionist")]
     public class NutritionistController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -28,41 +28,13 @@ namespace MyNutritionist.Controllers
         public async Task<IActionResult> Index()
         {
             var loggedInNutritionist = await _userManager.GetUserAsync(User);
-            ViewData["LoggedInNutritionist"] = loggedInNutritionist;
-
-            var premiumUsers = _context.Nutritionist
-            .Include(n => n.PremiumUsers)
-            .Where(n => n.Id == loggedInNutritionist.Id)
-            .SelectMany(n => n.PremiumUsers);
-
-            /*var premiumUsers = _userManager.GetUsersInRoleAsync("PremiumUser").Result;
-            var idsOfPremiumUsers = premiumUsers.Select(u => u.Id);
-            var users = premiumUsers.OfType<ApplicationUser>();*/
-
-            return View(premiumUsers);
-
-        }
-
-        // GET: Nutritionist/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Nutritionist == null)
-            {
-                return NotFound();
-            }
-
-            var nutritionist = await _context.Nutritionist
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (nutritionist == null)
-            {
-                return NotFound();
-            }
-
-            return View(nutritionist);
+            var user = await _context.Nutritionist
+                .Include(n => n.PremiumUsers) // Include the PremiumUsers list
+                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+            return View(user);
         }
 
         // GET: Nutritionist/Create
-        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();

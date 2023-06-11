@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNutritionist.Models
 {
@@ -7,7 +8,10 @@ namespace MyNutritionist.Models
         [Key]
         public int CId { get; set; }
         public int CardNumber { get; set; }
-        public PremiumUser Owner { get; set; }
+
+        [ForeignKey("PremiumUser")]
+        public string PremiumUserId { get; set; }
+        public PremiumUser PremiumUser { get; set; }
         public double Balance { get; set; }
         public Card() { }
 

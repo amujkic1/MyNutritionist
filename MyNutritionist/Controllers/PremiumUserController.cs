@@ -18,7 +18,7 @@ using static System.Net.WebRequestMethods;
 
 namespace MyNutritionist.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "PremiumUser")]
     public class PremiumUserController : Controller
     {
         private readonly ApplicationDbContext _context;

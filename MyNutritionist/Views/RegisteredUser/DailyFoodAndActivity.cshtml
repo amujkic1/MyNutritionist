@@ -1,4 +1,5 @@
-﻿<html>
+﻿@model MyNutritionist.Models.EnterActivityAndFoodViewModel
+<html>
 <head>
     <title>Unos obroka i aktivnosti</title>
     <style>
@@ -42,52 +43,69 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="column">
-            <h1>Enter Food</h1>
+    <form asp-action="Save" asp-controller="YourControllerName" method="post">
+        <div class="container">
+            <div class="column">
+                <h1>Enter Food</h1>
 
-            <div class="input-container">
-                <label for="breakfast">Breakfast</label>
-                <input type="text" id="breakfast" name="breakfast">
+                <div class="input-container">
+                    <label asp-for="Breakfast"></label>
+                    <div class="input-group">
+                        <input asp-for="Breakfast" class="form-control" />
+                        <label for="breakfast-quantity">Quantity:</label>
+                        <input type="text" id="breakfast-quantity" name="breakfast-quantity" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label asp-for="Lunch"></label>
+                    <div class="input-group">
+                        <input asp-for="Lunch" class="form-control" />
+                        <label for="lunch-quantity">Quantity:</label>
+                        <input type="text" id="lunch-quantity" name="lunch-quantity" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label asp-for="Dinner"></label>
+                    <div class="input-group">
+                        <input asp-for="Dinner" class="form-control" />
+                        <label for="dinner-quantity">Quantity:</label>
+                        <input type="text" id="dinner-quantity" name="dinner-quantity" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="input-container">
+                    <label asp-for="Snacks"></label>
+                    <div class="input-group">
+                        <input asp-for="Snacks" class="form-control" />
+                        <label for="snacks-quantity">Quantity:</label>
+                        <input type="text" id="snacks-quantity" name="snacks-quantity" class="form-control" />
+                    </div>
+                </div>
             </div>
+            <div class="column">
+                <h1>Enter Activity</h1>
 
-            <div class="input-container">
-                <label for="lunch">Lunch</label>
-                <input type="text" id="lunch" name="lunch">
-            </div>
+                <div class="input-container">
+                    <label asp-for="PhysicalActivity.Duration"></label>
+                    <input asp-for="PhysicalActivity.Duration" class="form-control" style="margin-bottom: 20px;" />
+                </div>
 
-            <div class="input-container">
-                <label for="dinner">Dinner</label>
-                <input type="text" id="dinner" name="dinner">
-            </div>
-
-            <div class="input-container">
-                <label for="snacks">Snacks</label>
-                <input type="text" id="snacks" name="snacks">
+                <div class="input-container">
+                    <label asp-for="PhysicalActivity.ActivityType"></label>
+                    <select asp-for="PhysicalActivity.ActivityType" class="form-control">
+                        <option value="running">Running</option>
+                        <option value="cycling">Cycling</option>
+                        <option value="swimming">Swimming</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <div class="column">
-            <h1>Enter Activity</h1>
-
-            <div class="input-container">
-                <label for="duration">Duration</label>
-                <input type="text" id="duration" name="duration" style="margin-bottom: 20px;">
-            </div>
-
-            <div class="input-container">
-                <label for="activity-type">Type of Activity</label>
-                <select id="activity-type" name="activity-type">
-                    <option value="running">Running</option>
-                    <option value="cycling">Cycling</option>
-                    <option value="swimming">Swimming</option>
-                </select>
-            </div>
+        <div class="form-group" style="margin-top: 20px">
+            <button type="submit" class="btn btn-primary" style="margin-top: 20px; margin-left:200px">Save</button>
         </div>
-    </div>
-
-    <div class="form-group" style="margin-top: 20px">
-        <input type="submit" value="Save" class="btn btn-primary" style="margin-top: 20px; margin-left:200px" />
-    </div>
+    </form>
 </body>
 </html>
