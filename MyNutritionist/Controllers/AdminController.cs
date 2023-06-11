@@ -15,7 +15,7 @@ using MyNutritionist.Models;
 
 namespace MyNutritionist.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -44,6 +44,7 @@ namespace MyNutritionist.Controllers
                 return BadRequest("Invalid name.");
             }
             var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.UserName == userName);
+            
 
             var nutritionist = await _context.Nutritionist
                .FirstOrDefaultAsync(m => m.NutriUsername.Equals("nutri123"));

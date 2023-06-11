@@ -14,7 +14,7 @@
                 <tr class="text-lg-start">
                     <th>Profile picture</th>
                     <th>@Html.DisplayNameFor(model => model.FullName)</th>
-                    <th>@Html.DisplayNameFor(model => model.Email)</th>
+                    <th>@Html.DisplayNameFor(model => model.EmailAddress)</th>
                     @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                     {
                         <th>Actions</th>
@@ -32,7 +32,7 @@
                             @Html.DisplayFor(modelItem => item.FullName)
                         </td>
                         <td class="align-middle">
-                            @Html.DisplayFor(modelItem => item.Email)
+                            @Html.DisplayFor(modelItem => item.EmailAddress)
                         </td>
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                         {
@@ -53,9 +53,9 @@
 
 @section Scripts {
     <script>
-        function UpgradeToPremium(regName) {
-            if (regName) {
-                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?userName=' + encodeURIComponent(regName);
+        function UpgradeToPremium(userName) {
+            if (userName) {
+                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?userName=' + encodeURIComponent(userName);
             }
         }
     </script>
