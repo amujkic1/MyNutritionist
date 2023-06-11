@@ -35,6 +35,18 @@ namespace MyNutritionist.Controllers
             return View(user);
         }
 
+        // GET: Nutritionist/Edit
+        public async Task<IActionResult> Edit()
+        {
+            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var user = await _context.Nutritionist
+                .Include(n => n.PremiumUsers) // Include the PremiumUsers list
+                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+
+            return View(user);
+        }
+
+
         public async Task<IActionResult> SortByNames()
         {
             var loggedInNutritionist = await _userManager.GetUserAsync(User);
