@@ -9,11 +9,11 @@ namespace MyNutritionist.Models
         public int DPID { get; set; }
         //public Nutritionist Nutritionist { get; set; }
         public int TotalCalories { get; set; }
-        
         public PremiumUser PremiumUser { get; set; }
         public List<Recipe> Recipes { get; set; } = new List<Recipe>();
 
-        public DietPlan() {
+        public DietPlan()
+        {
             Recipes.Capacity = 28;
         }
     }

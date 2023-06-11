@@ -43,42 +43,42 @@
     </style>
 </head>
 <body>
-    <form asp-action="Save" asp-controller="YourControllerName" method="post">
+    <form action="Save" method="post">
         <div class="container">
             <div class="column">
                 <h1>Enter Food</h1>
 
                 <div class="input-container">
-                    <label asp-for="Breakfast"></label>
+                    <label asp-for="Breakfast.FoodName"></label>
                     <div class="input-group">
-                        <input asp-for="Breakfast" class="form-control" />
+                        <input asp-for="Breakfast.FoodName" class="form-control" />
                         <label for="breakfast-quantity">Quantity:</label>
                         <input type="text" id="breakfast-quantity" name="breakfast-quantity" class="form-control" />
                     </div>
                 </div>
 
                 <div class="input-container">
-                    <label asp-for="Lunch"></label>
+                    <label asp-for="Lunch.FoodName"></label>
                     <div class="input-group">
-                        <input asp-for="Lunch" class="form-control" />
+                        <input asp-for="Lunch.FoodName" class="form-control" />
                         <label for="lunch-quantity">Quantity:</label>
                         <input type="text" id="lunch-quantity" name="lunch-quantity" class="form-control" />
                     </div>
                 </div>
 
                 <div class="input-container">
-                    <label asp-for="Dinner"></label>
+                    <label asp-for="Dinner.FoodName"></label>
                     <div class="input-group">
-                        <input asp-for="Dinner" class="form-control" />
+                        <input asp-for="Dinner.FoodName" class="form-control" />
                         <label for="dinner-quantity">Quantity:</label>
                         <input type="text" id="dinner-quantity" name="dinner-quantity" class="form-control" />
                     </div>
                 </div>
 
                 <div class="input-container">
-                    <label asp-for="Snacks"></label>
+                    <label asp-for="Snacks.FoodName"></label>
                     <div class="input-group">
-                        <input asp-for="Snacks" class="form-control" />
+                        <input asp-for="Snacks.FoodName" class="form-control" />
                         <label for="snacks-quantity">Quantity:</label>
                         <input type="text" id="snacks-quantity" name="snacks-quantity" class="form-control" />
                     </div>
