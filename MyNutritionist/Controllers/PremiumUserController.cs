@@ -35,12 +35,13 @@ namespace MyNutritionist.Controllers
             var currentDayOfWeek = (int)currentDate.DayOfWeek;
 
             var progressList = await _context.Progress
-                .Where(p => p.PremiumUser.Id == userId && p.Date >= currentDate.AddDays(-6) && p.Date <= currentDate)
+                .Where(p => p.PremiumUser.Id == userId && p.Date.Year == currentDate.Year && p.Date.Month == currentDate.Month && p.Date.Day >= currentDate.AddDays(-6).Day && p.Date.Day <= currentDate.Day)
                 .OrderBy(p => p.Date)
                 .ToListAsync();
 
-            var averageConsumedCalories = 2000; // Prosječan broj unesenih kalorija
-            var averageBurnedCalories = 300; // Prosječan broj potrošenih kalorija
+
+            var averageConsumedCalories = 2000;
+            var averageBurnedCalories = 300;
 
             var consumedCaloriesProgressData = new List<object>();
             var burnedCaloriesProgressData = new List<object>();
@@ -49,14 +50,13 @@ namespace MyNutritionist.Controllers
             {
                 var date = currentDate.AddDays(i);
                 var dayOfWeek = (int)date.DayOfWeek;
-                var progress = progressList.FirstOrDefault(p => p.Date == date);
+                var progress = progressList.FirstOrDefault(p => p.Date.Year == date.Year && p.Date.Month == date.Month && p.Date.Day == date.Day);
 
                 var consumedCalories = progress?.ConsumedCalories ?? 0;
                 var burnedCalories = progress?.BurnedCalories ?? 0;
 
-                var consumedCaloriesProgressPercentage = CalculateProgressPercentage(consumedCalories, averageConsumedCalories);
-                var burnedCaloriesProgressPercentage = CalculateProgressPercentage(burnedCalories, averageBurnedCalories);
-
+                var consumedCaloriesProgressPercentage = (int)CalculateProgressPercentage(consumedCalories, averageConsumedCalories);
+                var burnedCaloriesProgressPercentage = (int)CalculateProgressPercentage(burnedCalories, averageBurnedCalories);
                 var isSelectedDay = dayOfWeek == currentDayOfWeek;
 
                 consumedCaloriesProgressData.Add(new
@@ -105,6 +105,51 @@ namespace MyNutritionist.Controllers
             }
 
             ViewBag.NUTRITIONIST = nutritionist;
+            var currentDate = DateTime.Now.Date;
+            var currentDayOfWeek = (int)currentDate.DayOfWeek;
+
+            var progressList = await _context.Progress
+                .Where(p => p.PremiumUser.Id == userId && p.Date.Year == currentDate.Year && p.Date.Month == currentDate.Month && p.Date.Day >= currentDate.AddDays(-6).Day && p.Date.Day <= currentDate.Day)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+
+
+            var averageConsumedCalories = 2000;
+            var averageBurnedCalories = 300;
+
+            var consumedCaloriesProgressData = new List<object>();
+            var burnedCaloriesProgressData = new List<object>();
+
+            for (var i = 0; i < 7; i++)
+            {
+                var date = currentDate.AddDays(i);
+                var dayOfWeek = (int)date.DayOfWeek;
+                var progress = progressList.FirstOrDefault(p => p.Date.Year == date.Year && p.Date.Month == date.Month && p.Date.Day == date.Day);
+
+                var consumedCalories = progress?.ConsumedCalories ?? 0;
+                var burnedCalories = progress?.BurnedCalories ?? 0;
+
+                var consumedCaloriesProgressPercentage = (int)CalculateProgressPercentage(consumedCalories, averageConsumedCalories);
+                var burnedCaloriesProgressPercentage = (int)CalculateProgressPercentage(burnedCalories, averageBurnedCalories);
+                var isSelectedDay = dayOfWeek == currentDayOfWeek;
+
+                consumedCaloriesProgressData.Add(new
+                {
+                    DayOfWeek = date.ToString("ddd"),
+                    HeightPercentage = consumedCaloriesProgressPercentage,
+                    IsSelectedDay = isSelectedDay
+                });
+
+                burnedCaloriesProgressData.Add(new
+                {
+                    DayOfWeek = date.ToString("ddd"),
+                    HeightPercentage = burnedCaloriesProgressPercentage,
+                    IsSelectedDay = isSelectedDay
+                });
+            }
+
+            ViewBag.ConsumedCaloriesProgressData = consumedCaloriesProgressData;
+            ViewBag.BurnedCaloriesProgressData = burnedCaloriesProgressData;
 
             return View(premiumUser);
         }

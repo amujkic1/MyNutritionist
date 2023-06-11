@@ -18,10 +18,12 @@ namespace MyNutritionist.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public NutritionistController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public NutritionistController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
 
@@ -34,16 +36,47 @@ namespace MyNutritionist.Controllers
                 .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
             return View(user);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([Bind("FullName,Email,NutriUsername,Image")] Nutritionist Reguser)
+        {
+            //var user = Activator.CreateInstance<RegisteredUser>();
+            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var user = await _context.Nutritionist
+                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+            
+            if (Reguser.FullName != null) user.FullName = Reguser.FullName;
+            if (Reguser.Email != null)
+            {
+                user.EmailAddress = Reguser.Email;
+                user.Email = Reguser.Email;
+            }
+            if (Reguser.NutriUsername != null)
+            {
+                user.UserName = Reguser.NutriUsername;
+                user.NutriUsername = Reguser.NutriUsername;
+            }
+            user.Image = Reguser.Image;
+            user.Id = usrId;
+
+            var result = await _userManager.UpdateAsync(user);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
 
         // GET: Nutritionist/Edit
         public async Task<IActionResult> Edit()
         {
-            var loggedInNutritionist = await _userManager.GetUserAsync(User);
-            var user = await _context.Nutritionist
-                .Include(n => n.PremiumUsers) // Include the PremiumUsers list
-                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var nutritionist = await _context.Nutritionist
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
 
-            return View(user);
+            if (nutritionist == null)
+            {
+                return NotFound();
+            }
+
+            return View(nutritionist);
         }
 
 

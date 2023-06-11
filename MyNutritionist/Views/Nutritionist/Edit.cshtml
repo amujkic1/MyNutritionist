@@ -26,14 +26,53 @@
                 <input asp-for="NutriUsername" class="form-control" />
                 <span asp-validation-for="NutriUsername" class="text-danger"></span>
             </div>
-         
+
+            <label asp-for="Image" class="control-label"></label>
+            <input asp-for="Image" class="form-control" style="visibility: hidden" />
+            <span asp-validation-for="Image" class="text-danger"></span>
+            <div style="padding: 1rem; display: grid; grid-template-columns: 50% 50%">
+                <div id="results">
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <img src="@Model.Image" />
+                    }
+                    else
+                    {
+                        <span>No photo available</span>
+                    }
+                </div>
+                <div style="margin-left: 20rem">
+                    <div id="my_camera"></div>
+                    <script type="text/javascript" src="~/js/webcam.min.js"></script>
+                    <script>
+                        Webcam.set({
+                            width: 320,
+                            height: 240,
+                            image_format: 'jpeg',
+                            jpeg_quality: 90
+                        });
+                        Webcam.attach('#my_camera');
+                    </script>
+                    <script>
+                        function take_snapshot() {
+                            Webcam.snap(function (data_uri) {
+                                document.getElementById('results').innerHTML = '<img src="' + data_uri + '" />';
+                                document.getElementById('Image').value = data_uri;
+                            });
+                        }
+                    </script>
+                    <input type="button" id="takeshot" class="btn btn-primary" value="Take a picture" onClick="take_snapshot()">
+                </div>
+            </div>
+            <div style="margin-top: 20px" class="form-group style="margin-bottom:20px">
+                <input type="submit" style="margin-left: 20px" value="Save" class="btn btn-primary" />
+            </div>
         </form>
     </div>
 </div>
 
-
-
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
