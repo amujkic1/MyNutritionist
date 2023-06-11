@@ -110,7 +110,6 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
             
-            //premiumUser.AccountNumber = ;
             premiumUser.City = registeredUser.City;
             premiumUser.Height = registeredUser.Height;
             premiumUser.Weight = registeredUser.Weight;

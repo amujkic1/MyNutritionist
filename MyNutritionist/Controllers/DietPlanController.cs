@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -29,28 +30,12 @@ namespace MyNutritionist.Controllers
                           Problem("Entity set 'ApplicationDbContext.DietPlan'  is null.");
         }
 
-        // GET: DietPlan/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-           /* if (id == null || _context.DietPlan == null)
-            {
-                return NotFound();
-            }*/
-
-            var dietPlan = await _context.DietPlan
-                .FirstOrDefaultAsync(m => m.DPID == id);
-           /* if (dietPlan == null)
-            {
-                return NotFound();
-            }*/
-
-            return View(dietPlan);
-        }
-
         // GET: DietPlan/Create
-        public IActionResult Create()
+        public IActionResult Create(string id)
         {
-            return View();
+            var dietPlan = new DietPlanViewModel();
+            dietPlan.PremiumUserId = id;
+            return View(dietPlan);
         }
 
         // POST: DietPlan/Create
@@ -58,16 +43,20 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DPID,TotalCalories")] DietPlan dietPlan)
+        public async Task<IActionResult> Create([Bind("DietPlan,TotalCalories")] DietPlanViewModel dietPlanvm, string id)
         {
             if (ModelState.IsValid)
             {
-                //dietPlan.Nutritionist.Id = "11";
+                var dietPlan = dietPlanvm.DietPlan;
+                dietPlan.PremiumUser = await _context.PremiumUser
+                    .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                
+                
                 _context.Add(dietPlan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(dietPlan);
+            return View(dietPlanvm);
         }
 
         // GET: DietPlan/Edit/5

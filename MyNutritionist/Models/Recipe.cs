@@ -11,6 +11,7 @@ namespace MyNutritionist.Models
         public Nutritionist Nutritionist { get; set; }
         public int TotalCalories { get; set; }
 
+        public string NameOfRecipe { get; set; }
        
         public Recipe() { }
         /*public Recipe()
