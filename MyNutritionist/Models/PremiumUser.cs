@@ -17,6 +17,7 @@ namespace MyNutritionist.Models
         
         [ForeignKey("ApplicationUser")]
         public string AspUserId { get; set; }
+
         public PremiumUser() { }
     }
 }

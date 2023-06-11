@@ -42,13 +42,20 @@ namespace MyNutritionist.Controllers
         // GET: PremiumUser/Details/5
         public async Task<IActionResult> Details()
         {
-            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+
+          
             var premiumUser = await _context.PremiumUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                .FirstOrDefaultAsync(m => m.Id.Equals(userId));
+
+            var nutritionist = _context.Nutritionist.FirstOrDefault(n => n.PremiumUsers.Any(p => p.Id.Equals(userId)));
+
             if (premiumUser == null)
             {
                 return NotFound();
             }
+
+            ViewBag.NUTRITIONIST = nutritionist;
 
             return View(premiumUser);
         }
