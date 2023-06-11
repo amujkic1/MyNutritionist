@@ -80,6 +80,28 @@ namespace MyNutritionist.Controllers
             return View(premiumUser);
         }
 
+        public IActionResult NutritionalValues()
+        {
+            Ingredient ingredient = new Ingredient(); // Create a new instance of the Ingredient model
+            return View(ingredient);
+        }
+
+
+
+        [HttpPost]
+        public IActionResult CheckNutritionalValues(Ingredient ingredient)
+        {
+            // Retrieve the ingredient from the database based on the entered name
+            var queriedIngredient = _context.Ingredient
+                .FirstOrDefault(i => i.FoodName == ingredient.FoodName);
+            if (queriedIngredient == null)
+            {
+                return NotFound();
+            }
+
+            // Pass the queried ingredient to the view for display
+            return View("NutritionalValues", queriedIngredient);
+        }
         private double CalculateProgressPercentage(double value, double averageValue)
         {
             double progress = value / averageValue * 100;

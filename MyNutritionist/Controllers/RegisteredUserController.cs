@@ -148,26 +148,50 @@ namespace MyNutritionist.Controllers
             ViewBag.BurnedCaloriesProgressData = burnedCaloriesProgressData;
             return View(registeredUser);
         }
+
+        public IActionResult NutritionalValues()
+        {
+            Ingredient ingredient = new Ingredient(); // Create a new instance of the Ingredient model
+            return View(ingredient);
+        }
+
+
+
+        [HttpPost]
+        public IActionResult CheckNutritionalValues(Ingredient ingredient)
+        {
+            // Retrieve the ingredient from the database based on the entered name
+            var queriedIngredient = _context.Ingredient
+                .FirstOrDefault(i => i.FoodName == ingredient.FoodName);
+            if(queriedIngredient==null)
+            {
+                return NotFound();
+            }
+
+            // Pass the queried ingredient to the view for display
+            return View("NutritionalValues", queriedIngredient);
+        }
+        /*
         // GET: RegisteredUser/NutritionalValues/5
         public async Task<IActionResult> NutritionalValues(int? id)
         {
-            /*
+            
             if (id == null || _context.RegisteredUser == null)
             {
                 return NotFound();
             }
 
-        */
+        
             var registeredUser = await _context.RegisteredUser
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            /*  if (registeredUser == null)
+              if (registeredUser == null)
               {
                   return NotFound();
-              }*/
+              }
 
             return View(registeredUser);
         }
-
+    */
         // GET: RegisteredUser/EditCard/5
         public async Task<IActionResult> EditCard()
         {
@@ -319,6 +343,8 @@ namespace MyNutritionist.Controllers
             
             return View(registeredUser);
         }
+
+       
 
 
         // GET: RegisteredUser/Delete
