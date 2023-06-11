@@ -16,10 +16,12 @@ namespace MyNutritionist.Controllers
     public class DietPlanController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DietPlanController(ApplicationDbContext context)
+        public DietPlanController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: DietPlan
@@ -43,11 +45,14 @@ namespace MyNutritionist.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DietPlan,TotalCalories")] DietPlanViewModel dietPlanvm, string id)
+        public async Task<IActionResult> Create(string id, [Bind("DietPlan,TotalCalories")] DietPlanViewModel dietPlanvm)
         {
             if (ModelState.IsValid)
             {
                 var dietPlan = dietPlanvm.DietPlan;
+
+                var loggedInNutritionist = await _userManager.GetUserAsync(User);
+                var user = await _context.Nutritionist.FindAsync(loggedInNutritionist.Id);
                 dietPlan.PremiumUser = await _context.PremiumUser
                     .FirstOrDefaultAsync(m => m.Id.Equals(id));
                 
