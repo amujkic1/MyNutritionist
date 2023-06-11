@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,18 +26,37 @@ namespace MyNutritionist.Controllers
         }
 
         // GET: DietPlan
+        [Authorize(Roles = "PremiumUser")]
         public async Task<IActionResult> Index()
         {
-              return _context.DietPlan != null ? 
-                          View(await _context.DietPlan.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.DietPlan'  is null.");
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                // Handle the case when the user is not found
+                return NotFound();
+            }
+
+            // Retrieve the diet plan for the signed-in user
+            var dietPlan = _context.DietPlan
+                                  .Include(d => d.Recipes)
+                                  .FirstOrDefault(d => d.PremiumUser.Id == user.Id);
+            if (dietPlan == null)
+            {
+                // Handle the case when the diet plan is not found
+                return NotFound();
+            }
+
+            return View(dietPlan);
         }
 
         // GET: DietPlan/Create
-        public IActionResult Create(string id)
+        [Authorize(Roles = "Nutritionist")]
+        public IActionResult Create(string RegUser)
         {
             var dietPlan = new DietPlanViewModel();
-            dietPlan.PremiumUserId = id;
+            dietPlan.PremiumUserId = RegUser;
+
             return View(dietPlan);
         }
 
@@ -44,117 +64,42 @@ namespace MyNutritionist.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Nutritionist")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string id, [Bind("DietPlan,TotalCalories")] DietPlanViewModel dietPlanvm)
+        public async Task<IActionResult> Create(string RegUser, [Bind("DietPlan,TotalCalories")] DietPlanViewModel dietPlanvm)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
             {
                 var dietPlan = dietPlanvm.DietPlan;
+
+
+                for (var i = 0; i < 28; i++)
+                {
+                    if (dietPlan.Recipes[i].NameOfRecipe != null)
+                    {
+                        dietPlan.Recipes[i] = await _context.Recipe
+                             .FirstOrDefaultAsync(r => r.NameOfRecipe == dietPlan.Recipes[i].NameOfRecipe);
+                    }
+                }
 
                 var loggedInNutritionist = await _userManager.GetUserAsync(User);
                 var user = await _context.Nutritionist.FindAsync(loggedInNutritionist.Id);
                 dietPlan.PremiumUser = await _context.PremiumUser
-                    .FirstOrDefaultAsync(m => m.Id.Equals(id));
-                
-                
+                    .FirstOrDefaultAsync(m => m.Id.Equals(RegUser));
+
+                var deletePlans = _context.DietPlan.Where(d => d.PremiumUser.Id == RegUser).ToList();
+                if (deletePlans != null)
+                {
+                    _context.DietPlan.Remove(dietPlan);
+                    _context.SaveChanges();
+                }
+
                 _context.Add(dietPlan);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Nutritionist");
             }
             return View(dietPlanvm);
         }
 
-        // GET: DietPlan/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-           /* if (id == null || _context.DietPlan == null)
-            {
-                return NotFound();
-            }*/
-
-            var dietPlan = await _context.DietPlan.FindAsync(id);
-            /*if (dietPlan == null)
-            {
-                return NotFound();
-            }*/
-            return View(dietPlan);
-        }
-
-        // POST: DietPlan/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-       public async Task<IActionResult> Edit(int id, [Bind("DPID,TotalCalories")] DietPlan dietPlan)
-        {
-           /* if (id != dietPlan.DPID)
-            {
-                return NotFound();
-            }*/
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(dietPlan);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                   /* if (!DietPlanExists(dietPlan.DPID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }*/
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(dietPlan);
-        }
-
-        // GET: DietPlan/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-          /* if (id == null || _context.DietPlan == null)
-            {
-                return NotFound();
-            }*/
-
-            var dietPlan = await _context.DietPlan
-                .FirstOrDefaultAsync(m => m.DPID == id);
-           /* if (dietPlan == null)
-            {
-                return NotFound();
-            }*/
-
-            return View(dietPlan);
-        }
-
-        // POST: DietPlan/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.DietPlan == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.DietPlan'  is null.");
-            }
-            var dietPlan = await _context.DietPlan.FindAsync(id);
-            if (dietPlan != null)
-            {
-                _context.DietPlan.Remove(dietPlan);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool DietPlanExists(int id)
-        {
-          return (_context.DietPlan?.Any(e => e.DPID == id)).GetValueOrDefault();
-        }
     }
 }

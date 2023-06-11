@@ -41,13 +41,16 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="PremiumUser" asp-action="Details">Personal Info</a>
                             </li>
                             <li class="nav-item">
-                               <a class="nav-link text-dark" asp-area="" asp-controller="PremiumUser" asp-action="Edit">Edit Profile</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="PremiumUser" asp-action="Edit">Edit Profile</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="PremiumUser" asp-action="DailyActivityAndFood">Daily Intake</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="PremiumUser" asp-action="PremiumDailyActivityAndFood">Daily Intake</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="PremiumUser" asp-action="Leaderboard">Leaderboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DietPlan" asp-action="Index">Diet plan</a>
                             </li>
                         }
                         @if (User.IsInRole("RegisteredUser"))
@@ -62,7 +65,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="RegisteredUser" asp-action="Edit">Edit Profile</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="RegisteredUser" asp-action="DailyFoodAndActivity">Daily Intake</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RegisteredUser" asp-action="DailyActivityAndFood">Daily Intake</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="RegisteredUser" asp-action="EditCard">Upgrade to premium</a>
