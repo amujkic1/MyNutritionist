@@ -246,35 +246,52 @@ namespace MyNutritionist.Controllers
         }
 
         // GET: RegisteredUser/DailyFoodAndActivity
-        public async Task<IActionResult> DailyFoodAndActivity()
-        {
-            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-            var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
-              if (registeredUser == null)
-              {
-                  return NotFound();
-              }
+        /*   public async Task<IActionResult> DailyFoodAndActivity()
+           {
+               var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+               var registeredUser = await _context.RegisteredUser
+                   .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                 if (registeredUser == null)
+                 {
+                     return NotFound();
+                 }
 
-            return View(registeredUser);
+               return View(registeredUser);
+           }
+
+           [HttpPost]
+           [ValidateAntiForgeryToken]
+           public async Task<IActionResult> DailyFoodAndActivity([Bind("Breakfast,Lunch,Dinner,Snacks,PhysicalActivity")] EnterActivityAndFoodViewModel input)
+           {
+               var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+               var user = await _context.RegisteredUser
+                   .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+
+
+
+               return RedirectToAction("Index");
+           }
+           public IActionResult DailyActivityAndFood()
+           {
+               var model = new EnterActivityAndFoodViewModel();
+               return View("~/Views/PremiumUser/DailyActivityAndFood.cshtml", model);
+           }*/
+        public IActionResult DailyFoodAndActivity()
+        {
+            var model = new EnterActivityAndFoodViewModel();
+            return View(model);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DailyFoodAndActivity([Bind("Breakfast,Lunch,Dinner,Snacks,PhysicalActivity")] EnterActivityAndFoodViewModel input)
+        public IActionResult DailyFoodAndActivity(EnterActivityAndFoodViewModel model)
         {
-            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-            var user = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+            if (ModelState.IsValid)
+            {
 
-            
+                return RedirectToAction("Index", "Home"); 
+            }
 
-            return RedirectToAction("Index");
-        }
-        public IActionResult DailyActivityAndFood()
-        {
-            var model = new EnterActivityAndFoodViewModel();
-            return View("~/Views/PremiumUser/DailyActivityAndFood.cshtml", model);
+            return View(model);
         }
     }
 }
