@@ -302,43 +302,66 @@ namespace MyNutritionist.Controllers
             var dinnerIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Dinner.FoodName);
             var snacksIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Snacks.FoodName);
 
-            var consumedCalories = 0;
-            if (breakfastIngredient != null)
-                consumedCalories += breakfastIngredient.Calories;
+            var breakfastQuantity = 0;
+            var lunchQuantity = 0;
+            var dinnerQuantity = 0;
+            var snacksQuantity = 0;
 
-            if (lunchIngredient != null)
-                consumedCalories += lunchIngredient.Calories;
-
-            if (dinnerIngredient != null)
-                consumedCalories += dinnerIngredient.Calories;
-
-            if (snacksIngredient != null)
-                consumedCalories += snacksIngredient.Calories;
-            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-
-            // Dohvati trenutnog korisnika iz baze podataka na temelju ID-a
-            var currentUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Id == userId);
-
-            // Provjeri je li trenutni korisnik pronađen
-            if (currentUser == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                // Provjeri je li količina unesena kao broj i pravilno ju dodijeli varijablama
+                if (int.TryParse(Request.Form["breakfast-quantity"], out breakfastQuantity) &&
+                    int.TryParse(Request.Form["lunch-quantity"], out lunchQuantity) &&
+                    int.TryParse(Request.Form["dinner-quantity"], out dinnerQuantity) &&
+                    int.TryParse(Request.Form["snacks-quantity"], out snacksQuantity))
+                {
+                    var consumedCalories = 0;
+
+                    if (breakfastIngredient != null)
+                        consumedCalories += breakfastQuantity * breakfastIngredient.Calories;
+
+                    if (lunchIngredient != null)
+                        consumedCalories += lunchQuantity * lunchIngredient.Calories;
+
+                    if (dinnerIngredient != null)
+                        consumedCalories += dinnerQuantity * dinnerIngredient.Calories;
+
+                    if (snacksIngredient != null)
+                        consumedCalories += snacksQuantity * snacksIngredient.Calories;
+
+                    var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+
+                    // Dohvati trenutnog korisnika iz baze podataka na temelju ID-a
+                    var currentUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Id == userId);
+
+                    // Provjeri je li trenutni korisnik pronađen
+                    if (currentUser == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Stvaranje novog unosa napretka
+                    var progress = new Progress
+                    {
+                        Date = DateTime.Now,
+                        BurnedCalories = 0,
+                        ConsumedCalories = consumedCalories,
+                        RegisteredUser = currentUser,
+                        PremiumUser = null
+                    };
+
+                    // Dodaj napredak u bazu
+                    _context.Progress.Add(progress);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Index", "Home");
+                }
             }
-            // Stvaranje novog unosa napretka
-            var progress = new Progress
-            {
-                Date = DateTime.Now,
-                BurnedCalories = 0,
-                ConsumedCalories = consumedCalories,
-                RegisteredUser = currentUser,
-                PremiumUser =null
-            };
 
-            // Dodaj napredak u bazu
-            _context.Progress.Add(progress);
-            _context.SaveChanges();
-
-            return RedirectToAction("Index", "Home");
+            // Ako dođe do ove točke, dogodila se greška u obradi obrasca
+            // Možete vratiti pogled s greškom ili poduzeti druge odgovarajuće radnje
+            return View(model);
         }
+
     }
 }
