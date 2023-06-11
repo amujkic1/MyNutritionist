@@ -22,11 +22,13 @@ namespace MyNutritionist.Controllers
     public class PremiumUserController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private UserManager<ApplicationUser> _userManager;
 
-        public PremiumUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public PremiumUserController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
 
@@ -38,19 +40,15 @@ namespace MyNutritionist.Controllers
         }
 
         // GET: PremiumUser/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details()
         {
-            /*if (id == null || _context.PremiumUser == null)
-            {
-                return NotFound();
-            }*/
-
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var premiumUser = await _context.PremiumUser
-            .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            /*if (premiumUser == null)
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (premiumUser == null)
             {
                 return NotFound();
-            }*/
+            }
 
             return View(premiumUser);
         }
