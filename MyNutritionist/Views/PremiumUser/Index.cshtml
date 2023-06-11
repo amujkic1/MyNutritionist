@@ -1,228 +1,195 @@
-﻿@model IEnumerable<MyNutritionist.Models.PremiumUser>
+﻿@model MyNutritionist.Models.PremiumUser
 
-@{
-    ViewData["Title"] = "Dashboard Premium";
-}
-<!DOCTYPE html>
-<style>
-
-
-
-	.main-container {
-		color: #abafc6;
-		border-radius: 5px;
-		padding: 40px;
-		margin: 50px;
-		width: fit-content;
-		height: fit-content;
-		display: inline-block;
-		verticle-align: middle;
+	@{
+		ViewData["Title"] = "Dashboard Premium";
 	}
+	<!DOCTYPE html>
+	<style>
 
-	.header {
-		font-size: 20px;
-		color: #000;
-		text-align: center;
-	}
 
-	.text1 {
-		font-size: 22px;
-		color: #000;
-	}
 
-	.text2 {
-		font-size: 18px;
-		color: #000;
-	}
-
-	.week-stats {
-		white-space: nowrap;
-		max-height: 170px;
-		overflow: hidden;
-	}
-
-		.week-stats:hover {
-			overflow-x: auto;
+		.main-container {
+			color: #abafc6;
+			border-radius: 5px;
+			padding: 40px;
+			margin: 50px;
+			width: fit-content;
+			height: fit-content;
+			display: inline-block;
+			verticle-align: middle;
 		}
 
-	::-webkit-scrollbar {
-		height: 5px;
-		width: 100%;
-	}
+		.header {
+			font-size: 20px;
+			color: #000;
+			text-align: center;
+		}
 
-	/* Track */
-	::-webkit-scrollbar-track {
-		background: #444e80;
-	}
+		.text1 {
+			font-size: 22px;
+			color: #000;
+		}
 
-	/* Handle */
-	::-webkit-scrollbar-thumb {
-		background: #abafc6;
-		border-radius: 10px;
-	}
+		.text2 {
+			font-size: 18px;
+			color: #000;
+		}
 
-	::-webkit-scrollbar-thumb {
-		background: #5397d6;
-	}
+		.week-stats {
+			white-space: nowrap;
+			max-height: 170px;
+			overflow: hidden;
+		}
 
-	.day-group {
-		cursor: pointer;
-		max-width: 400px;
-		height: 110px;
-		margin: 10px;
-		display: inline-block;
-	}
+			.week-stats:hover {
+				overflow-x: auto;
+			}
 
-	.bar {
-		background-color: #abafc6;
-		width: 20px;
-		border-radius: 5px;
-		margin-bottom: 10px;
-	}
+		::-webkit-scrollbar {
+			height: 5px;
+			width: 100%;
+		}
 
-	.day-group:hover .bar,
-	.selected .bar {
-		background: #5397d6;
-	}
+		/* Track */
+		::-webkit-scrollbar-track {
+			background: #444e80;
+		}
 
-	.day-group:hover p,
-	.selected p {
-		color: #000;
-	}
+		/* Handle */
+		::-webkit-scrollbar-thumb {
+			background: #abafc6;
+			border-radius: 10px;
+		}
 
-	.h-0 {
-		height: 0%;
-	}
+		::-webkit-scrollbar-thumb {
+			background: #5397d6;
+		}
 
-	.h-25 {
-		height: 25%;
-	}
+		.day-group {
+			cursor: pointer;
+			max-width: 400px;
+			height: 110px;
+			margin: 10px;
+			display: inline-block;
+		}
 
-	.h-50 {
-		height: 50%;
-	}
+		.bar {
+			background-color: #abafc6;
+			width: 20px;
+			border-radius: 5px;
+			margin-bottom: 10px;
+		}
 
-	.h-75 {
-		height: 75%;
-	}
+		.day-group:hover .bar,
+		.selected .bar {
+			background: #5397d6;
+		}
 
-	.h-100 {
-		height: 100%;
-	}
+		.day-group:hover p,
+		.selected p {
+			color: #000;
+		}
 
-	.stats-info {
-		margin-top: 15px;
-		display: flex;
-		align-items: center;
-		justify-content: space-around;
-		position: relative;
-	}
+		.h-0 {
+			height: 0%;
+		}
 
-	.graph-container {
-		position: relative;
-	}
+		.h-25 {
+			height: 25%;
+		}
 
-	.percent {
-		display: block;
-		width: 120px;
-		height: 120px;
-	}
+		.h-50 {
+			height: 50%;
+		}
 
-	.graph-container p {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		font-size: 12px;
-		color: #fff;
-		text-align: center;
-	}
+		.h-75 {
+			height: 75%;
+		}
 
-	.info p {
-		margin-bottom: 10px;
-	}
+		.h-100 {
+			height: 100%;
+		}
 
-	.info span {
-		color: #fff;
-	}
+		.stats-info {
+			margin-top: 15px;
+			display: flex;
+			align-items: center;
+			justify-content: space-around;
+			position: relative;
+		}
 
-</style>
-<body>
-	<h1 style="text-align:center">Check out your progress for this week!</h1>
+		.graph-container {
+			position: relative;
+		}
 
-	<div class="main-container">
-		<div class="header">
-			Daily activity last 7 days
-		</div>
-		<div class="week-stats">
-			<div class="day-group">
-				<div class="bar h-100"></div>
-				<p class="day">Mon</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-50"></div>
-				<p class="day">Tue</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-75"></div>
-				<p class="day">Wed</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-25"></div>
-				<p class="day">Thu</p>
-			</div>
-			<div class="day-group selected">
-				<div class="bar h-100"></div>
-				<p class="day">Fri</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-50"></div>
-				<p class="day">Sat</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-75"></div>
-				<p class="day">Sun</p>
-			</div>
-		</div>
-	</div>
+		.percent {
+			display: block;
+			width: 120px;
+			height: 120px;
+		}
 
-	<div class="main-container">
-		<div class="header">
-			Calories intake last 7 days
-		</div>
-		<div class="week-stats">
-			<div class="day-group">
-				<div class="bar h-75"></div>
-				<p class="day">Mon</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-75"></div>
-				<p class="day">Tue</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-50"></div>
-				<p class="day">Wed</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-0"></div>
-				<p class="day">Thu</p>
-			</div>
-			<div class="day-group selected">
-				<div class="bar h-100"></div>
-				<p class="day">Fri</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-50"></div>
-				<p class="day">Sat</p>
-			</div>
-			<div class="day-group">
-				<div class="bar h-75"></div>
-				<p class="day">Sun</p>
-			</div>
-		</div>
-	</div>
+		.graph-container p {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 12px;
+			color: #fff;
+			text-align: center;
+		}
+
+		.info p {
+			margin-bottom: 10px;
+		}
+
+		.info span {
+			color: #fff;
+		}
+
+	</style>
+	<body>
+		<h1 style="text-align:center">Check out your progress for this week!</h1>
+
+<div class="main-container">
+    <div class="header">
+        Daily activity last 7 days
+    </div>
+    <div class="week-stats">
+        @foreach (var progressData in ViewBag.BurnedCaloriesProgressData as List<object>)
+        {
+            var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
+            var heightPercentage = progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
+            var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
+
+            <div class="day-group @(isSelectedDay ? "selected" : "")">
+                <div class="bar" style="height: @(heightPercentage)%"></div>
+                <p class="day">@dayOfWeek</p>
+            </div>
+        }
+    </div>
+</div>
+
+
+<div class="main-container">
+    <div class="header">
+        Calories intake last 7 days
+    </div>
+    <div class="week-stats">
+        @foreach (var progressData in ViewBag.ConsumedCaloriesProgressData as List<object>)
+        {
+            var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
+            var heightPercentage = progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
+            var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
+
+            <div class="day-group @(isSelectedDay ? "selected" : "")">
+                <div class="bar" style="height: @(heightPercentage)%"></div>
+                <p class="day">@dayOfWeek</p>
+            </div>
+        }
+    </div>
+</div>
 
 
 
 
-</body>
+	</body>
