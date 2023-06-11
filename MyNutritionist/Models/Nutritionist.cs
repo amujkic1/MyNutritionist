@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MyNutritionist.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyNutritionist.Models
@@ -10,6 +11,10 @@ namespace MyNutritionist.Models
 
         public ICollection<PremiumUser> PremiumUsers { get; set; } = new List<PremiumUser>();
         public Nutritionist(): base() {
+        }
+        public void SortUsers(ISort strategy)
+        {
+            PremiumUsers = strategy.Sort(PremiumUsers.ToList());
         }
     }
 }

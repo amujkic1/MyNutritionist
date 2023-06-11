@@ -92,7 +92,7 @@
         <ul>
             @foreach (var recipe in Model.recipesToDisplay)
             {
-                <li>@recipe.NameOfRecipe</li>
+                <li><a href="@recipe.RecipeLink">@recipe.NameOfRecipe</a></li>
             }
         </ul>
     </div>

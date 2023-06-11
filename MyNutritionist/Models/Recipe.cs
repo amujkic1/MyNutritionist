@@ -13,6 +13,8 @@ namespace MyNutritionist.Models
         [DisplayName("Recipe link")]
         public string RecipeLink { get; set; }
         public Nutritionist Nutritionist { get; set; }
+
+        [DisplayName("Calories")]
         public int TotalCalories { get; set; }
 
         [Required]
@@ -20,11 +22,7 @@ namespace MyNutritionist.Models
         public string NameOfRecipe { get; set; }
        
         public Recipe() { }
-        /*public Recipe()
-        {
-            // Postavi nutricionista s ID-om 11 kao zadani
-            Nutritionist = new Nutritionist { PID = 11 };
-        }*/
+        
     }
 
 }

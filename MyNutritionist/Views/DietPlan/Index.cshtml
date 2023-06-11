@@ -47,10 +47,11 @@
         {
             <tr>
                 <td>@((DayOfWeek)(i / 4))</td>
-                <td>@Model.Recipes[i].NameOfRecipe</td>
-                <td>@Model.Recipes[i + 1].NameOfRecipe</td>
-                <td>@Model.Recipes[i + 2].NameOfRecipe</td>
-                <td>@Model.Recipes[i + 3].NameOfRecipe</td>
+                <td><a href="@Model.Recipes[i].RecipeLink">@Model.Recipes[i].NameOfRecipe</a></td>
+                <td><a href="@Model.Recipes[i + 1].RecipeLink">@Model.Recipes[i + 1].NameOfRecipe</a></td>
+                <td><a href="@Model.Recipes[i + 2].RecipeLink">@Model.Recipes[i + 2].NameOfRecipe</a></td>
+                <td><a href="@Model.Recipes[i + 3].RecipeLink">@Model.Recipes[i + 3].NameOfRecipe</a></td>
+
             </tr>
         }
     </tbody>
