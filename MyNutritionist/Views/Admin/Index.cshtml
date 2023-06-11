@@ -1,5 +1,4 @@
-﻿<!-- AdminPanel.cshtml -->
-@model IEnumerable<MyNutritionist.Models.ApplicationUser>
+﻿@model IEnumerable<MyNutritionist.Models.ApplicationUser>
 @{
     ViewData["Title"] = "Admin Panel";
 }
@@ -25,7 +24,6 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                     
                         <td class="align-middle">
                             @Html.DisplayFor(modelItem => item.FullName)
                         </td>
@@ -35,25 +33,22 @@
                         @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
                         {
                             <td class="align-middle">
-                                <button class="btn btn-outline-primary" onclick="UpgradeToPremium('@item.UserName')"><i class="bi bi-pencil-square"></i>Upgrade</button> 
+                                <button class="btn btn-outline-primary" onclick="AssignNutritionist('@item.UserName')"><i class="bi bi-pencil-square"></i>Assign</button>
                             </td>
                         }
-
                     </tr>
                 }
             </tbody>
-
         </table>
 
     </div>
 </div>
 
-
 @section Scripts {
     <script>
-        function UpgradeToPremium(userName) {
+        function AssignNutritionist(userName) {
             if (userName) {
-                window.location.href = '@Url.Action("UpgradeToPremium", "Admin")' + '?userName=' + encodeURIComponent(userName);
+                window.location.href = '@Url.Action("AssignNutritionist", "Admin")' + '?premiumUserName=' + encodeURIComponent(userName);
             }
         }
     </script>
