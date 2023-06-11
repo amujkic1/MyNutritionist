@@ -251,7 +251,11 @@ namespace MyNutritionist.Controllers
                     }
 
                     var burnedCalories = CalculateBurnedCalories(model.PhysicalActivity);
+                    var points = CalculatePoints(consumedCalories, burnedCalories);
 
+
+                    currentUser.Points += points;
+                    _context.SaveChanges();
                     var progress = new Progress
                     {
                         Date = DateTime.Now,
@@ -269,6 +273,19 @@ namespace MyNutritionist.Controllers
             }
 
             return View(model);
+        }
+        private int CalculatePoints(int consumedCalories, int burnedCalories)
+        {
+            const int NormalDailyCalories = 2000;
+            const int MaxPoints = 20;
+            const int MinPoints = 0;
+
+            var deviationPercentage = Math.Abs((consumedCalories - burnedCalories) / (double)NormalDailyCalories) * 100;
+            var deviationPoints = MaxPoints - (int)Math.Round(deviationPercentage / 100 * MaxPoints);
+
+            deviationPoints = Math.Max(MinPoints, Math.Min(MaxPoints, deviationPoints));
+
+            return deviationPoints;
         }
 
         private int CalculateBurnedCalories(PhysicalActivity activity)
