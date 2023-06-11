@@ -235,11 +235,12 @@ namespace MyNutritionist.Controllers
             var premiumUser = await _context.PremiumUser.FindAsync(id);
             if (premiumUser != null)
             {
+
                 _context.PremiumUser.Remove(premiumUser);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index)); 
+            return RedirectToAction("Index", "Home");
         }
 
         private bool PremiumUserExists(string id)

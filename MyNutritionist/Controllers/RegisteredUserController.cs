@@ -265,9 +265,8 @@ namespace MyNutritionist.Controllers
             await _context.SaveChangesAsync();
             await _userManager.AddToRoleAsync(premiumUser, "PremiumUser");
            
-            
-
             await _context.SaveChangesAsync();
+
             return RedirectToAction("Index");
         }
 
@@ -334,7 +333,7 @@ namespace MyNutritionist.Controllers
                 return NotFound();
             }
 
-            return View(registeredUser);
+            return RedirectToAction("Index", "Home");
         }
 
         // POST: RegisteredUser/Delete/
@@ -354,7 +353,7 @@ namespace MyNutritionist.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: RegisteredUser/DailyFoodAndActivity
