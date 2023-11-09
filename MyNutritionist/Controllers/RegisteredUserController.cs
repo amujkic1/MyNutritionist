@@ -227,17 +227,12 @@ namespace MyNutritionist.Controllers
             }
 
 
-            //var premiumUser = new PremiumUser();
-            var builder = new PremiumUserBuilder();
-            // var premiumUser = builder
-            builder.InitializeCity(registeredUser.City);
-            builder.InitializeHeight(registeredUser.Height);
-            builder.InitializeWeight(registeredUser.Weight);
-
-            var premiumUser = builder.Build();
+            var premiumUser = new PremiumUser();
+            
+            
             try
             {
-                //premiumUser = Activator.CreateInstance<PremiumUser>();
+                premiumUser = Activator.CreateInstance<PremiumUser>();
             }
             catch
             {
@@ -291,7 +286,7 @@ namespace MyNutritionist.Controllers
            
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "PremiumUserController", new { area = "" });
         }
 
         [HttpPost]

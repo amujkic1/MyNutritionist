@@ -28,6 +28,7 @@ namespace MyNutritionist.Data
         public DbSet<Nutritionist> Nutritionist { get; set; }
         public DbSet<Leaderboard> Leaderboard { get; set; }
         //public DbSet<PhysicalActivity> PhysicalActivity { get; set; }
+        //public DbSet<DietPlanRecipe> DietPlanRecipes { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             
@@ -45,6 +46,7 @@ namespace MyNutritionist.Data
             builder.Entity<Leaderboard>().ToTable("Leaderboard");
             //builder.Entity<PhysicalActivity>().ToTable("PhysicalActivity");
             builder.Entity<Nutritionist>().ToTable("Nutritionist");
+            //builder.Entity<DietPlanRecipe>().ToTable("DietPlanRecipe");
 
             builder.Entity<ApplicationUser>()
                 .Property(e => e.FullName);
@@ -56,6 +58,18 @@ namespace MyNutritionist.Data
                 .Property(e => e.NutriPassword);
             builder.Entity<ApplicationUser>()
                 .Property(e => e.NutriUsername);
+
+            builder.Entity<DietPlan>()
+            .HasMany(s => s.Recipes)
+            .WithMany(c => c.DietPlans)
+            .UsingEntity(j => j
+                .ToTable("DietPlanRecipe")
+                .Property<int>("Id")
+                .ValueGeneratedOnAdd()
+                .IsRequired()
+                
+            );
+            builder.Entity("DietPlanRecipe").HasKey("Id");
 
             base.OnModelCreating(builder);
 

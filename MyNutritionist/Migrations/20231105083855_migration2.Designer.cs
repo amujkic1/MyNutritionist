@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyNutritionist.Data;
 
@@ -11,9 +12,10 @@ using MyNutritionist.Data;
 namespace MyNutritionist.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231105083855_migration2")]
+    partial class migration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,29 +23,6 @@ namespace MyNutritionist.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("DietPlanRecipe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("DietPlansDPID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecipesRID")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DietPlansDPID");
-
-                    b.HasIndex("RecipesRID");
-
-                    b.ToTable("DietPlanRecipe", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -523,21 +502,6 @@ namespace MyNutritionist.Migrations
                         .HasColumnType("float");
 
                     b.ToTable("RegisteredUser", (string)null);
-                });
-
-            modelBuilder.Entity("DietPlanRecipe", b =>
-                {
-                    b.HasOne("MyNutritionist.Models.DietPlan", null)
-                        .WithMany()
-                        .HasForeignKey("DietPlansDPID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyNutritionist.Models.Recipe", null)
-                        .WithMany()
-                        .HasForeignKey("RecipesRID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

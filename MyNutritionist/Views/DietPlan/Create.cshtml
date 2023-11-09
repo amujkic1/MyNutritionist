@@ -1,9 +1,9 @@
-﻿@model MyNutritionist.Models.DietPlanViewModel
+﻿@model MyNutritionist.Models.EditDietPlanVM
 
 <h1>DietPlan</h1>
 
 <form asp-action="Create" asp-controller="DietPlan" method="post">
-    <input type="hidden" name="RegUser" value="@Model.PremiumUserId" />
+    <input type="hidden" name="RegUser" value="@Model.DietPlan.PremiumUser.Id" />
 
     <table class="table table-striped">
         <thead>
@@ -20,10 +20,18 @@
             {
                 <tr>
                     <td>@((DayOfWeek)(i))</td>
-                    <td><input type="text" asp-for="@Model.DietPlan.Recipes[i * 4].NameOfRecipe" class="form-control" /></td>
-                    <td><input type="text" asp-for="@Model.DietPlan.Recipes[i * 4 + 1].NameOfRecipe" class="form-control" /></td>
-                    <td><input type="text" asp-for="@Model.DietPlan.Recipes[i * 4 + 2].NameOfRecipe" class="form-control" /></td>
-                    <td><input type="text" asp-for="@Model.DietPlan.Recipes[i * 4 + 3].NameOfRecipe" class="form-control" /></td>
+                    <td>
+                        <select asp-for="@Model.DietPlan.Recipes[i * 4].RID" asp-items="@new SelectList(@Model.Recipes, nameof(Recipe.RID), nameof(Recipe.NameOfRecipe))" class="form-control"></select>
+                    </td>
+                    <td>
+                        <select asp-for="@Model.DietPlan.Recipes[i * 4 + 1].RID" asp-items="@new SelectList(@Model.Recipes, nameof(Recipe.RID), nameof(Recipe.NameOfRecipe))" class="form-control"></select>
+                    </td>
+                    <td>
+                        <select asp-for="@Model.DietPlan.Recipes[i * 4 + 2].RID" asp-items="@new SelectList(@Model.Recipes, nameof(Recipe.RID), nameof(Recipe.NameOfRecipe))" class="form-control"></select>
+                    </td>
+                    <td>
+                        <select asp-for="@Model.DietPlan.Recipes[i * 4 + 3].RID" asp-items="@new SelectList(@Model.Recipes, nameof(Recipe.RID), nameof(Recipe.NameOfRecipe))" class="form-control"></select>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -33,13 +41,13 @@
 
     <div class="row" style="margin-top: 20px">
         <div class="col-md-4">
-            <form asp-action="Create" asp-controller="DietPlan" method="post" asp-route-RegUser="@Model.PremiumUserId">
+            <form asp-action="Create" asp-controller="DietPlan" method="post" asp-route-RegUser="@Model.DietPlan.PremiumUser.Id">
                 <div class="form-group" style="margin-right: 20px">
                     <label for="totalCalories">Total Calories:</label>
                     <input type="number" name="totalCalories" id="totalCalories" asp-for="@Model.DietPlan.TotalCalories" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-primary" onclick="Create('@Model.PremiumUserId')" />
+                    <input type="submit" value="Save" class="btn btn-primary" onclick="Create('@Model.DietPlan.PremiumUser.Id')" />
                 </div>
             </form>
         </div>

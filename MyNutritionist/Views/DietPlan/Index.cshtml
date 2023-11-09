@@ -43,12 +43,12 @@
         </tr>
     </thead>
     <tbody>
-      
-               @for (int i = 0; i < Model.Recipes.Count; i += 4)
+
+        @for (int i = 0; i < Model.Recipes.Count - 3; i += 4)
         {
             <tr>
                 <td>@((DayOfWeek)(i / 4))</td>
-                <td><a href="@Model.Recipes[i].RecipeLink">@Model.Recipes[i].NameOfRecipe</a></td>
+                <td><a href="@Model.Recipes.[i].RecipeLink">@Model.Recipes[i].NameOfRecipe</a></td>
                 <td><a href="@Model.Recipes[i + 1].RecipeLink">@Model.Recipes[i + 1].NameOfRecipe</a></td>
                 <td><a href="@Model.Recipes[i + 2].RecipeLink">@Model.Recipes[i + 2].NameOfRecipe</a></td>
                 <td><a href="@Model.Recipes[i + 3].RecipeLink">@Model.Recipes[i + 3].NameOfRecipe</a></td>

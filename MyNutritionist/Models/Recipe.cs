@@ -20,7 +20,10 @@ namespace MyNutritionist.Models
         [Required]
         [DisplayName("Name")]
         public string NameOfRecipe { get; set; }
-       
+
+        public List<DietPlan> DietPlans { get; set; }
+
+        //public List<DietPlanRecipe> DietPlanRecipes { get; set; }
         public Recipe() { }
         
     }

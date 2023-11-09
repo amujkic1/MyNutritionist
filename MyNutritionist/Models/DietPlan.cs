@@ -10,15 +10,12 @@ namespace MyNutritionist.Models
         public int DPID { get; set; }
         //public Nutritionist Nutritionist { get; set; }
         public int TotalCalories { get; set; }
-        public PremiumUser PremiumUser { get; set; }
-        public List<Recipe> Recipes { get; set; } = new List<Recipe>();
+        public PremiumUser PremiumUser { get; set; } = new PremiumUser();
+
+        public List<Recipe> Recipes { get; set; }
+        //public List<DietPlanRecipe> DietPlanRecipes { get; set; } = Enumerable.Repeat(new DietPlanRecipe(), 31).ToList();
 
         private Iterator iterator { get; set; }
-
-        public DietPlan()
-        {
-            Recipes.Capacity = 28;
-        }
 
         public Iterator CreateIterator(List<Recipe> recipes)
         {

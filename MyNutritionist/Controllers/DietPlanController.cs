@@ -54,8 +54,12 @@ namespace MyNutritionist.Controllers
         [Authorize(Roles = "Nutritionist")]
         public IActionResult Create(string RegUser)
         {
-            var dietPlan = new DietPlanViewModel();
-            dietPlan.PremiumUserId = RegUser;
+            var dietPlan = new EditDietPlanVM
+            {
+                DietPlan = new DietPlan(),
+                Recipes = _context.Recipe.ToList()
+            };
+            dietPlan.DietPlan.PremiumUser.Id = RegUser;
 
             return View(dietPlan);
         }
@@ -66,20 +70,17 @@ namespace MyNutritionist.Controllers
         [HttpPost]
         [Authorize(Roles = "Nutritionist")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string RegUser, [Bind("DietPlan,TotalCalories")] DietPlanViewModel dietPlanvm)
+        public async Task<IActionResult> Create(string RegUser, [Bind("DietPlan")] EditDietPlanVM dietPlanvm)
         {
             //if (ModelState.IsValid)
             {
                 var dietPlan = dietPlanvm.DietPlan;
 
-
-                for (var i = 0; i < 28; i++)
+                for (var i = 0; i < dietPlan.Recipes.Count; i++)
                 {
-                    if (dietPlan.Recipes[i].NameOfRecipe != null)
-                    {
-                        dietPlan.Recipes[i] = await _context.Recipe
-                             .FirstOrDefaultAsync(r => r.NameOfRecipe == dietPlan.Recipes[i].NameOfRecipe);
-                    }
+                     dietPlan.Recipes[i] = await _context.Recipe
+                             .FirstOrDefaultAsync(r => r.RID == dietPlan.Recipes[i].RID);
+                    
                 }
 
                 var loggedInNutritionist = await _userManager.GetUserAsync(User);
@@ -88,14 +89,15 @@ namespace MyNutritionist.Controllers
                     .FirstOrDefaultAsync(m => m.Id.Equals(RegUser));
 
                 var deletePlans = _context.DietPlan.Where(d => d.PremiumUser.Id == RegUser).ToList();
-                if (deletePlans != null)
+                if (deletePlans != null && deletePlans.Count != 0)
                 {
-                    _context.DietPlan.Remove(dietPlan);
+                    _context.DietPlan.Remove(deletePlans[0]);
                     _context.SaveChanges();
                 }
 
                 _context.Add(dietPlan);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction("Index", "Nutritionist");
             }
             return View(dietPlanvm);
