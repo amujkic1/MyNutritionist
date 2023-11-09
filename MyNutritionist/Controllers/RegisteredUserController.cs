@@ -19,12 +19,14 @@ namespace MyNutritionist.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private List<Ingredient> _ingredients = new List<Ingredient>();
-        public RegisteredUserController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+        public RegisteredUserController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: RegisteredUser
@@ -286,7 +288,23 @@ namespace MyNutritionist.Controllers
            
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index", "PremiumUserController", new { area = "" });
+            var user = await _userManager.FindByNameAsync(registeredUser.UserName);
+
+            if (user != null)
+            {
+                // Sign out the user
+                await _signInManager.SignOutAsync();
+
+                // Generate a new security stamp (this invalidates existing tokens)
+                await _userManager.UpdateSecurityStampAsync(user);
+
+                // Sign in the user without requiring a password
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                // Redirect to a page or perform any necessary actions after sign-in
+                 return RedirectToAction("Index", "PremiumUser", new { area = "" });
+            }
+            return Redirect("Index");
         }
 
         [HttpPost]
