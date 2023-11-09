@@ -41,12 +41,21 @@ namespace MyNutritionist.Controllers
             var dietPlan = _context.DietPlan
                                   .Include(d => d.Recipes)
                                   .FirstOrDefault(d => d.PremiumUser.Id == user.Id);
+
+            var listOfRecipes = new List<Recipe>();
+            
+            var sql = $"SELECT * FROM Recipe r INNER JOIN DietPlanRecipe dpr ON dpr.RecipesRID = r.RID WHERE dpr.DietPlansDPID = '{dietPlan.DPID}';";
+
+            listOfRecipes = _context.Recipe.FromSqlRaw(sql).ToList();
+            listOfRecipes.Count();
+
             if (dietPlan == null)
             {
                 // Handle the case when the diet plan is not found
                 return StatusCode(503, "Page is currently unavailable. Diet Plan will be availabe soon. Our nutritionist is working on that.");
             }
 
+            dietPlan.Recipes = listOfRecipes;
             return View(dietPlan);
         }
 
@@ -82,6 +91,8 @@ namespace MyNutritionist.Controllers
                              .FirstOrDefaultAsync(r => r.RID == dietPlan.Recipes[i].RID);
                     
                 }
+                var listOfRecipes = dietPlan.Recipes;
+                dietPlan.Recipes = new List<Recipe>();
 
                 var loggedInNutritionist = await _userManager.GetUserAsync(User);
                 var user = await _context.Nutritionist.FindAsync(loggedInNutritionist.Id);
@@ -97,6 +108,13 @@ namespace MyNutritionist.Controllers
 
                 _context.Add(dietPlan);
                 await _context.SaveChangesAsync();
+
+                foreach( var recipe in listOfRecipes)
+                {
+                    var sql = $"INSERT INTO DietPlanRecipe (RecipesRID, DietPlansDPID) VALUES ('{recipe.RID}', '{dietPlan.DPID}');";
+
+                    _context.Database.ExecuteSqlRaw(sql);
+                }
 
                 return RedirectToAction("Index", "Nutritionist");
             }
