@@ -83,12 +83,20 @@
 </head>
 <body>
     <h2>Nutritional Values</h2>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div style="color: red; text-align: center; margin-bottom: 10px;">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
     <form asp-action="CheckNutritionalValues" method="post">
         <div class="form-section">
             <div class="form-column">
                 <div>
                     <span class="form-label">Select food:</span>
-                    <input class="form-field" type="text" name="FoodName" value="@Model.FoodName">
+                    <input class="form-field" type="text" name="FoodName" value="@((Model != null) ? Model.FoodName : "")" pattern="[A-Za-z]+" title="Only alphabetical letters are allowed.">
                 </div>
             </div>
             <div class="form-column">
@@ -101,43 +109,43 @@
                             </tr>
                             <tr>
                                 <td>Total fat</td>
-                                <td><input type="text" name="Fat" value="@Model.Fat"></td>
+                                <td><input type="text" name="Fat" value="@((Model != null) ? Model.Fat : "")"></td>
                             </tr>
                             <tr>
                                 <td>Saturated fat</td>
-                                <td><input type="text" name="SaturatedFat" value="@Model.SaturatedFat"></td>
+                                <td><input type="text" name="SaturatedFat" value="@((Model != null) ? Model.SaturatedFat : "")"></td>
                             </tr>
                             <tr>
                                 <td>Sodium</td>
-                                <td><input type="text" name="Sodium" value="@Model.Sodium"></td>
+                                <td><input type="text" name="Sodium" value="@((Model != null) ? Model.Sodium : "")"></td>
                             </tr>
                             <tr>
                                 <td>Total carbohydrate</td>
-                                <td><input type="text" name="Carbs" value="@Model.Carbs"></td>
+                                <td><input type="text" name="Carbs" value="@((Model != null) ? Model.Carbs : "")"></td>
                             </tr>
                             <tr>
                                 <td>Sugars</td>
-                                <td><input type="text" name="Sugar" value="@Model.Sugar"></td>
+                                <td><input type="text" name="Sugar" value="@((Model != null) ? Model.Sugar : "")"></td>
                             </tr>
                             <tr>
                                 <td>Protein</td>
-                                <td><input type="text" name="Protein" value="@Model.Protein"></td>
+                                <td><input type="text" name="Protein" value="@((Model != null) ? Model.Protein : "")"></td>
                             </tr>
                             <tr>
                                 <td>Vitamin A</td>
-                                <td><input type="text" name="VitaminA" value="@Model.VitaminA"></td>
+                                <td><input type="text" name="VitaminA" value="@((Model != null) ? Model.VitaminA : "")"></td>
                             </tr>
                             <tr>
                                 <td>Vitamin C</td>
-                                <td><input type="text" name="VitaminC" value="@Model.VitaminC"></td>
+                                <td><input type="text" name="VitaminC" value="@((Model != null) ? Model.VitaminC : "")"></td>
                             </tr>
                             <tr>
                                 <td>Calcium</td>
-                                <td><input type="text" name="Calcium" value="@Model.Calcium"></td>
+                                <td><input type="text" name="Calcium" value="@((Model != null) ? Model.Calcium : "")"></td>
                             </tr>
                             <tr>
                                 <td>Iron</td>
-                                <td><input type="text" name="Iron" value="@Model.Iron"></td>
+                                <td><input type="text" name="Iron" value="@((Model != null) ? Model.Iron : "")"></td>
                             </tr>
                         </table>
                     </div>

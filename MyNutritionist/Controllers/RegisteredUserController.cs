@@ -153,10 +153,9 @@ namespace MyNutritionist.Controllers
 
         public IActionResult NutritionalValues()
         {
-            Ingredient ingredient = new Ingredient(); // Create a new instance of the Ingredient model
+            Ingredient ingredient = new Ingredient(); 
             return View(ingredient);
         }
-
 
 
         [HttpPost]
@@ -165,14 +164,17 @@ namespace MyNutritionist.Controllers
             // Retrieve the ingredient from the database based on the entered name
             var queriedIngredient = _context.Ingredient
                 .FirstOrDefault(i => i.FoodName == ingredient.FoodName);
-            if(queriedIngredient==null)
+
+            if (queriedIngredient == null)
             {
-                return NotFound();
+                ViewBag.ErrorMessage = "Ingredient not found. Please enter a valid food name.";
+                return View("NutritionalValues");
             }
 
             // Pass the queried ingredient to the view for display
             return View("NutritionalValues", queriedIngredient);
         }
+
         /*
         // GET: RegisteredUser/NutritionalValues/5
         public async Task<IActionResult> NutritionalValues(int? id)

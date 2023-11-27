@@ -82,12 +82,14 @@ namespace MyNutritionist.Areas.Identity.Pages.Account
             /// 
             [Required]
             [PersonalData]
+            [StringLength(100, ErrorMessage = "Username must be at least {2} characters long", MinimumLength = 6)]
             [Display(Name = "Username")]
             public string Username { get; set; }
 
             [Required]
             [PersonalData]
             [Display(Name = "Name")]
+            [RegularExpression("^[a-zA-Z]+$", ErrorMessage = "Name must contain only alphabetic characters.")]
             public string Name { get; set; }
 
             [Required]

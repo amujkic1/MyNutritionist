@@ -7,6 +7,7 @@ namespace MyNutritionist.Models
     {
         [Key]
         public int IId { get; set; }
+        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Only alphabetical letters are allowed.")]
         public string FoodName { get; set; }
         public int Calories { get; set; }
         public double Carbs { get; set; }
