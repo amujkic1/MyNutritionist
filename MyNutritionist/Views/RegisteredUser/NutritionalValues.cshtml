@@ -1,162 +1,214 @@
-﻿@model MyNutritionist.Models.Ingredient
+﻿@model IEnumerable<MyNutritionist.Models.Ingredient>
 
-@{
+    @{
     ViewData["Title"] = "Nutritional Values";
-}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Nutritional Values</title>
-    <style>
-        h2 {
-            text-align: center;
-        }
-
-        .form-section {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .form-column {
-            flex: 1;
-            margin-right: 20px;
-        }
-
-        .form-label {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .form-field {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 8px;
-            width: 100%;
-            font-size: 16px;
-        }
-
-        .table-section {
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .table-container {
-            flex: 1;
-            position: relative;
-            margin-right: 20px;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .check-button-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .check-button {
-            margin-left: 10px;
-            padding: 8px 16px;
-            background-color: #56cc9d;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-            .check-button:hover {
-                background-color: #45a049;
+    }
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Nutritional Values</title>
+        <style>
+            h2 {
+                text-align: center;
             }
-    </style>
-</head>
-<body>
-    <h2>Nutritional Values</h2>
 
-    @if (ViewBag.ErrorMessage != null)
+            .form-section {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
+
+            .form-column {
+                flex: 1;
+                margin-right: 20px;
+            }
+
+            .form-label {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .form-field {
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 8px;
+                width: 100%;
+                font-size: 16px;
+            }
+
+            .table-section {
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .table-container {
+                flex: 1;
+                position: relative;
+                margin-right: 20px;
+            }
+
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding: 8px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .check-button-container {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .check-button {
+                margin-left: 10px;
+                padding: 8px 16px;
+                background-color: #56cc9d;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+                .check-button:hover {
+                    background-color: #45a049;
+                }
+        </style>
+    </head>
+    <body>
+        <h2>Nutritional Values</h2>
+
+        @if (ViewBag.ErrorMessage != null)
     {
         <div style="color: red; text-align: center; margin-bottom: 10px;">
             @ViewBag.ErrorMessage
         </div>
     }
 
-    <form asp-action="CheckNutritionalValues" method="post">
-        <div class="form-section">
-            <div class="form-column">
-                <div>
-                    <span class="form-label">Select food:</span>
-                    <input class="form-field" type="text" name="FoodName" value="@((Model != null) ? Model.FoodName : "")" pattern="[A-Za-z]+" title="Only alphabetical letters are allowed.">
+        <form asp-action="CheckNutritionalValues" method="post">
+            <div class="form-section">
+                <div class="form-column">
+                    <div>
+                        <span class="form-label">Select food:</span>
+                        <select class="form-field" name="FoodName" id="FoodNameSelect">
+                        @foreach (var food in Model)
+                        {
+                            <option value="@food.FoodName"
+                                    data-fat="@food.Fat"
+                                    data-saturated-fat="@food.SaturatedFat"
+                                    data-sodium="@food.Sodium"
+                                    data-carbs="@food.Carbs"
+                                    data-sugar="@food.Sugar"
+                                    data-protein="@food.Protein"
+                                    data-vitamin-a="@food.VitaminA"
+                                    data-vitamin-c="@food.VitaminC"
+                                    data-calcium="@food.Calcium"
+                                    data-iron="@food.Iron">@food.FoodName</option>
+                        }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-column">
+                    <div class="table-section">
+                        <div class="table-container">
+                            <table>
+                                <tr>
+                                    <th>Nutrient</th>
+                                    <th>Value</th>
+                                </tr>
+                                <tr>
+                                    <td>Total fat</td>
+                                    <td><input type="text" name="Fat"></td>
+                                </tr>
+                                <tr>
+                                    <td>Saturated fat</td>
+                                    <td><input type="text" name="SaturatedFat"></td>
+                                </tr>
+                                <tr>
+                                    <td>Sodium</td>
+                                    <td><input type="text" name="Sodium"></td>
+                                </tr>
+                                <tr>
+                                    <td>Total carbohydrate</td>
+                                    <td><input type="text" name="Carbs"></td>
+                                </tr>
+                                <tr>
+                                    <td>Sugars</td>
+                                    <td><input type="text" name="Sugar"></td>
+                                </tr>
+                                <tr>
+                                    <td>Protein</td>
+                                    <td><input type="text" name="Protein"></td>
+                                </tr>
+                                <tr>
+                                    <td>Vitamin A</td>
+                                    <td><input type="text" name="VitaminA"></td>
+                                </tr>
+                                <tr>
+                                    <td>Vitamin C</td>
+                                    <td><input type="text" name="VitaminC"></td>
+                                </tr>
+                                <tr>
+                                    <td>Calcium</td>
+                                    <td><input type="text" name="Calcium"></td>
+                                </tr>
+                                <tr>
+                                    <td>Iron</td>
+                                    <td><input type="text" name="Iron"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-column">
-                <div class="table-section">
-                    <div class="table-container">
-                        <table>
-                            <tr>
-                                <th>Nutrient</th>
-                                <th>Value</th>
-                            </tr>
-                            <tr>
-                                <td>Total fat</td>
-                                <td><input type="text" name="Fat" value="@((Model != null) ? Model.Fat : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Saturated fat</td>
-                                <td><input type="text" name="SaturatedFat" value="@((Model != null) ? Model.SaturatedFat : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Sodium</td>
-                                <td><input type="text" name="Sodium" value="@((Model != null) ? Model.Sodium : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Total carbohydrate</td>
-                                <td><input type="text" name="Carbs" value="@((Model != null) ? Model.Carbs : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Sugars</td>
-                                <td><input type="text" name="Sugar" value="@((Model != null) ? Model.Sugar : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Protein</td>
-                                <td><input type="text" name="Protein" value="@((Model != null) ? Model.Protein : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Vitamin A</td>
-                                <td><input type="text" name="VitaminA" value="@((Model != null) ? Model.VitaminA : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Vitamin C</td>
-                                <td><input type="text" name="VitaminC" value="@((Model != null) ? Model.VitaminC : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Calcium</td>
-                                <td><input type="text" name="Calcium" value="@((Model != null) ? Model.Calcium : "")"></td>
-                            </tr>
-                            <tr>
-                                <td>Iron</td>
-                                <td><input type="text" name="Iron" value="@((Model != null) ? Model.Iron : "")"></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="check-button-container">
+        </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            var foodSelect = document.getElementById('FoodNameSelect');
+            if (foodSelect.options.length !== 0) {
+                var firstOption = foodSelect.options[0];
 
-                        <button class="check-button">Check</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-</body>
+                var changeEvent = new Event('change');
+                foodSelect.dispatchEvent(changeEvent);
+
+                firstOption.selected = true;
+            }
+        });
+
+        document.getElementById('FoodNameSelect').addEventListener('change', function () {
+            var selectedOption = this.options[this.selectedIndex];
+
+            var fat = selectedOption.getAttribute('data-fat');
+            var saturatedFat = selectedOption.getAttribute('data-saturated-fat');
+            var sodium = selectedOption.getAttribute('data-sodium');
+            var carbs = selectedOption.getAttribute('data-carbs');
+            var sugar = selectedOption.getAttribute('data-sugar');
+            var protein = selectedOption.getAttribute('data-protein');
+            var vitaminA = selectedOption.getAttribute('data-vitamin-a');
+            var vitaminC = selectedOption.getAttribute('data-vitamin-c');
+            var calcium = selectedOption.getAttribute('data-calcium');
+            var iron = selectedOption.getAttribute('data-iron');
+
+            // Assign values to respective form fields
+            document.getElementsByName('Fat')[0].value = fat;
+            document.getElementsByName('SaturatedFat')[0].value = saturatedFat;
+            document.getElementsByName('Sodium')[0].value = sodium;
+            document.getElementsByName('Carbs')[0].value = carbs;
+            document.getElementsByName('Sugar')[0].value = sugar;
+            document.getElementsByName('Protein')[0].value = protein;
+            document.getElementsByName('VitaminA')[0].value = vitaminA;
+            document.getElementsByName('VitaminC')[0].value = vitaminC;
+            document.getElementsByName('Calcium')[0].value = calcium;
+            document.getElementsByName('Iron')[0].value = iron;
+        });
+    </script>
+    </body>
 </html>
 

@@ -13,7 +13,6 @@ using MyNutritionist.Utilities;
 
 namespace MyNutritionist.Controllers
 {
-    [Authorize(Roles = "RegisteredUser")]
     public class RegisteredUserController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -30,6 +29,7 @@ namespace MyNutritionist.Controllers
         }
 
         // GET: RegisteredUser
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> Index()
         {
             var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
@@ -87,12 +87,14 @@ namespace MyNutritionist.Controllers
             ViewBag.BurnedCaloriesProgressData = burnedCaloriesProgressData;
             return View(registeredUser);
         }
+
         private double CalculateProgressPercentage(double value, double averageValue)
         {
             double progress = value / averageValue * 100;
             return progress > 100 ? 100 : (progress < 0 ? 0 : progress);
         }
         // GET: RegisteredUser/Details/
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> Details()
         {
        
@@ -151,52 +153,15 @@ namespace MyNutritionist.Controllers
             return View(registeredUser);
         }
 
+        [Authorize(Roles = "RegisteredUser, PremiumUser")]
         public IActionResult NutritionalValues()
         {
-            Ingredient ingredient = new Ingredient(); 
+            var ingredient = _context.Ingredient.ToList();
             return View(ingredient);
         }
 
-
-        [HttpPost]
-        public IActionResult CheckNutritionalValues(Ingredient ingredient)
-        {
-            // Retrieve the ingredient from the database based on the entered name
-            var queriedIngredient = _context.Ingredient
-                .FirstOrDefault(i => i.FoodName == ingredient.FoodName);
-
-            if (queriedIngredient == null)
-            {
-                ViewBag.ErrorMessage = "Ingredient not found. Please enter a valid food name.";
-                return View("NutritionalValues");
-            }
-
-            // Pass the queried ingredient to the view for display
-            return View("NutritionalValues", queriedIngredient);
-        }
-
-        /*
-        // GET: RegisteredUser/NutritionalValues/5
-        public async Task<IActionResult> NutritionalValues(int? id)
-        {
-            
-            if (id == null || _context.RegisteredUser == null)
-            {
-                return NotFound();
-            }
-
-        
-            var registeredUser = await _context.RegisteredUser
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
-              if (registeredUser == null)
-              {
-                  return NotFound();
-              }
-
-            return View(registeredUser);
-        }
-    */
         // GET: RegisteredUser/EditCard/5
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> EditCard()
         {
             var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
@@ -212,6 +177,7 @@ namespace MyNutritionist.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> EditCard([Bind("Owner,CardNumber,Balance")] Card card)
         {
             //var user = Activator.CreateInstance<RegisteredUser>();
@@ -311,6 +277,7 @@ namespace MyNutritionist.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> Edit([Bind("City,Age,Weight,Height,FullName,Email,NutriUsername,NutriPassword")] RegisteredUser Reguser)
         {
             //var user = Activator.CreateInstance<RegisteredUser>();
@@ -345,6 +312,7 @@ namespace MyNutritionist.Controllers
 
 
         // GET: RegisteredUser/Edit
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> Edit()
         {
             var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
@@ -359,11 +327,10 @@ namespace MyNutritionist.Controllers
             return View(registeredUser);
         }
 
-       
-
 
         // GET: RegisteredUser/Delete
         [ActionName("Delete")]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> Delete()
         {
             var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
@@ -380,6 +347,7 @@ namespace MyNutritionist.Controllers
         // POST: RegisteredUser/Delete/
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> DeleteConfirmed()
         {
             var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
@@ -397,37 +365,7 @@ namespace MyNutritionist.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // GET: RegisteredUser/DailyFoodAndActivity
-        /*   public async Task<IActionResult> DailyFoodAndActivity()
-           {
-               var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-               var registeredUser = await _context.RegisteredUser
-                   .FirstOrDefaultAsync(m => m.Id.Equals(id));
-                 if (registeredUser == null)
-                 {
-                     return NotFound();
-                 }
-
-               return View(registeredUser);
-           }
-
-           [HttpPost]
-           [ValidateAntiForgeryToken]
-           public async Task<IActionResult> DailyFoodAndActivity([Bind("Breakfast,Lunch,Dinner,Snacks,PhysicalActivity")] EnterActivityAndFoodViewModel input)
-           {
-               var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-               var user = await _context.RegisteredUser
-                   .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-
-
-
-               return RedirectToAction("Index");
-           }
-           public IActionResult DailyActivityAndFood()
-           {
-               var model = new EnterActivityAndFoodViewModel();
-               return View("~/Views/PremiumUser/DailyActivityAndFood.cshtml", model);
-           }*/
+        [Authorize(Roles = "RegisteredUser")]
         public IActionResult DailyFoodAndActivity()
         {
             var model = new EnterActivityAndFoodViewModel();
@@ -435,6 +373,7 @@ namespace MyNutritionist.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "RegisteredUser")]
         public IActionResult DailyFoodAndActivity(EnterActivityAndFoodViewModel model)
         {
             if (ModelState.IsValid)
@@ -446,6 +385,7 @@ namespace MyNutritionist.Controllers
             return View(model);
         }
         [HttpPost]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> Save(EnterActivityAndFoodViewModel model)
         {
             var breakfastIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Breakfast.FoodName);
@@ -553,8 +493,6 @@ namespace MyNutritionist.Controllers
                     return 0; 
             }
         }
-
-
 
     }
 }
