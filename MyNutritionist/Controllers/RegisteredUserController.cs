@@ -358,6 +358,11 @@ namespace MyNutritionist.Controllers
             var registeredUser = await _context.RegisteredUser.FindAsync(id);
             if (registeredUser != null)
             {
+                var progressListForRegisteredUser = await _context.Progress
+                    .Where(p => p.RegisteredUser.Id == id)
+                    .ToListAsync();
+                _context.Progress.RemoveRange(progressListForRegisteredUser);
+
                 _context.RegisteredUser.Remove(registeredUser);
             }
 
@@ -365,7 +370,7 @@ namespace MyNutritionist.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [Authorize(Roles = "RegisteredUser")]
+        [Authorize(Roles = "RegisteredUser, PremiumUser")]
         public IActionResult DailyFoodAndActivity()
         {
             var model = new EnterActivityAndFoodViewModel();
@@ -375,7 +380,7 @@ namespace MyNutritionist.Controllers
 
        
         [HttpPost]
-        [Authorize(Roles = "RegisteredUser")]
+        [Authorize(Roles = "RegisteredUser, PremiumUser")]
         public async Task<IActionResult> Save(EnterActivityAndFoodViewModel model)
         {
             var breakfastIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Breakfast.FoodName);
@@ -410,9 +415,10 @@ namespace MyNutritionist.Controllers
                     var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
 
 
+                //IdentityUser currentUser = null;
+                if (_httpContextAccessor.HttpContext.User.IsInRole("RegisteredUser")) {
                     var currentUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Id == userId);
-
-
+                    
                     if (currentUser == null)
                     {
                         return NotFound();
@@ -437,7 +443,36 @@ namespace MyNutritionist.Controllers
                     _context.Progress.Add(progress);
                     _context.SaveChanges();
 
-                    return RedirectToAction("Index", "Home");
+                    //return RedirectToAction("Index", "Home");
+                }
+                else {
+                    var currentUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.Id == userId);
+
+                    if (currentUser == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var burnedCalories = CalculateBurnedCalories(model.PhysicalActivity);
+                    var points = CalculatePoints(consumedCalories, burnedCalories);
+
+
+                    currentUser.Points += points;
+                    _context.SaveChanges();
+                    var progress = new Progress
+                    {
+                        Date = DateTime.Now,
+                        BurnedCalories = burnedCalories,
+                        ConsumedCalories = consumedCalories,
+                        RegisteredUser = null,
+                        PremiumUser = currentUser
+                    };
+
+                    _context.Progress.Add(progress);
+                    _context.SaveChanges();
+
+                   // return RedirectToAction("Index", "Home");
+                }    
                 }
             return RedirectToAction("Index", "Home");
         }

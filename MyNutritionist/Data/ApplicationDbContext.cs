@@ -26,7 +26,7 @@ namespace MyNutritionist.Data
         public DbSet<Progress> Progress { get; set; }
         //public DbSet<Recipe_Ingredient> RecipeIngredient { get; set; }
         public DbSet<Nutritionist> Nutritionist { get; set; }
-        public DbSet<Leaderboard> Leaderboard { get; set; }
+        //public DbSet<Leaderboard> Leaderboard { get; set; }
         //public DbSet<PhysicalActivity> PhysicalActivity { get; set; }
         //public DbSet<DietPlanRecipe> DietPlanRecipes { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -43,7 +43,7 @@ namespace MyNutritionist.Data
             builder.Entity<Recipe>().ToTable("Recipe");
             builder.Entity<Progress>().ToTable("Progress");
             //builder.Entity<Recipe_Ingredient>().ToTable("RecipeIngredient");
-            builder.Entity<Leaderboard>().ToTable("Leaderboard");
+            //builder.Entity<Leaderboard>().ToTable("Leaderboard");
             //builder.Entity<PhysicalActivity>().ToTable("PhysicalActivity");
             builder.Entity<Nutritionist>().ToTable("Nutritionist");
             //builder.Entity<DietPlanRecipe>().ToTable("DietPlanRecipe");

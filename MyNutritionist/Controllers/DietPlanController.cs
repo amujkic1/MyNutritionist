@@ -40,7 +40,7 @@ namespace MyNutritionist.Controllers
 
             // Retrieve the diet plan for the signed-in user
             var dietPlan = _context.DietPlan
-                                  .Include(d => d.Recipes)
+                                  .Include(d => d.PremiumUser)
                                   .FirstOrDefault(d => d.PremiumUser.Id == user.Id);
 
             var listOfRecipes = new List<Recipe>();
