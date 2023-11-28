@@ -418,27 +418,26 @@ namespace MyNutritionist.Controllers
                 //IdentityUser currentUser = null;
                 if (_httpContextAccessor.HttpContext.User.IsInRole("RegisteredUser")) {
                     var currentUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Id == userId);
-                    
+
                     if (currentUser == null)
                     {
                         return NotFound();
                     }
-
-                    var burnedCalories = CalculateBurnedCalories(model.PhysicalActivity);
-                    var points = CalculatePoints(consumedCalories, burnedCalories);
-
-                  
-                    currentUser.Points += points;
-                    _context.SaveChanges();
-
                     var progress = new Progress
                     {
                         Date = DateTime.Now,
-                        BurnedCalories = burnedCalories,
-                        ConsumedCalories = consumedCalories,
+                        BurnedCalories = 0,
+                        ConsumedCalories = 0,
                         RegisteredUser = currentUser,
                         PremiumUser = null
                     };
+                    progress.BurnedCalories = progress.CalculateBurnedCalories(model.PhysicalActivity);
+
+                    var points = progress.CalculatePoints(consumedCalories, progress.BurnedCalories);
+
+
+                    currentUser.Points += points;
+                    _context.SaveChanges();
 
                     _context.Progress.Add(progress);
                     _context.SaveChanges();
@@ -452,21 +451,21 @@ namespace MyNutritionist.Controllers
                     {
                         return NotFound();
                     }
-
-                    var burnedCalories = CalculateBurnedCalories(model.PhysicalActivity);
-                    var points = CalculatePoints(consumedCalories, burnedCalories);
+                    var progress = new Progress
+                    {
+                        Date = DateTime.Now,
+                        BurnedCalories = 0,
+                        ConsumedCalories = 0,
+                        RegisteredUser = null,
+                        PremiumUser = currentUser
+                    };
+                    progress.BurnedCalories = progress.CalculateBurnedCalories(model.PhysicalActivity);
+                    
+                    var points = progress.CalculatePoints(consumedCalories, progress.BurnedCalories);
 
 
                     currentUser.Points += points;
                     _context.SaveChanges();
-                    var progress = new Progress
-                    {
-                        Date = DateTime.Now,
-                        BurnedCalories = burnedCalories,
-                        ConsumedCalories = consumedCalories,
-                        RegisteredUser = null,
-                        PremiumUser = currentUser
-                    };
 
                     _context.Progress.Add(progress);
                     _context.SaveChanges();
@@ -475,45 +474,6 @@ namespace MyNutritionist.Controllers
                 }    
                 }
             return RedirectToAction("Index", "Home");
-        }
-
-        private int CalculatePoints(int consumedCalories, int burnedCalories)
-        {
-            const int NormalDailyCalories = 2000;
-            const int MaxPoints = 20;
-            const int MinPoints = 0;
-
-            var deviationPercentage = Math.Abs((consumedCalories - burnedCalories) / (double)NormalDailyCalories) * 100;
-            var deviationPoints = MaxPoints - (int)Math.Round(deviationPercentage / 100 * MaxPoints);
-
-            deviationPoints = Math.Max(MinPoints, Math.Min(MaxPoints, deviationPoints));
-
-            return deviationPoints;
-        }
-
-
-        private int CalculateBurnedCalories(PhysicalActivity activity)
-        {
-            const int RunningCaloriesPerMinute = 10;
-            const int WalkingCaloriesPerMinute = 5;
-            const int CyclingCaloriesPerMinute = 8;
-
-            var durationInMinutes = activity.Duration;
-
-            switch (activity.ActivityType)
-            {
-                case ActivityType.RUNNING:
-                    return durationInMinutes * RunningCaloriesPerMinute;
-
-                case ActivityType.WALKING:
-                    return durationInMinutes * WalkingCaloriesPerMinute;
-
-                case ActivityType.CYCLING:
-                    return durationInMinutes * CyclingCaloriesPerMinute;
-
-                default:
-                    return 0; 
-            }
         }
 
     }
