@@ -2,6 +2,7 @@
 {
     public class EnterActivityAndFoodViewModel
     {
+        public List<Ingredient> Ingredients { get; set; }
         public Ingredient Breakfast { get; set; }
         public Ingredient Lunch { get; set; }
         public Ingredient  Dinner { get; set; }

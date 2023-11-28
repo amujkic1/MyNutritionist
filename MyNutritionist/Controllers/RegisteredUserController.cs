@@ -369,21 +369,11 @@ namespace MyNutritionist.Controllers
         public IActionResult DailyFoodAndActivity()
         {
             var model = new EnterActivityAndFoodViewModel();
+            model.Ingredients = _context.Ingredient.ToList();
             return View(model);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "RegisteredUser")]
-        public IActionResult DailyFoodAndActivity(EnterActivityAndFoodViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-
-                return RedirectToAction("Index", "Home"); 
-            }
-
-            return View(model);
-        }
+       
         [HttpPost]
         [Authorize(Roles = "RegisteredUser")]
         public async Task<IActionResult> Save(EnterActivityAndFoodViewModel model)
@@ -453,7 +443,7 @@ namespace MyNutritionist.Controllers
                 }
             }
 
-            return View(model);
+            return RedirectToAction("Index", "Home");
         }
         private int CalculatePoints(int consumedCalories, int burnedCalories)
         {
