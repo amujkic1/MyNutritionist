@@ -388,8 +388,6 @@ namespace MyNutritionist.Controllers
             var dinnerQuantity = 0;
             var snacksQuantity = 0;
 
-            if (ModelState.IsValid)
-            {
                 if (int.TryParse(Request.Form["breakfast-quantity"], out breakfastQuantity) &&
                     int.TryParse(Request.Form["lunch-quantity"], out lunchQuantity) &&
                     int.TryParse(Request.Form["dinner-quantity"], out dinnerQuantity) &&
@@ -441,10 +439,9 @@ namespace MyNutritionist.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
-            }
-
             return RedirectToAction("Index", "Home");
         }
+
         private int CalculatePoints(int consumedCalories, int burnedCalories)
         {
             const int NormalDailyCalories = 2000;
