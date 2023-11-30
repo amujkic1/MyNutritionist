@@ -44,10 +44,9 @@ namespace MyNutritionist.Controllers
             var currentDayOfWeek = (int)currentDate.DayOfWeek;
 
             var progressList = await _context.Progress
-                .Where(p => p.RegisteredUser.Id == userId && p.Date.Year == currentDate.Year && p.Date.Month == currentDate.Month && p.Date.Day >= currentDate.AddDays(-6).Day && p.Date.Day <= currentDate.Day)
+                .Where(p => p.RegisteredUser.Id == userId && p.Date >= currentDate.AddDays(-6) && p.Date <= currentDate)
                 .OrderBy(p => p.Date)
                 .ToListAsync();
-
 
             var averageConsumedCalories = 2000;
             var averageBurnedCalories = 300;
@@ -55,11 +54,12 @@ namespace MyNutritionist.Controllers
             var consumedCaloriesProgressData = new List<object>();
             var burnedCaloriesProgressData = new List<object>();
 
-            for (var i = 0; i < 7; i++)
+            for (var i = 6; i >= 0; i--)
             {
-                var date = currentDate.AddDays(i);
+                var date = currentDate.AddDays(-i);
                 var dayOfWeek = (int)date.DayOfWeek;
-                var progress = progressList.FirstOrDefault(p => p.Date.Year == date.Year && p.Date.Month == date.Month && p.Date.Day == date.Day);
+                var progress = progressList.FirstOrDefault(p => p.Date.Date == date.Date);
+                Console.WriteLine(date);
 
                 var consumedCalories = progress?.ConsumedCalories ?? 0;
                 var burnedCalories = progress?.BurnedCalories ?? 0;

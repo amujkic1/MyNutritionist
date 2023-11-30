@@ -60,7 +60,7 @@
                     </div>
                     <label for="breakfast-quantity">Quantity:</label>
                     <div class="input-group">
-                    <input type="number" id="breakfast-quantity" name="breakfast-quantity" class="form-control" />
+                    <input type="number" id="breakfast-quantity" name="breakfast-quantity" class="form-control" min="0"/>
                     </div>
                 </div>
 
@@ -76,7 +76,7 @@
                     </div>
                     <label for="lunch-quantity">Quantity:</label>
                     <div class="input-group">
-                    <input type="number" id="lunch-quantity" name="lunch-quantity" class="form-control" />
+                        <input type="number" id="lunch-quantity" name="lunch-quantity" class="form-control" min="0" />
                     </div>
                 </div>
 
@@ -92,7 +92,7 @@
                     </div>
                     <label for="dinner-quantity">Quantity:</label>
                     <div class="input-group">
-                    <input type="number" id="dinner-quantity" name="dinner-quantity" class="form-control" />
+                        <input type="number" id="dinner-quantity" name="dinner-quantity" class="form-control" min="0" />
                     </div>
                 </div>
 
@@ -108,7 +108,7 @@
                     </div>
                     <label for="snacks-quantity">Quantity:</label>
                     <div class="input-group">
-                        <input type="number" id="snacks-quantity" name="snacks-quantity" class="form-control" />
+                        <input type="number" id="snacks-quantity" name="snacks-quantity" class="form-control" min="0" />
                     </div>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                 <div class="input-container">
                     <label asp-for="PhysicalActivity.Duration"></label>
                     <div class="input-group">
-                    <input asp-for="PhysicalActivity.Duration" class="form-control" style="margin-bottom: 20px;" />
+                        <input asp-for="PhysicalActivity.Duration" class="form-control" style="margin-bottom: 20px;" min="0" />
                     </div>
                 </div>
 
