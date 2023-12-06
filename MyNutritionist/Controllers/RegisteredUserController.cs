@@ -59,10 +59,12 @@ namespace MyNutritionist.Controllers
                 var date = currentDate.AddDays(-i);
                 var dayOfWeek = (int)date.DayOfWeek;
                 var progress = progressList.FirstOrDefault(p => p.Date.Date == date.Date);
-                Console.WriteLine(date);
+
 
                 var consumedCalories = progress?.ConsumedCalories ?? 0;
                 var burnedCalories = progress?.BurnedCalories ?? 0;
+                
+                
 
                 var consumedCaloriesProgressPercentage = (int)CalculateProgressPercentage(consumedCalories, averageConsumedCalories);
                 var burnedCaloriesProgressPercentage = (int)CalculateProgressPercentage(burnedCalories, averageBurnedCalories);
@@ -427,7 +429,7 @@ namespace MyNutritionist.Controllers
                     {
                         Date = DateTime.Now,
                         BurnedCalories = 0,
-                        ConsumedCalories = 0,
+                        ConsumedCalories = consumedCalories,
                         RegisteredUser = currentUser,
                         PremiumUser = null
                     };
@@ -455,7 +457,7 @@ namespace MyNutritionist.Controllers
                     {
                         Date = DateTime.Now,
                         BurnedCalories = 0,
-                        ConsumedCalories = 0,
+                        ConsumedCalories = consumedCalories,
                         RegisteredUser = null,
                         PremiumUser = currentUser
                     };
