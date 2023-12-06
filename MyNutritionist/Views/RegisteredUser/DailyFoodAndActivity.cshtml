@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Unos obroka i aktivnosti</title>
+    <!-- Internal Styles for Layout -->
     <style>
         .input-container {
             margin-bottom: 20px;
@@ -38,11 +39,10 @@
             display: flex;
             justify-content: space-between;
         }
-
-      
     </style>
 </head>
 <body>
+    <!-- Form for Submitting Meal and Activity Data -->
     <form asp-controller="RegisteredUser" asp-action="Save" method="post">
         <div class="container">
             <div class="column">
@@ -51,16 +51,17 @@
                 <div class="input-container">
                     <label asp-for="Breakfast.FoodName">Breakfast</label>
                     <div class="input-group">
+                        <!-- Dropdown Options for Ingredients -->
                         <select asp-for="Breakfast.FoodName" class="form-control">
                             @foreach (var ingredient in Model.Ingredients)
                             {
-                                <option value="@ingredient.FoodName">@ingredient.FoodName</option>
+                            <option value="@ingredient.FoodName">@ingredient.FoodName</option>
                             }
                         </select>
                     </div>
                     <label for="breakfast-quantity">Quantity:</label>
                     <div class="input-group">
-                    <input type="number" id="breakfast-quantity" name="breakfast-quantity" class="form-control" />
+                        <input type="number" id="breakfast-quantity" name="breakfast-quantity" class="form-control" min="0" />
                     </div>
                 </div>
 
@@ -70,13 +71,13 @@
                         <select asp-for="Lunch.FoodName" class="form-control">
                             @foreach (var ingredient in Model.Ingredients)
                             {
-                                <option value="@ingredient.FoodName">@ingredient.FoodName</option>
+                            <option value="@ingredient.FoodName">@ingredient.FoodName</option>
                             }
                         </select>
                     </div>
                     <label for="lunch-quantity">Quantity:</label>
                     <div class="input-group">
-                    <input type="number" id="lunch-quantity" name="lunch-quantity" class="form-control" />
+                        <input type="number" id="lunch-quantity" name="lunch-quantity" class="form-control" min="0" />
                     </div>
                 </div>
 
@@ -86,13 +87,13 @@
                         <select asp-for="Dinner.FoodName" class="form-control">
                             @foreach (var ingredient in Model.Ingredients)
                             {
-                                <option value="@ingredient.FoodName">@ingredient.FoodName</option>
+                            <option value="@ingredient.FoodName">@ingredient.FoodName</option>
                             }
                         </select>
                     </div>
                     <label for="dinner-quantity">Quantity:</label>
                     <div class="input-group">
-                    <input type="number" id="dinner-quantity" name="dinner-quantity" class="form-control" />
+                        <input type="number" id="dinner-quantity" name="dinner-quantity" class="form-control" min="0" />
                     </div>
                 </div>
 
@@ -102,39 +103,41 @@
                         <select asp-for="Snacks.FoodName" class="form-control">
                             @foreach (var ingredient in Model.Ingredients)
                             {
-                                <option value="@ingredient.FoodName">@ingredient.FoodName</option>
+                            <option value="@ingredient.FoodName">@ingredient.FoodName</option>
                             }
-                        </select>    
+                        </select>
                     </div>
                     <label for="snacks-quantity">Quantity:</label>
                     <div class="input-group">
-                        <input type="number" id="snacks-quantity" name="snacks-quantity" class="form-control" />
+                        <input type="number" id="snacks-quantity" name="snacks-quantity" class="form-control" min="0" />
                     </div>
                 </div>
             </div>
+            <!-- Column for Activities -->
             <div class="column">
                 <h1>Enter Activity</h1>
 
                 <div class="input-container">
                     <label asp-for="PhysicalActivity.Duration"></label>
                     <div class="input-group">
-                    <input asp-for="PhysicalActivity.Duration" class="form-control" style="margin-bottom: 20px;" />
+                        <input asp-for="PhysicalActivity.Duration" class="form-control" style="margin-bottom: 20px;" min="0" />
                     </div>
                 </div>
 
                 <div class="input-container">
                     <label asp-for="PhysicalActivity.ActivityType"></label>
                     <div class="input-group">
-                    <select asp-for="PhysicalActivity.ActivityType" class="form-control">
-                        <option value="running">Running</option>
-                        <option value="cycling">Cycling</option>
-                        <option value="swimming">Swimming</option>
-                    </select>
+                        <select asp-for="PhysicalActivity.ActivityType" class="form-control">
+                            <option value="running">Running</option>
+                            <option value="cycling">Cycling</option>
+                            <option value="swimming">Swimming</option>
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Submit Button -->
         <div class="form-group" style="margin-top: 20px">
             <button type="submit" class="btn btn-primary" style="margin-top: 20px; margin-left:200px">Save</button>
         </div>

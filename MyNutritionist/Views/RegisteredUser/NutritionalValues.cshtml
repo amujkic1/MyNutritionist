@@ -81,9 +81,12 @@
                 }
         </style>
     </head>
+
+    <!-- Nutritional Values Page Body -->
     <body>
         <h2>Nutritional Values</h2>
 
+        <!-- Error Message Display -->
         @if (ViewBag.ErrorMessage != null)
     {
         <div style="color: red; text-align: center; margin-bottom: 10px;">
@@ -91,13 +94,14 @@
         </div>
     }
 
+        <!-- Form Section for Selecting Food and Displaying Nutritional Information -->
         <form asp-action="CheckNutritionalValues" method="post">
             <div class="form-section">
                 <div class="form-column">
                     <div>
                         <span class="form-label">Select food:</span>
                         <select class="form-field" name="FoodName" id="FoodNameSelect">
-                        @foreach (var food in Model)
+                            @foreach (var food in Model)
                         {
                             <option value="@food.FoodName"
                                     data-fat="@food.Fat"
@@ -109,11 +113,15 @@
                                     data-vitamin-a="@food.VitaminA"
                                     data-vitamin-c="@food.VitaminC"
                                     data-calcium="@food.Calcium"
-                                    data-iron="@food.Iron">@food.FoodName</option>
+                                    data-iron="@food.Iron">
+                                @food.FoodName
+                            </option>
                         }
                         </select>
                     </div>
                 </div>
+
+                <!-- Table Container for Displaying Nutritional Information -->
                 <div class="form-column">
                     <div class="table-section">
                         <div class="table-container">
@@ -168,47 +176,50 @@
                 </div>
             </div>
         </form>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            
-            var foodSelect = document.getElementById('FoodNameSelect');
-            if (foodSelect.options.length !== 0) {
-                var firstOption = foodSelect.options[0];
 
-                var changeEvent = new Event('change');
-                foodSelect.dispatchEvent(changeEvent);
+        <!-- JavaScript to Handle Food Selection and Update Nutritional Information -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
 
-                firstOption.selected = true;
-            }
-        });
+                var foodSelect = document.getElementById('FoodNameSelect');
+                if (foodSelect.options.length !== 0) {
+                    var firstOption = foodSelect.options[0];
 
-        document.getElementById('FoodNameSelect').addEventListener('change', function () {
-            var selectedOption = this.options[this.selectedIndex];
+                    var changeEvent = new Event('change');
+                    foodSelect.dispatchEvent(changeEvent);
 
-            var fat = selectedOption.getAttribute('data-fat');
-            var saturatedFat = selectedOption.getAttribute('data-saturated-fat');
-            var sodium = selectedOption.getAttribute('data-sodium');
-            var carbs = selectedOption.getAttribute('data-carbs');
-            var sugar = selectedOption.getAttribute('data-sugar');
-            var protein = selectedOption.getAttribute('data-protein');
-            var vitaminA = selectedOption.getAttribute('data-vitamin-a');
-            var vitaminC = selectedOption.getAttribute('data-vitamin-c');
-            var calcium = selectedOption.getAttribute('data-calcium');
-            var iron = selectedOption.getAttribute('data-iron');
+                    firstOption.selected = true;
+                }
+            });
 
-            // Assign values to respective form fields
-            document.getElementsByName('Fat')[0].value = fat;
-            document.getElementsByName('SaturatedFat')[0].value = saturatedFat;
-            document.getElementsByName('Sodium')[0].value = sodium;
-            document.getElementsByName('Carbs')[0].value = carbs;
-            document.getElementsByName('Sugar')[0].value = sugar;
-            document.getElementsByName('Protein')[0].value = protein;
-            document.getElementsByName('VitaminA')[0].value = vitaminA;
-            document.getElementsByName('VitaminC')[0].value = vitaminC;
-            document.getElementsByName('Calcium')[0].value = calcium;
-            document.getElementsByName('Iron')[0].value = iron;
-        });
-    </script>
+             // Event listener for food selection change
+            document.getElementById('FoodNameSelect').addEventListener('change', function () {
+                var selectedOption = this.options[this.selectedIndex];
+
+                var fat = selectedOption.getAttribute('data-fat');
+                var saturatedFat = selectedOption.getAttribute('data-saturated-fat');
+                var sodium = selectedOption.getAttribute('data-sodium');
+                var carbs = selectedOption.getAttribute('data-carbs');
+                var sugar = selectedOption.getAttribute('data-sugar');
+                var protein = selectedOption.getAttribute('data-protein');
+                var vitaminA = selectedOption.getAttribute('data-vitamin-a');
+                var vitaminC = selectedOption.getAttribute('data-vitamin-c');
+                var calcium = selectedOption.getAttribute('data-calcium');
+                var iron = selectedOption.getAttribute('data-iron');
+
+                // Assign values to respective form fields
+                document.getElementsByName('Fat')[0].value = fat;
+                document.getElementsByName('SaturatedFat')[0].value = saturatedFat;
+                document.getElementsByName('Sodium')[0].value = sodium;
+                document.getElementsByName('Carbs')[0].value = carbs;
+                document.getElementsByName('Sugar')[0].value = sugar;
+                document.getElementsByName('Protein')[0].value = protein;
+                document.getElementsByName('VitaminA')[0].value = vitaminA;
+                document.getElementsByName('VitaminC')[0].value = vitaminC;
+                document.getElementsByName('Calcium')[0].value = calcium;
+                document.getElementsByName('Iron')[0].value = iron;
+            });
+        </script>
     </body>
-</html>
+    </html>
 
