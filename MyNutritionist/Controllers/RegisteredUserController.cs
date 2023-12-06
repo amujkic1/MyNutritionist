@@ -28,17 +28,10 @@ namespace MyNutritionist.Controllers
             _signInManager = signInManager;
         }
 
-        // GET: RegisteredUser
-        [Authorize(Roles = "RegisteredUser")]
-        public async Task<IActionResult> Index()
+        private async Task<List<List<object>>> SetProgressData (string userId)
         {
-            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var registeredUser = await _context.RegisteredUser.FirstOrDefaultAsync(p => p.Id == userId);
 
-            if (registeredUser == null)
-            {
-                return NotFound();
-            }
 
             var currentDate = DateTime.Now.Date;
             var currentDayOfWeek = (int)currentDate.DayOfWeek;
@@ -63,8 +56,8 @@ namespace MyNutritionist.Controllers
 
                 var consumedCalories = progress?.ConsumedCalories ?? 0;
                 var burnedCalories = progress?.BurnedCalories ?? 0;
-                
-                
+
+
 
                 var consumedCaloriesProgressPercentage = (int)CalculateProgressPercentage(consumedCalories, averageConsumedCalories);
                 var burnedCaloriesProgressPercentage = (int)CalculateProgressPercentage(burnedCalories, averageBurnedCalories);
@@ -85,8 +78,29 @@ namespace MyNutritionist.Controllers
                 });
             }
 
-            ViewBag.ConsumedCaloriesProgressData = consumedCaloriesProgressData;
-            ViewBag.BurnedCaloriesProgressData = burnedCaloriesProgressData;
+            var list = new List<List<Object>>();
+            list.Add(consumedCaloriesProgressData);
+            list.Add(burnedCaloriesProgressData);
+            return list;
+        }
+
+        // GET: RegisteredUser
+        [Authorize(Roles = "RegisteredUser")]
+        public async Task<IActionResult> Index()
+        {
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var registeredUser = await _context.RegisteredUser.FirstOrDefaultAsync(p => p.Id == userId);
+
+            if (registeredUser == null)
+            {
+                return NotFound();
+            }
+
+            var list = await SetProgressData(userId);
+            
+            ViewBag.ConsumedCaloriesProgressData = list[0];
+            ViewBag.BurnedCaloriesProgressData = list[1];
+
             return View(registeredUser);
         }
 
@@ -107,51 +121,12 @@ namespace MyNutritionist.Controllers
               {
                   return NotFound();
               }
-            var currentDate = DateTime.Now.Date;
-            var currentDayOfWeek = (int)currentDate.DayOfWeek;
 
-            var progressList = await _context.Progress
-                .Where(p => p.RegisteredUser.Id == userId && p.Date.Year == currentDate.Year && p.Date.Month == currentDate.Month && p.Date.Day >= currentDate.AddDays(-6).Day && p.Date.Day <= currentDate.Day)
-                .OrderBy(p => p.Date)
-                .ToListAsync();
+            var list = await SetProgressData(userId);
 
+            ViewBag.ConsumedCaloriesProgressData = list[0];
+            ViewBag.BurnedCaloriesProgressData = list[1];
 
-            var averageConsumedCalories = 2000;
-            var averageBurnedCalories = 300;
-
-            var consumedCaloriesProgressData = new List<object>();
-            var burnedCaloriesProgressData = new List<object>();
-
-            for (var i = 0; i < 7; i++)
-            {
-                var date = currentDate.AddDays(i);
-                var dayOfWeek = (int)date.DayOfWeek;
-                var progress = progressList.FirstOrDefault(p => p.Date.Year == date.Year && p.Date.Month == date.Month && p.Date.Day == date.Day);
-
-                var consumedCalories = progress?.ConsumedCalories ?? 0;
-                var burnedCalories = progress?.BurnedCalories ?? 0;
-
-                var consumedCaloriesProgressPercentage = (int)CalculateProgressPercentage(consumedCalories, averageConsumedCalories);
-                var burnedCaloriesProgressPercentage = (int)CalculateProgressPercentage(burnedCalories, averageBurnedCalories);
-                var isSelectedDay = dayOfWeek == currentDayOfWeek;
-
-                consumedCaloriesProgressData.Add(new
-                {
-                    DayOfWeek = date.ToString("ddd"),
-                    HeightPercentage = consumedCaloriesProgressPercentage,
-                    IsSelectedDay = isSelectedDay
-                });
-
-                burnedCaloriesProgressData.Add(new
-                {
-                    DayOfWeek = date.ToString("ddd"),
-                    HeightPercentage = burnedCaloriesProgressPercentage,
-                    IsSelectedDay = isSelectedDay
-                });
-            }
-
-            ViewBag.ConsumedCaloriesProgressData = consumedCaloriesProgressData;
-            ViewBag.BurnedCaloriesProgressData = burnedCaloriesProgressData;
             return View(registeredUser);
         }
 
