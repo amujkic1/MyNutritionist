@@ -13,6 +13,7 @@
         margin-bottom: 10px;
         border-radius: 5px;
     }
+
     .form-section {
         display: flex;
         justify-content: space-between;
@@ -84,34 +85,40 @@
     }
 </style>
 <h3>Enter card informations</h3>
+
+<!-- Information Note for Users -->
 <div class="form-label">
     MyNutritionist is designed with your security and privacy in mind, making it a simpler and more secure way to pay using your physical credit, debit, and prepaid cards.
     Information that you provide about your card may be provided by MyNutritionist to your card issuer, payment network, or any providers authorized by your card issuer,
     to determine the eligibility of your card, and to prevent fraud.
     After entering your information, you will be sent a verification email, as well as a confirmation email after a successful transaction.
 </div>
+
+<!-- Card Information Form Section -->
 <div class="form-section">
     <div class="form-column">
         <form asp-action="EditCard">
-        <div>
-            <span class="form-label">Owner:</span>
-            <input class="form-field" asp-for="PremiumUser" type="text">
-        </div>
-        <div>
-            <span class="form-label">Card number:</span>
-            <input class="form-field" asp-for="CardNumber" type="text">
-        </div>
-        <div>
-            <span class="form-label">Balance:</span>
-            <input class="form-field" asp-for="Balance" type="number">
-        </div>
-        <button class="rounded-button" style="float: right">Confirm</button>
+            <div>
+                <span class="form-label">Owner:</span>
+                <input class="form-field" asp-for="PremiumUser" type="text">
+            </div>
+            <div>
+                <span class="form-label">Card number:</span>
+                <input class="form-field" asp-for="CardNumber" type="text">
+            </div>
+            <div>
+                <span class="form-label">Balance:</span>
+                <input class="form-field" asp-for="Balance" type="number">
+            </div>
+            <button class="rounded-button" style="float: right">Confirm</button>
         </form>
     </div>
 </div>
+
+<!-- Notification Message Display -->
 @if (TempData["NotificationMessage"] != null)
 {
-    <div class="notification">
-        @TempData["NotificationMessage"]
-    </div>
+<div class="notification">
+    @TempData["NotificationMessage"]
+</div>
 }

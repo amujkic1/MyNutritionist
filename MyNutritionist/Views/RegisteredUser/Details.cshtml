@@ -7,9 +7,10 @@
 <html>
 <head>
     <title>Profile Details</title>
+    <!-- CSS Styling for the Profile Page -->
     <style>
         /* CSS for the form section */
-    
+
 
         .main-container {
             color: #abafc6;
@@ -17,10 +18,9 @@
             padding: 20px;
             margin: 50px;
             width: fit-content;
-            height: fit-content ;
+            height: fit-content;
             display: inline-block;
             verticle-align: middle;
-        
         }
 
         .header {
@@ -209,6 +209,7 @@
     </style>
 </head>
 <body>
+    <!-- User Details Section -->
     <div class="form-section">
         <div class="form-column">
             <div>
@@ -227,7 +228,7 @@
                 <span class="form-label">Age:</span>
                 <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.Age)" readonly>
             </div>
-            
+
         </div>
         <div class="form-column">
             <div>
@@ -238,7 +239,7 @@
                 <span class="form-label">Weight:</span>
                 <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.Weight) kg" readonly>
             </div>
-        
+
             <div>
                 <span class="form-label">City:</span>
                 <input class="form-field" type="text" value="@Html.DisplayFor(ru => ru.City)" readonly>
@@ -246,46 +247,47 @@
         </div>
     </div>
 
-   
- <div class="main-container">
-    <div class="header">
-        Daily activity last 7 days
-    </div>
-    <div class="week-stats">
-		@foreach (var progressData in ViewBag.BurnedCaloriesProgressData as List<object>)
+    <!-- Burned Calories Stats Section -->
+    <div class="main-container">
+        <div class="header">
+            Daily activity last 7 days
+        </div>
+        <div class="week-stats">
+            @foreach (var progressData in ViewBag.BurnedCaloriesProgressData as List<object>)
 		{
 			var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
 			var heightPercentage = (int)progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
 			var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
 
-			<div class="day-group @(isSelectedDay ? "selected" : "")">
-				<div class="bar" style="height: @(heightPercentage)%"></div>
-				<p class="day">@dayOfWeek</p>
-			</div>
+            <div class="day-group @(isSelectedDay ? "selected" : "")">
+                <div class="bar" style="height: @(heightPercentage)%"></div>
+                <p class="day">@dayOfWeek</p>
+            </div>
 		}
+        </div>
     </div>
-</div>
 
-
-<div class="main-container">
-    <div class="header">
-        Calories intake last 7 days
-    </div>
-    <div class="week-stats">
-		 @foreach (var progressData in ViewBag.ConsumedCaloriesProgressData as List<object>)
+    <!-- Consumed Calories Stats Section -->
+    <div class="main-container">
+        <div class="header">
+            Calories intake last 7 days
+        </div>
+        <div class="week-stats">
+            @foreach (var progressData in ViewBag.ConsumedCaloriesProgressData as List<object>)
 		{
 			var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
 			var heightPercentage = (int)progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
 			var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
 
-			<div class="day-group @(isSelectedDay ? "selected" : "")">
-				<div class="bar" style="height: @(heightPercentage)%"></div>
-				<p class="day">@dayOfWeek</p>
-			</div>
+            <div class="day-group @(isSelectedDay ? "selected" : "")">
+                <div class="bar" style="height: @(heightPercentage)%"></div>
+                <p class="day">@dayOfWeek</p>
+            </div>
 		}
+        </div>
     </div>
-</div>
 
+    <!-- User Points Section -->
     <div class="points-section">
         <span class="points-label">Current number of points:</span>
         <input class="points-field" type="text" value="@Html.DisplayFor(ru=>ru.Points)" readonly>

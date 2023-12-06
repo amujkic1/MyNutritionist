@@ -6,6 +6,7 @@
 
 <h1>Delete your account</h1>
 
+<!-- Deletion Confirmation Message -->
 <p>
     Are you sure you want to delete your account? All you date will be lost. To confirm, please enter your username and password.
 </p>
@@ -19,6 +20,7 @@
         }
     </style>
 
+    <!-- Form for Username and Password Entry -->
     <form>
         <div>
             <label for="username">Username:</label>
@@ -34,9 +36,9 @@
         </div>
     </form>
 
-
+    <!-- Deletion Confirmation Form -->
     <form asp-action="DeleteConfirmed">
-        
+
         <input type="submit" value="Delete" class="btn btn-primary" />
     </form>
 </div>
