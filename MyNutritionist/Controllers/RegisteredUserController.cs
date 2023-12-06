@@ -46,7 +46,7 @@ namespace MyNutritionist.Controllers
 
             // Retrieve progress data for the last 7 days
             var progressList = await _context.Progress
-                .Where(p => p.RegisteredUser.Id == userId && p.Date.Date >= currentDate.AddDays(-6).Date && p.Date.Date <= currentDate.Date)
+                .Where(p => p.RegisteredUser.Id == registeredUser.Id && p.Date.Date >= currentDate.AddDays(-6).Date && p.Date.Date <= currentDate.Date)
                 .OrderBy(p => p.Date)
                 .ToListAsync();
 
