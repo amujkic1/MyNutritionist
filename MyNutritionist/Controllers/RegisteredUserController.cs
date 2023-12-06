@@ -44,7 +44,7 @@ namespace MyNutritionist.Controllers
             var currentDayOfWeek = (int)currentDate.DayOfWeek;
 
             var progressList = await _context.Progress
-                .Where(p => p.RegisteredUser.Id == userId && p.Date >= currentDate.AddDays(-6) && p.Date <= currentDate)
+                .Where(p => p.RegisteredUser.Id == userId && p.Date.Date >= currentDate.AddDays(-6).Date && p.Date.Date <= currentDate.Date)
                 .OrderBy(p => p.Date)
                 .ToListAsync();
 
