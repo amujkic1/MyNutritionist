@@ -228,7 +228,9 @@ namespace MyNutritionist.Controllers
             premiumUser.EmailAddress = registeredUser.Email;
             premiumUser.Email = registeredUser.Email;
             premiumUser.EmailConfirmed = true;
-
+            premiumUser.Height = registeredUser.Height;
+            premiumUser.Weight = registeredUser.Weight;
+            premiumUser.City = registeredUser.City;
 
             // Create a new Card instance and populate its properties
             var newCard = new Card();
