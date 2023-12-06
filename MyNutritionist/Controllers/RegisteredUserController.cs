@@ -246,6 +246,23 @@ namespace MyNutritionist.Controllers
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
 
+            var progressRecords = await _context.Progress
+                        .Where(p => p.RegisteredUser.Id == registeredUser.Id)
+                        .ToListAsync();
+
+            if (progressRecords.Any())
+            {
+               
+                // Associate the Progress records with the new PremiumUser
+                foreach (var progressRecord in progressRecords)
+                {
+                    progressRecord.RegisteredUser = null;
+                    progressRecord.PremiumUser = premiumUser;
+                    _context.Progress.Update(progressRecord);
+                }
+                await _context.SaveChangesAsync();
+            }
+
             // Remove the existing registered user from the database
             _context.RegisteredUser.Remove(registeredUser);
             await _context.SaveChangesAsync();
@@ -384,7 +401,7 @@ namespace MyNutritionist.Controllers
             var registeredUser = await _context.RegisteredUser.FindAsync(id);
 
             // If the registered user is found, remove associated progress entries and the user
-            if (registeredUser != null)
+           
                 if (registeredUser != null)
                 {
                     var progressListForRegisteredUser = await _context.Progress
