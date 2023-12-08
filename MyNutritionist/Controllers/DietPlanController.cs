@@ -14,7 +14,6 @@ using MyNutritionist.Utilities;
 
 namespace MyNutritionist.Controllers
 {
-    //[Authorize]
     public class DietPlanController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -43,20 +42,23 @@ namespace MyNutritionist.Controllers
                                   .Include(d => d.PremiumUser)
                                   .FirstOrDefault(d => d.PremiumUser.Id == user.Id);
 
-            var listOfRecipes = new List<Recipe>();
-            
-            var sql = $"SELECT * FROM Recipe r INNER JOIN DietPlanRecipe dpr ON dpr.RecipesRID = r.RID WHERE dpr.DietPlansDPID = '{dietPlan.DPID}';";
-
-            listOfRecipes = _context.Recipe.FromSqlRaw(sql).ToList();
-            listOfRecipes.Count();
-
             if (dietPlan == null)
             {
-                // Handle the case when the diet plan is not found
-                return StatusCode(503, "Page is currently unavailable. Diet Plan will be availabe soon. Our nutritionist is working on that.");
+                // Redirect back to the previous URL if dietPlan is null
+                return Redirect(HttpContext.Request.Headers["Referer"].ToString());
             }
 
+            // Initialize an empty list to store recipes
+            var listOfRecipes = new List<Recipe>();
+
+            var sql = $"SELECT * FROM Recipe r INNER JOIN DietPlanRecipe dpr ON dpr.RecipesRID = r.RID WHERE dpr.DietPlansDPID = '{dietPlan.DPID}';";
+            // Execute the SQL query and populate the listOfRecipes with the retrieved recipes
+            listOfRecipes = _context.Recipe.FromSqlRaw(sql).ToList();
+
+            // Assign the retrieved list of recipes to the diet plan's Recipes property
             dietPlan.Recipes = listOfRecipes;
+
+            // Return the diet plan along with the associated list of recipes to the view
             return View(dietPlan);
         }
 
@@ -74,53 +76,71 @@ namespace MyNutritionist.Controllers
             return View(dietPlan);
         }
 
-        // POST: DietPlan/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST action to create a new diet plan
+        // To protect from overposting attacks, only specific properties are bound
         [HttpPost]
-        [Authorize(Roles = "Nutritionist")]
-        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Nutritionist")] // Access restricted to users in the "Nutritionist" role
+        [ValidateAntiForgeryToken] // Helps prevent cross-site request forgery attacks
         public async Task<IActionResult> Create(string RegUser, [Bind("DietPlan")] EditDietPlanVM dietPlanvm)
         {
-            //if (ModelState.IsValid)
+            // Extract the diet plan from the view model
+            var dietPlan = dietPlanvm.DietPlan;
+
+            // Check if each recipe in the diet plan exists
+            for (var i = 0; i < dietPlan.Recipes.Count; i++)
             {
-                var dietPlan = dietPlanvm.DietPlan;
+                // Retrieve each recipe from the context by its ID
+                dietPlan.Recipes[i] = await _context.Recipe.FirstOrDefaultAsync(r => r.RID == dietPlan.Recipes[i].RID);
 
-                for (var i = 0; i < dietPlan.Recipes.Count; i++)
-                {
-                     dietPlan.Recipes[i] = await _context.Recipe
-                             .FirstOrDefaultAsync(r => r.RID == dietPlan.Recipes[i].RID);
-                    
-                }
-                var listOfRecipes = dietPlan.Recipes;
-                dietPlan.Recipes = new List<Recipe>();
-
-                var loggedInNutritionist = await _userManager.GetUserAsync(User);
-                var user = await _context.Nutritionist.FindAsync(loggedInNutritionist.Id);
-                dietPlan.PremiumUser = await _context.PremiumUser
-                    .FirstOrDefaultAsync(m => m.Id.Equals(RegUser));
-
-                var deletePlans = _context.DietPlan.Where(d => d.PremiumUser.Id == RegUser).ToList();
-                if (deletePlans != null && deletePlans.Count != 0)
-                {
-                    _context.DietPlan.Remove(deletePlans[0]);
-                    _context.SaveChanges();
-                }
-
-                _context.Add(dietPlan);
-                await _context.SaveChangesAsync();
-
-                foreach( var recipe in listOfRecipes)
-                {
-                    var sql = $"INSERT INTO DietPlanRecipe (RecipesRID, DietPlansDPID) VALUES ('{recipe.RID}', '{dietPlan.DPID}');";
-
-                    _context.Database.ExecuteSqlRaw(sql);
-                }
-
-                return RedirectToAction("Index", "Nutritionist");
+                // If a recipe is not found, return a "Not Found" response
+                if (dietPlan.Recipes[i] == null)
+                    return NotFound();
             }
-            return View(dietPlanvm);
+
+            // Store the list of recipes temporarily and reset the diet plan's recipes list
+            var listOfRecipes = dietPlan.Recipes;
+            dietPlan.Recipes = new List<Recipe>();
+
+            // Get the currently logged-in nutritionist
+            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+
+            // If the logged-in nutritionist is not found, return a "Not Found" response
+            if (loggedInNutritionist == null)
+                return NotFound();
+
+            // Find the nutritionist in the context
+            var user = await _context.Nutritionist.FindAsync(loggedInNutritionist.Id);
+
+            // If the nutritionist is not found, return a "Not Found" response
+            if (user == null)
+                return NotFound();
+
+            // Associate the diet plan with the specified premium user
+            dietPlan.PremiumUser = await _context.PremiumUser.FirstOrDefaultAsync(m => m.Id.Equals(RegUser));
+
+            // Retrieve existing diet plans for the premium user and delete them
+            var deletePlans = _context.DietPlan.Where(d => d.PremiumUser.Id == RegUser).ToList();
+            if (deletePlans != null && deletePlans.Count != 0)
+            {
+                _context.DietPlan.Remove(deletePlans[0]);
+                _context.SaveChanges();
+            }
+
+            // Add the new diet plan to the context
+            _context.Add(dietPlan);
+            await _context.SaveChangesAsync();
+
+            // Associate each recipe with the diet plan by adding entries to the DietPlanRecipe table
+            foreach (var recipe in listOfRecipes)
+            {
+                var sql = $"INSERT INTO DietPlanRecipe (RecipesRID, DietPlansDPID) VALUES ('{recipe.RID}', '{dietPlan.DPID}');";
+                _context.Database.ExecuteSqlRaw(sql);
+            }
+
+            // Redirect to the Index action of the Nutritionist controller upon successful creation
+            return RedirectToAction("Index", "Nutritionist");
         }
+
 
     }
 }
