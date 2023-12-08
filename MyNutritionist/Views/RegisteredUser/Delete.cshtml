@@ -21,7 +21,14 @@
     </style>
 
     <!-- Form for Username and Password Entry -->
-    <form>
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert" style="background: red; color: antiquewhite;" role="alert">
+            @Html.ValidationSummary()
+        </div>
+    }
+
+    <form asp-action="DeleteConfirmed" method="post">
         <div>
             <label for="username">Username:</label>
         </div>
@@ -34,11 +41,8 @@
         <div>
             <input type="password" id="password" name="password" value="">
         </div>
-    </form>
-
-    <!-- Deletion Confirmation Form -->
-    <form asp-action="DeleteConfirmed">
-
-        <input type="submit" value="Delete" class="btn btn-primary" />
+        <div>
+            <input type="submit" value="Delete" class="btn btn-primary" />
+        </div>
     </form>
 </div>
