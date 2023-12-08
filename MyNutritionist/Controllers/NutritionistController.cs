@@ -59,7 +59,7 @@ namespace MyNutritionist.Controllers
             user.Image = Reguser.Image;
             user.Id = usrId;
 
-            var result = await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
