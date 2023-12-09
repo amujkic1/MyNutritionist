@@ -12,7 +12,6 @@
     <p>Welcome, @loggedInNutritionist.FullName</p>
 }
 
-
 <form>
     <div class="row">
         <div class="col-md-8 offset-md-2 text-end">
@@ -35,6 +34,7 @@
                                 <td class="align-middle">
                                     @item.Email
                                 </td>
+                                <!--Ispis liste korisnika kojima je dodijeljen ulogovani nutricionista-->
                                 @if (User.Identity.IsAuthenticated && User.IsInRole("Nutritionist"))
                                 {
                                     <td class="align-middle">
