@@ -26,6 +26,7 @@ namespace Tests
         private Mock<Microsoft.AspNetCore.Identity.UserManager<ApplicationUser>> _mockUserManager;
         private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private Mock<ApplicationDbContext> _mockDbContext;
+        private Mock<SignInManager<ApplicationUser>> _mockSignInManager;
 
         [TestInitialize]
         public void Setup()
@@ -36,6 +37,13 @@ namespace Tests
 
             _mockDbContext = new Mock<ApplicationDbContext>(options);
             _mockUserManager = new Mock<UserManager<ApplicationUser>>(new Mock<IUserStore<ApplicationUser>>().Object, null, null, null, null, null, null, null, null);
+
+            // Mock SignInManager
+            _mockSignInManager = new Mock<SignInManager<ApplicationUser>>(
+                _mockUserManager.Object,
+                new HttpContextAccessor(),
+                new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>().Object,
+                null, null, null, null);
 
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
@@ -243,6 +251,7 @@ namespace Tests
             }
            
         }
+
 
     }
 
