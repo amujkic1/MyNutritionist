@@ -203,23 +203,11 @@ namespace MyNutritionist.Controllers
 
             var premiumUser = new PremiumUser();
 
-
-            try
-            {
-                premiumUser = Activator.CreateInstance<PremiumUser>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
-
             // Create a new PremiumUser instance and populate its properties with the registered user's information
             premiumUser.FullName = registeredUser.FullName;
             premiumUser.Age = registeredUser.Age;
             premiumUser.Points = 0;
-            premiumUser.AspUserId = "null";
+            premiumUser.AspUserId = registeredUser.AspUserId;
             premiumUser.Age = registeredUser.Age;
             premiumUser.UserName = registeredUser.UserName;
             premiumUser.PasswordHash = registeredUser.PasswordHash;
@@ -249,35 +237,52 @@ namespace MyNutritionist.Controllers
             }
 
             var progressRecords = await _context.Progress
-                        .Where(p => p.RegisteredUser.Id == registeredUser.Id)
-                        .ToListAsync();
+            .Where(p => p.RegisteredUser.Id == registeredUser.Id)
+            .ToListAsync();
 
             if (progressRecords.Any())
             {
-               
-                // Associate the Progress records with the new PremiumUser
-                foreach (var progressRecord in progressRecords)
-                {
-                    progressRecord.RegisteredUser = null;
-                    progressRecord.PremiumUser = premiumUser;
-                    _context.Progress.Update(progressRecord);
-                }
+                // Remove existing Progress records associated with RegisteredUser
+                _context.Progress.RemoveRange(progressRecords);
                 await _context.SaveChangesAsync();
+
             }
 
             // Remove the existing registered user from the database
             _context.RegisteredUser.Remove(registeredUser);
             await _context.SaveChangesAsync();
-
-            // Add the new PremiumUser and Card to the database
-            _context.PremiumUser.Add(premiumUser);
-            await _context.SaveChangesAsync();
-            _context.Card.Add(newCard);
-            await _context.SaveChangesAsync();
-
+            
             // Remove the RegisteredUser role and add the PremiumUser role to the user
             await _userManager.RemoveFromRoleAsync(registeredUser, "RegisteredUser");
             await _context.SaveChangesAsync();
+            
+            // Add the new PremiumUser and Card to the database
+            _context.PremiumUser.Add(premiumUser);
+            await _context.SaveChangesAsync();
+            if (progressRecords.Any())
+            {
+
+                // Create new Progress records for PremiumUser
+                foreach (var progressRecord in progressRecords)
+                {
+
+                    var progress = new Progress
+                    {
+                        Date = progressRecord.Date,
+                        BurnedCalories = progressRecord.BurnedCalories,
+                        ConsumedCalories = progressRecord.ConsumedCalories,
+                        RegisteredUser = null,
+                        PremiumUser = premiumUser
+                    };
+
+                    _context.Progress.Add(progress);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            _context.Card.Add(newCard);
+            await _context.SaveChangesAsync();
+
             await _userManager.AddToRoleAsync(premiumUser, "PremiumUser");
             await _context.SaveChangesAsync();
 
@@ -384,15 +389,15 @@ namespace MyNutritionist.Controllers
                 return NotFound();
             }
 
-            // Redirect to the Index action of the Home controller
-            return RedirectToAction("Index", "Home");
+            // Return the view associated with the delete confirmation passing the RegisteredUser object
+            return View(registeredUser);
         }
 
         // POST: RegisteredUser/Delete/
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "RegisteredUser")]
-        public async Task<IActionResult> DeleteConfirmed()
+        public async Task<IActionResult> DeleteConfirmed(string username, string password)
         {
             var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             if (_context.RegisteredUser == null)
@@ -401,11 +406,22 @@ namespace MyNutritionist.Controllers
             }
 
             var registeredUser = await _context.RegisteredUser.FindAsync(id);
+            if (registeredUser == null)
+            {
+                // Return a "Not Found" response if the RegisteredUser is not found
+                return NotFound();
+            }
+            // Validate provided username and password for deletion confirmation
+            if (registeredUser.UserName != username || registeredUser.NutriPassword != password)
+            {
+                // Add model error for invalid username or password
+                ModelState.AddModelError("", "Invalid username or password");
 
-            // If the registered user is found, remove associated progress entries and the user
-           
-                if (registeredUser != null)
-                {
+                // Return the Delete view to re-enter credentials for deletion
+                return View("Delete");
+            }
+
+
                     var progressListForRegisteredUser = await _context.Progress
                         .Where(p => p.RegisteredUser.Id == id)
                         .ToListAsync();
@@ -415,10 +431,11 @@ namespace MyNutritionist.Controllers
 
                     // Remove the registered user
                     _context.RegisteredUser.Remove(registeredUser);
-                }
 
             // Save changes to the database
             await _context.SaveChangesAsync();
+            // Sign out the user
+            await _signInManager.SignOutAsync();
 
             // Redirect to the Index action of the Home controller
             return RedirectToAction("Index", "Home");
