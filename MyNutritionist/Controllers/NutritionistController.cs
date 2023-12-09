@@ -36,15 +36,20 @@ namespace MyNutritionist.Controllers
                 .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
             return View(user);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("FullName,Email,NutriUsername,Image")] Nutritionist Reguser)
         {
-            //var user = Activator.CreateInstance<RegisteredUser>();
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var user = await _context.Nutritionist
                 .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-            
+
+            if (Reguser == null)
+            {
+                return NotFound();
+            }
+
             if (Reguser.FullName != null) user.FullName = Reguser.FullName;
             if (Reguser.Email != null)
             {
@@ -79,7 +84,6 @@ namespace MyNutritionist.Controllers
             return View(nutritionist);
         }
 
-
         public async Task<IActionResult> SortByNames()
         {
             var loggedInNutritionist = await _userManager.GetUserAsync(User);
@@ -100,6 +104,5 @@ namespace MyNutritionist.Controllers
             return View("Index", user);
         }
     }
-
 
 }
