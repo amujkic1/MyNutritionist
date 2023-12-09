@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,50 +5,75 @@ using Moq;
 using MyNutritionist.Controllers;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
-using System.Linq.Expressions;
+using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.AspNetCore.Http;
+using System.Configuration;
+using Microsoft.Extensions.Configuration;
+using Castle.Core.Resource;
+using MyNutritionist.Utilities;
+using Moq.EntityFrameworkCore;
 
 namespace Tests
 {
     [TestClass]
     public class RegisteredControllerTests
     {
+        private ApplicationDbContext _context;
         private RegisteredUserController _controller;
-        private Mock<UserManager<ApplicationUser>> _userManagerMock;
-        private Mock<HttpContextAccessor> _httpContextAccessorMock;
-        private Mock<ApplicationDbContext> _contextMock;
+        private Mock<Microsoft.AspNetCore.Identity.UserManager<ApplicationUser>> _mockUserManager;
+        private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
+        private Mock<ApplicationDbContext> _mockDbContext;
 
         [TestInitialize]
         public void Setup()
         {
-            // Arrange
-            _userManagerMock = MockUserManager<ApplicationUser>();
-            _httpContextAccessorMock = new Mock<HttpContextAccessor>();
-            _contextMock = new Mock<ApplicationDbContext>();
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+        .UseInMemoryDatabase(databaseName: "TestDatabase")
+        .Options;
 
-            _controller = new RegisteredUserController(_contextMock.Object, _httpContextAccessorMock.Object, _userManagerMock.Object, null);
+            _mockDbContext = new Mock<ApplicationDbContext>(options);
+            _mockUserManager = new Mock<UserManager<ApplicationUser>>(new Mock<IUserStore<ApplicationUser>>().Object, null, null, null, null, null, null, null, null);
+          
+            _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+
+            // Set up HttpContext User
+            var claimsIdentity = new ClaimsIdentity(new Claim[]
+            {
+            new Claim(ClaimTypes.Name, "userId")
+            }, "mock");
+
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            var httpContext = new DefaultHttpContext
+            {
+                User = claimsPrincipal
+            };
+
+            _mockHttpContextAccessor.Setup(a => a.HttpContext).Returns(httpContext);
+
+            _controller = new RegisteredUserController(_mockDbContext.Object, _mockHttpContextAccessor.Object, _mockUserManager.Object, null);
         }
 
+
         [TestMethod]
-        public async Task Delete_ReturnsNotFound_WhenRegisteredUserIsNull()
+        public async Task Delete_WhenRegisteredUserIsNull_ReturnsNotFound()
         {
-            // Arrange
-            var userId = "testUserId";
-            _userManagerMock.Setup(m => m.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
-            _contextMock.Setup(c => c.RegisteredUser.FirstOrDefaultAsync(It.IsAny<Expression<Func<RegisteredUser, bool>>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((RegisteredUser)null);
+            var registeredUserList = new List<RegisteredUser>
+            {
+                new RegisteredUser { Id = "userId"},
+             };
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("userId1");
+
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+            
 
             // Act
             var result = await _controller.Delete();
 
-            // Assert
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));
         }
-
-        private Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class
-        {
-            var userStoreMock = new Mock<IUserStore<TUser>>();
-            return new Mock<UserManager<TUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-        }
     }
+
 }
