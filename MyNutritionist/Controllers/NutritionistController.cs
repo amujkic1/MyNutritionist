@@ -73,7 +73,9 @@ namespace MyNutritionist.Controllers
                 user.NutriUsername = Reguser.NutriUsername;
             }
             if(Reguser.Image != null)
-            user.Image = Reguser.Image;
+            {
+                user.Image = Reguser.Image;
+            }
             user.Id = usrId;
 
             await _userManager.UpdateAsync(user);
