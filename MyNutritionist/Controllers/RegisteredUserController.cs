@@ -206,7 +206,7 @@ namespace MyNutritionist.Controllers
             // Create a new PremiumUser instance and populate its properties with the registered user's information
             premiumUser.FullName = registeredUser.FullName;
             premiumUser.Age = registeredUser.Age;
-            premiumUser.Points = 0;
+            premiumUser.Points = registeredUser.Points;
             premiumUser.AspUserId = registeredUser.AspUserId;
             premiumUser.Age = registeredUser.Age;
             premiumUser.UserName = registeredUser.UserName;
