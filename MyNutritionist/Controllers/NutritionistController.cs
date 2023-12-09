@@ -72,6 +72,7 @@ namespace MyNutritionist.Controllers
                 user.UserName = Reguser.NutriUsername;
                 user.NutriUsername = Reguser.NutriUsername;
             }
+            if(Reguser.Image != null)
             user.Image = Reguser.Image;
             user.Id = usrId;
 
