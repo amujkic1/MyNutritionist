@@ -30,17 +30,16 @@ namespace MyNutritionist.Controllers
         // GET: Nutritionist
         public async Task<IActionResult> Index()
         {
-            var loggedInNutritionist = await _userManager.GetUserAsync(User);
-
-            if (loggedInNutritionist == null)
+            var loggedInNutritionistId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var user = await _context.Nutritionist
+                            .Include(n => n.PremiumUsers) // Include the PremiumUsers list
+                            .FirstOrDefaultAsync(n => n.Id == loggedInNutritionistId);
+            
+            if (user == null)
             {
                 // Slučaj kada niko nije ulogovan
                 return NotFound();
             }
-
-            var user = await _context.Nutritionist
-                .Include(n => n.PremiumUsers) // Include the PremiumUsers list
-                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
             return View(user);
         }
 
@@ -48,11 +47,9 @@ namespace MyNutritionist.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("FullName,Email,NutriUsername,Image")] Nutritionist Reguser)
         {
-
             if (Reguser == null)
             {
-                // Slučaj kada je ulazni parametar null
-                return BadRequest("Invalid input");
+                return NotFound();
             }
 
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
@@ -61,11 +58,6 @@ namespace MyNutritionist.Controllers
             if (user == null)
             {
                 // Slučaj kada nutricionista nije pronađen
-                return NotFound();
-            }
-
-            if (Reguser == null)
-            {
                 return NotFound();
             }
 
