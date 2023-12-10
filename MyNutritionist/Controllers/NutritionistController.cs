@@ -100,10 +100,15 @@ namespace MyNutritionist.Controllers
 
         public async Task<IActionResult> SortByNames()
         {
-            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var loggedInNutritionistId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var user = await _context.Nutritionist
                 .Include(n => n.PremiumUsers) // Include the PremiumUsers list
-                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionistId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
             user.SortUsers(new SortByNames());
             return View("Index", user);
         }
@@ -111,10 +116,15 @@ namespace MyNutritionist.Controllers
         // Funkcija za sortiranje premium korisnika koji su povezani sa ulogovanim nutricionistom po kriteriju osvojenih bodova
         public async Task<IActionResult> SortByPoints()
         {
-            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var loggedInNutritionistId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var user = await _context.Nutritionist
                 .Include(n => n.PremiumUsers) // Include the PremiumUsers list
-                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionistId);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
             user.SortUsers(new SortByPoints());
             return View("Index", user);
         }
