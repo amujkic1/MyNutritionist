@@ -15,6 +15,10 @@ using Microsoft.Extensions.Configuration;
 using Castle.Core.Resource;
 using MyNutritionist.Utilities;
 using Moq.EntityFrameworkCore;
+using NuGet.ContentModel;
+using NSubstitute;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Tests
 {
@@ -38,12 +42,6 @@ namespace Tests
             _mockDbContext = new Mock<ApplicationDbContext>(options);
             _mockUserManager = new Mock<UserManager<ApplicationUser>>(new Mock<IUserStore<ApplicationUser>>().Object, null, null, null, null, null, null, null, null);
 
-            // Mock SignInManager
-            _mockSignInManager = new Mock<SignInManager<ApplicationUser>>(
-                _mockUserManager.Object,
-                new HttpContextAccessor(),
-                new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>().Object,
-                null, null, null, null);
 
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
 
@@ -61,7 +59,10 @@ namespace Tests
 
             _mockHttpContextAccessor.Setup(a => a.HttpContext).Returns(httpContext);
 
-            _controller = new RegisteredUserController(_mockDbContext.Object, _mockHttpContextAccessor.Object, _mockUserManager.Object, null);
+            _mockSignInManager = new Mock<SignInManager<ApplicationUser>>(_mockUserManager.Object, Mock.Of < IHttpContextAccessor>(), Mock.Of<IUserClaimsPrincipalFactory<ApplicationUser>>(), null, null, null, null);
+
+
+            _controller = new RegisteredUserController(_mockDbContext.Object, _mockHttpContextAccessor.Object, _mockUserManager.Object, _mockSignInManager.Object);
         }
 
 
@@ -129,7 +130,6 @@ namespace Tests
             _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("userId");
 
             _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
-
 
             // Act
             var result = await _controller.Edit();
@@ -222,11 +222,11 @@ namespace Tests
         {
             // Arrange
             var ingredientList = new List<Ingredient>
-    {
-        new Ingredient { IId = 1, FoodName = "Ingredient1", Calories = 100, Carbs = 20, Protein = 10, Sugar = 5, Fat = 8, SaturatedFat = 3, VitaminA = 50, VitaminC = 30, Calcium = 15, Iron = 2, Sodium = 100 },
-        new Ingredient { IId = 2, FoodName = "Ingredient2", Calories = 150, Carbs = 30, Protein = 15, Sugar = 7, Fat = 10, SaturatedFat = 4, VitaminA = 70, VitaminC = 40, Calcium = 20, Iron = 3, Sodium = 120 },
+            {
+             new Ingredient { IId = 1, FoodName = "Ingredient1", Calories = 100, Carbs = 20, Protein = 10, Sugar = 5, Fat = 8, SaturatedFat = 3, VitaminA = 50, VitaminC = 30, Calcium = 15, Iron = 2, Sodium = 100 },
+             new Ingredient { IId = 2, FoodName = "Ingredient2", Calories = 150, Carbs = 30, Protein = 15, Sugar = 7, Fat = 10, SaturatedFat = 4, VitaminA = 70, VitaminC = 40, Calcium = 20, Iron = 3, Sodium = 120 },
         // Add more ingredients...
-    };
+            };
 
             _mockDbContext.Setup(db => db.Ingredient).ReturnsDbSet(ingredientList);
 
@@ -252,6 +252,137 @@ namespace Tests
            
         }
 
+        [TestMethod]
+        public async Task DeleteConfirmed_WhenValidCredentials_ReturnsRedirectToActionResult()
+        {
+            // Arrange
+            var userId = "userId";
+            var username = "validUsername";
+            var password = "validPassword";
+
+            var registeredUserList = new List<RegisteredUser>
+    {
+        new RegisteredUser { Id = userId, UserName = username, NutriPassword = password },
+    };
+
+            var progressList = new List<Progress>
+    {
+        new Progress { PRId = 1, RegisteredUser = registeredUserList.First() },
+        new Progress { PRId = 2, RegisteredUser = registeredUserList.First() },
+    };
+
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns(userId);
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+            _mockDbContext.Setup(db => db.Progress).ReturnsDbSet(progressList);
+            _mockDbContext.Setup(db => db.RegisteredUser.Remove(It.IsAny<RegisteredUser>()))
+            .Callback<RegisteredUser>(user => registeredUserList.Remove(user));
+
+            _mockSignInManager.Setup(s => s.SignOutAsync())
+             .Returns(Task.FromResult(0));
+
+            // Act
+            var result = await _controller.DeleteConfirmed(username, password);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            // You can further assert the properties of the RedirectToActionResult if needed
+            var redirectResult = (RedirectToActionResult)result;
+            Assert.AreEqual("Index", redirectResult.ActionName);
+            Assert.AreEqual("Home", redirectResult.ControllerName);
+
+            // Assert that the user is no longer in the database
+            Assert.AreEqual(0,registeredUserList.Count());
+
+
+        }
+
+        [TestMethod]
+        public async Task DeleteConfirmed_WhenDbContextIsNull_ReturnsProblem()
+        {
+            // Arrange
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("userId");
+            _mockDbContext.Setup(db => db.RegisteredUser).Returns((DbSet<RegisteredUser>)null);
+
+            // Act
+            var result = await _controller.DeleteConfirmed("username", "password");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            var objectResult = (ObjectResult)result;
+            Assert.AreEqual(500, objectResult.StatusCode);
+            
+        }
+
+        [TestMethod]
+        public async Task DeleteConfirmed_WhenUserNotFound_ReturnsNotFound()
+        {
+            // Arrange
+            var userId = "userId";
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns(userId);
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(new List<RegisteredUser>());
+
+            // Act
+            var result = await _controller.DeleteConfirmed("username", "password");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        [TestMethod]
+        public async Task DeleteConfirmed_WhenInvalidCredentials_ReturnsViewResult()
+        {
+            // Arrange
+            var userId = "userId";
+            var username = "validUsername";
+            var password = "validPassword";
+
+            var registeredUserList = new List<RegisteredUser>
+        {
+            new RegisteredUser { Id = userId, UserName = "differentUsername", NutriPassword = "differentPassword" },
+        };
+
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns(userId);
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+            // Act
+            var result = await _controller.DeleteConfirmed(username, password);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = (ViewResult)result;
+            Assert.AreEqual("Delete", viewResult.ViewName);
+            Assert.IsTrue(viewResult.ViewData.ModelState.ContainsKey(""));
+            Assert.AreEqual("Invalid username or password", viewResult.ViewData.ModelState[""].Errors.First().ErrorMessage);
+        }
+
+        [TestMethod]
+        public void DailyFoodAndActivity_ReturnsViewWithModel()
+        {
+            // Arrange
+            var ingredientList = new List<Ingredient>
+        {
+            new Ingredient { IId = 1, FoodName = "Ingredient1", Calories = 100 },
+            new Ingredient { IId = 2, FoodName = "Ingredient2", Calories = 200 },
+            // Add more ingredients as needed
+        };
+
+            _mockDbContext.Setup(db => db.Ingredient).ReturnsDbSet(ingredientList);
+
+            // Act
+            var result = _controller.DailyFoodAndActivity() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result.Model, typeof(EnterActivityAndFoodViewModel));
+
+            var model = result.Model as EnterActivityAndFoodViewModel;
+
+            // Additional assertions based on your model and data
+            Assert.IsNotNull(model);
+            Assert.IsNotNull(model.Ingredients);
+            CollectionAssert.AreEqual(ingredientList, model.Ingredients.ToList());
+        }
 
     }
 
