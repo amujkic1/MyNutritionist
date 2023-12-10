@@ -221,19 +221,10 @@ namespace MyNutritionist.Controllers
 
             // Create a new Card instance and populate its properties
             var newCard = new Card();
-            try
-            {
                 newCard = Activator.CreateInstance<Card>();
                 newCard.PremiumUser = premiumUser;
                 newCard.Balance = card.Balance;
                 newCard.CardNumber = card.CardNumber;
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
 
             var progressRecords = await _context.Progress
             .Where(p => p.RegisteredUser.Id == registeredUser.Id)
