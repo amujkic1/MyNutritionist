@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.AspNetCore.Mvc;
 using System.Xml;
 
 namespace Tests
@@ -852,8 +853,128 @@ namespace Tests
             _mockSignInManager.Verify(m => m.SignInAsync(It.IsAny<PremiumUser>(), false, null), Times.Once);
         }
 
+        [TestMethod]
+        public async Task Index_ReturnsViewResult_WithCorrectModelAndProgressData()
+        {
+            // Arrange
+            var userId = "userId";
+            var registeredUserList = new List<RegisteredUser>
+            {
+                new RegisteredUser { Id = "userId"},
+             };
+            
+
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
+            _mockDbContext.Setup(c => c.Progress).ReturnsDbSet(new List<Progress>());
+
+            // Act
+            var result = await _controller.Index();
+
+            // Assert
+            if (result is ViewResult viewResult)
+            {
+                var consumedCaloriesProgressData = viewResult.ViewData["ConsumedCaloriesProgressData"];
+                var burnedCaloriesProgressData = viewResult.ViewData["BurnedCaloriesProgressData"];
+
+                // Add your assertions for the ViewData values here
+                Assert.IsNotNull(consumedCaloriesProgressData);
+                Assert.IsNotNull(burnedCaloriesProgressData);
+            }
+            else
+            {
+                // Handle the case where the result is not a ViewResult (e.g., HttpNotFoundResult)
+                Assert.Fail("Unexpected result type");
+            }
+        }
+
+        [TestMethod]
+        public async Task Index_ReturnsNotFound()
+        {
+            // Arrange
+            var userId = "userId";
+            var registeredUserList = new List<RegisteredUser>
+            {
+                new RegisteredUser { Id = "userId1"},
+             };
+
+
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
+            _mockDbContext.Setup(c => c.Progress).ReturnsDbSet(new List<Progress>());
+
+            // Act
+            var result = await _controller.Index();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+
+        }
+
+        [TestMethod]
+        public async Task Details_ReturnsNotFound()
+        {
+            // Arrange
+            var userId = "userId";
+            var registeredUserList = new List<RegisteredUser>
+            {
+                new RegisteredUser { Id = "userId1"},
+             };
+
+
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
+            _mockDbContext.Setup(c => c.Progress).ReturnsDbSet(new List<Progress>());
+
+            // Act
+            var result = await _controller.Details();
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+
+        }
+
+        [TestMethod]
+        public async Task Details_ReturnsViewResult_WithCorrectModelAndProgressData()
+        {
+            // Arrange
+            var userId = "userId";
+            var registeredUserList = new List<RegisteredUser>
+            {
+                new RegisteredUser { Id = "userId"},
+             };
+
+
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
+            _mockDbContext.Setup(c => c.Progress).ReturnsDbSet(new List<Progress>());
+
+            // Act
+            var result = await _controller.Details();
+
+            // Assert
+            if (result is ViewResult viewResult)
+            {
+                var consumedCaloriesProgressData = viewResult.ViewData["ConsumedCaloriesProgressData"];
+                var burnedCaloriesProgressData = viewResult.ViewData["BurnedCaloriesProgressData"];
+
+                // Add your assertions for the ViewData values here
+                Assert.IsNotNull(consumedCaloriesProgressData);
+                Assert.IsNotNull(burnedCaloriesProgressData);
+            }
+            else
+            {
+                // Handle the case where the result is not a ViewResult (e.g., HttpNotFoundResult)
+                Assert.Fail("Unexpected result type");
+            }
+        }
     }
   
+
 
 
 }
