@@ -30,21 +30,37 @@ namespace MyNutritionist.Controllers
         // GET: Nutritionist
         public async Task<IActionResult> Index()
         {
-            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var loggedInNutritionistId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var user = await _context.Nutritionist
-                .Include(n => n.PremiumUsers) // Include the PremiumUsers list
-                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+                            .Include(n => n.PremiumUsers) // Include the PremiumUsers list
+                            .FirstOrDefaultAsync(n => n.Id == loggedInNutritionistId);
+            
+            if (user == null)
+            {
+                // Slučaj kada niko nije ulogovan
+                return NotFound();
+            }
             return View(user);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("FullName,Email,NutriUsername,Image")] Nutritionist Reguser)
         {
-            //var user = Activator.CreateInstance<RegisteredUser>();
+            if (Reguser == null)
+            {
+                return NotFound();
+            }
+
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-            var user = await _context.Nutritionist
-                .FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-            
+            var user = await _context.Nutritionist.FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+
+            if (user == null)
+            {
+                // Slučaj kada nutricionista nije pronađen
+                return NotFound();
+            }
+
             if (Reguser.FullName != null) user.FullName = Reguser.FullName;
             if (Reguser.Email != null)
             {
@@ -56,7 +72,10 @@ namespace MyNutritionist.Controllers
                 user.UserName = Reguser.NutriUsername;
                 user.NutriUsername = Reguser.NutriUsername;
             }
-            user.Image = Reguser.Image;
+            if(Reguser.Image != null)
+            {
+                user.Image = Reguser.Image;
+            }
             user.Id = usrId;
 
             await _userManager.UpdateAsync(user);
@@ -79,27 +98,36 @@ namespace MyNutritionist.Controllers
             return View(nutritionist);
         }
 
-
         public async Task<IActionResult> SortByNames()
         {
-            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var loggedInNutritionistId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var user = await _context.Nutritionist
                 .Include(n => n.PremiumUsers) // Include the PremiumUsers list
-                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionistId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
             user.SortUsers(new SortByNames());
             return View("Index", user);
         }
 
+        // Funkcija za sortiranje premium korisnika koji su povezani sa ulogovanim nutricionistom po kriteriju osvojenih bodova
         public async Task<IActionResult> SortByPoints()
         {
-            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var loggedInNutritionistId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             var user = await _context.Nutritionist
                 .Include(n => n.PremiumUsers) // Include the PremiumUsers list
-                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionist.Id);
+                .FirstOrDefaultAsync(n => n.Id == loggedInNutritionistId);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
             user.SortUsers(new SortByPoints());
             return View("Index", user);
         }
     }
-
 
 }

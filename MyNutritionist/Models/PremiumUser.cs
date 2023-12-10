@@ -8,8 +8,6 @@ namespace MyNutritionist.Models
     {
         public string? AccountNumber { get; set; }
 
-       /* [ForeignKey("Nutritionist")]
-        public int NutritionistId { get; set; }*/
         public string? City { get; set; }
         public int Age { get; set; }
         public double Weight { get; set; }
@@ -20,12 +18,5 @@ namespace MyNutritionist.Models
         public string AspUserId { get; set; }
 
         public PremiumUser() { }
-
-        public PremiumUser(iUser initializer)
-        {
-            initializer.InitializeCity(City);
-            initializer.InitializeWeight(Weight);
-            initializer.InitializeHeight(Height);
-        }
     }
 }

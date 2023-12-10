@@ -8,7 +8,6 @@ namespace MyNutritionist.Models
     {
         [ForeignKey("ApplicationUser")]
         public string AspUserId { get; set; }
-
         public string Image { get; set; }
         public ICollection<PremiumUser> PremiumUsers { get; set; } = new List<PremiumUser>();
         public Nutritionist(): base() {
