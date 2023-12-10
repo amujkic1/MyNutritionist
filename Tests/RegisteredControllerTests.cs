@@ -22,6 +22,7 @@ using CsvHelper;
 using Microsoft.Extensions.Primitives;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Tests
 {
@@ -392,12 +393,23 @@ namespace Tests
                 var rows = csv.GetRecords<dynamic>();
                 foreach (var row in rows)
                 {
+                    var activityType = (ActivityType)Enum.Parse(typeof(ActivityType), row.ActivityType, true);
+
                     yield return new object[] {
-                    Int32.Parse(row.Breakfast),
-                    Int32.Parse(row.Lunch),
-                    Int32.Parse(row.Dinner),
-                    Int32.Parse(row.Snacks)
-                    };
+                Int32.Parse(row.Breakfast),
+                Int32.Parse(row.BreakfastQuantity),
+                Int32.Parse(row.Lunch),
+                Int32.Parse(row.LunchQuantity),
+                Int32.Parse(row.Dinner),
+                Int32.Parse(row.DinnerQuantity),
+                Int32.Parse(row.Snacks),
+                Int32.Parse(row.SnacksQuantity),
+                Int32.Parse(row.PAID),
+                activityType,
+                Int32.Parse(row.Duration),
+                Int32.Parse(row.NumberOfPoints),
+                Int32.Parse(row.Points)
+            };
                 }
             }
         }
@@ -412,7 +424,10 @@ namespace Tests
 
         [TestMethod]
         [DynamicData("RegisteredUserCSV")]
-        public async Task Save_RegisteredUser(int breakfast, int lunch, int dinner, int snacks)
+        public async Task Save_RegisteredUser(
+    int breakfast, int breakfastQuantity, int lunch, int lunchQuantity,
+    int dinner, int dinnerQuantity, int snacks, int snacksQuantity,
+    int paId, ActivityType activityType, int duration, int numberOfPoints, int Points)
         {
             // Mock the UserManager
             _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("userId");
@@ -425,50 +440,47 @@ namespace Tests
         new Ingredient { FoodName = "Snacks", Calories = snacks }
     };
 
-            // Mock the Ingredient DbSet
-            var mockSet = new Mock<DbSet<Ingredient>>();
-            mockSet.As<IQueryable<Ingredient>>().Setup(m => m.Provider).Returns(ingredients.AsQueryable().Provider);
-            mockSet.As<IQueryable<Ingredient>>().Setup(m => m.Expression).Returns(ingredients.AsQueryable().Expression);
-            mockSet.As<IQueryable<Ingredient>>().Setup(m => m.ElementType).Returns(ingredients.AsQueryable().ElementType);
-            mockSet.As<IQueryable<Ingredient>>().Setup(m => m.GetEnumerator()).Returns(ingredients.AsQueryable().GetEnumerator());
-
-            _mockDbContext.Setup(c => c.Ingredient).Returns(mockSet.Object);
-
-            var httpContext = new Mock<HttpContext>();
-            var request = new Mock<HttpRequest>();
-
-            // Setup Form values
-            request.Setup(r => r.Form["breakfast-quantity"]).Returns(new StringValues("2"));
-            request.Setup(r => r.Form["lunch-quantity"]).Returns(new StringValues("3"));
-            request.Setup(r => r.Form["dinner-quantity"]).Returns(new StringValues("1"));
-            request.Setup(r => r.Form["snacks-quantity"]).Returns(new StringValues("4"));
-
-            // Associate the HttpRequest with the HttpContext
-            httpContext.Setup(c => c.Request).Returns(request.Object);
-
-            // Set the mocked HttpContext in the controller's HttpContextAccessor
-            _mockHttpContextAccessor.Setup(a => a.HttpContext).Returns(httpContext.Object);
+            _mockDbContext.Setup(c => c.Ingredient).ReturnsDbSet(ingredients);
 
             // Mock PremiumUser and RegisteredUser lists
             var mockPremiumUsers = new List<PremiumUser> { new PremiumUser { Id = "userId" } };
-            var mockRegisteredUsers = new List<RegisteredUser> { new RegisteredUser { Id = "userId" } };
+            var mockRegisteredUsers = new List<RegisteredUser> { new RegisteredUser { Id = "userId", Points=0 } };
             _mockDbContext.Setup(c => c.PremiumUser).ReturnsDbSet(mockPremiumUsers);
             _mockDbContext.Setup(c => c.RegisteredUser).ReturnsDbSet(mockRegisteredUsers);
+            _mockHttpContextAccessor.Setup(c => c.HttpContext.User.IsInRole("RegisteredUser")).Returns(true);
+           
+            var mockProgressSet = new List<Progress>();
+            _mockDbContext.Setup(c => c.Progress).ReturnsDbSet(mockProgressSet);
+            _mockDbContext
+                .Setup(db => db.Progress.Add(It.IsAny<Progress>()))
+                .Callback<Progress>(entity => mockProgressSet.Add(entity));
 
-            // Mock the Progress DbSet
-            var mockProgressSet = new Mock<DbSet<Progress>>();
-            _mockDbContext.Setup(c => c.Progress).Returns(mockProgressSet.Object);
 
-            // Act
-            var result = await _controller.Save(new EnterActivityAndFoodViewModel
+            var model = new EnterActivityAndFoodViewModel
             {
                 Breakfast = new Ingredient { FoodName = "Breakfast" },
                 Lunch = new Ingredient { FoodName = "Lunch" },
                 Dinner = new Ingredient { FoodName = "Dinner" },
                 Snacks = new Ingredient { FoodName = "Snacks" },
-               
-            });
+                BreakfastQuantity = breakfastQuantity,
+                LunchQuantity = lunchQuantity,
+                DinnerQuantity = dinnerQuantity,
+                SnacksQuantity = snacksQuantity,
+                PhysicalActivity = new PhysicalActivity
+                {
+                    PAID = paId,
+                    ActivityType = activityType,
+                    Duration = duration,
+                    NumberOfPoints = numberOfPoints
+                }
+            };
+            // Act
+            var result = await _controller.Save(model);
+           
+            var registeredUserFromDb = mockRegisteredUsers.Find(u => u.Id == "userId");
 
+            Assert.IsNotNull(mockProgressSet);
+            Assert.AreEqual(1, mockProgressSet.Count);
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -476,9 +488,13 @@ namespace Tests
             var redirectResult = (RedirectToActionResult)result;
             Assert.AreEqual("Index", redirectResult.ActionName);
             Assert.AreEqual("Home", redirectResult.ControllerName);
+            
+            Assert.AreEqual(Points, registeredUserFromDb.Points);
 
-            // Add more assertions as needed based on your specific requirements
+
+
         }
+
 
         [TestMethod]
         public async Task EditCardHttp_WhenRegisteredUserIsNull_ReturnsNotFound()
@@ -600,5 +616,7 @@ namespace Tests
         }
 
     }
+  
+
 
 }

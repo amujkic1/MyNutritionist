@@ -512,7 +512,9 @@ namespace MyNutritionist.Controllers
                 {
                     // Update user points and save changes to the database
                     registeredUser.Points += points;
-                    _context.SaveChanges();                }
+                    _context.SaveChanges();               
+                
+                }
                 else
                 {
                     // Update user points and save changes to the database
