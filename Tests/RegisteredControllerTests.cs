@@ -22,6 +22,8 @@ using CsvHelper;
 using Microsoft.Extensions.Primitives;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Collections;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Tests
 {
@@ -528,7 +530,7 @@ namespace Tests
         public async Task EditCard_WhenRegisteredUserIsNotNull_UpdatesUserAndRedirectsToIndex()
         {
             // Arrange
-            var userId = "userId";
+            var userId = "1";
             var registeredUserList = new List<RegisteredUser>
             {
                   new RegisteredUser { 
@@ -547,11 +549,33 @@ namespace Tests
                       Height = 180,
                       Weight = 80,
                       City = "Edinburgh"
-                  },
+                  }
             };
-            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns(userId);
-            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
-
+            var premiumUser = new PremiumUser
+            {
+                Id = userId,
+                FullName = "Test",
+                Age = 21,
+                Points = 2000,
+                AspUserId = "1",
+                UserName = "test",
+                PasswordHash = "hashPassword",
+                NutriPassword = "test123!",
+                NutriUsername = "test",
+                EmailAddress = "test@example.com",
+                Email = "test@example.com",
+                EmailConfirmed = true,
+                Height = 180,
+                Weight = 80,
+                City = "Edinburgh"
+            };
+            var premiumUserList = new List<PremiumUser>
+            {
+                new PremiumUser {Id = userId + "1", AspUserId = userId + "1"},
+                new PremiumUser {Id = userId + "2", AspUserId = userId + "2"},
+                new PremiumUser {Id = userId + "3", AspUserId = userId + "3"}
+            };
+            var cards = new List<Card>();
             var progressList = new List<Progress>
             {
                 new Progress { PRId = 1, Date = DateTime.Now, BurnedCalories = 1000, ConsumedCalories = 2000, RegisteredUser = registeredUserList[0], PremiumUser = null},
@@ -559,18 +583,64 @@ namespace Tests
                 new Progress { PRId = 3, Date = DateTime.Now.AddDays(-3), BurnedCalories = 400, ConsumedCalories = 2600, RegisteredUser = registeredUserList[0], PremiumUser = null},
                 new Progress { PRId = 4, Date = DateTime.Now.AddDays(-4), BurnedCalories = 800, ConsumedCalories = 3000, RegisteredUser = registeredUserList[0], PremiumUser = null},
                 new Progress { PRId = 5, Date = DateTime.Now.AddDays(-6), BurnedCalories = 400, ConsumedCalories = 2550, RegisteredUser = registeredUserList[0], PremiumUser = null},
-                new Progress { PRId = 5, Date = DateTime.Now.AddDays(-6), BurnedCalories = 400, ConsumedCalories = 2550, RegisteredUser = new RegisteredUser { Id = "123" }, PremiumUser = null}
+                new Progress { PRId = 6, Date = DateTime.Now.AddDays(-6), BurnedCalories = 400, ConsumedCalories = 2550, RegisteredUser = new RegisteredUser { Id = "123" }, PremiumUser = null}
             };
+            var addedProgress = new List<Progress>();
+            var mockDbSet = new Mock<DbSet<PremiumUser>>();
+            mockDbSet.As<IQueryable<PremiumUser>>().Setup(m => m.Provider).Returns(premiumUserList.AsQueryable().Provider);
+            mockDbSet.As<IQueryable<PremiumUser>>().Setup(m => m.Expression).Returns(premiumUserList.AsQueryable().Expression);
+            mockDbSet.As<IQueryable<PremiumUser>>().Setup(m => m.ElementType).Returns(premiumUserList.AsQueryable().ElementType);
+            mockDbSet.As<IQueryable<PremiumUser>>().Setup(m => m.GetEnumerator()).Returns(() => premiumUserList.AsQueryable().GetEnumerator());
+            mockDbSet.Setup(x => x.Add(It.IsAny<PremiumUser>()))
+                .Callback<PremiumUser>(premiumUser => premiumUserList.Add(premiumUser))
+                .Returns((PremiumUser _) => null);
+            _mockDbContext.Setup(x => x.PremiumUser).Returns(mockDbSet.Object);
 
+            var mockCardDbSet = new Mock<DbSet<Card>>();
+            mockCardDbSet.As<IQueryable<Card>>().Setup(m => m.Provider).Returns(cards.AsQueryable().Provider);
+            mockCardDbSet.As<IQueryable<Card>>().Setup(m => m.Expression).Returns(cards.AsQueryable().Expression);
+            mockCardDbSet.As<IQueryable<Card>>().Setup(m => m.ElementType).Returns(cards.AsQueryable().ElementType);
+            mockCardDbSet.As<IQueryable<Card>>().Setup(m => m.GetEnumerator()).Returns(() => cards.AsQueryable().GetEnumerator());
+            mockCardDbSet.Setup(x => x.Add(It.IsAny<Card>()))
+                 .Returns((Card _) => null);
+            _mockDbContext.Setup(x => x.Card).Returns(mockCardDbSet.Object);
+    
             _mockDbContext.Setup(db => db.Progress).ReturnsDbSet(progressList);
-            _mockDbContext.Setup(db => db.Progress.RemoveRange(It.IsAny<List<Progress>>()))
-                .Callback<List<Progress>>(progressList => progressList.RemoveAll(x => x.RegisteredUser != null && x.RegisteredUser.Id == userId));
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns(userId);
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+            _mockDbContext
+                .Setup(db => db.Progress.RemoveRange(It.IsAny<IEnumerable<Progress>>()))
+                .Callback<IEnumerable<Progress>>(entities =>
+                {
+                    var entitiesToRemove = entities.ToList();
+
+                    foreach (var entity in entitiesToRemove)
+                    {
+                        // Remove items where the RegisteredUser is not null and matches the provided userId
+                        if (entity.RegisteredUser != null && entity.RegisteredUser.Id == userId)
+                        {
+                            progressList.Remove(entity);
+                        }
+                    }
+                });
+
+            _mockDbContext
+                .Setup(db => db.Progress.Add(It.IsAny<Progress>()))
+                .Callback<Progress>(entity => addedProgress.Add(entity));
+
             _mockDbContext.Setup(db => db.RegisteredUser.Remove(It.IsAny<RegisteredUser>()))
                 .Callback<RegisteredUser>(user => registeredUserList.Remove(user));
             _mockUserManager.Setup(x => x.RemoveFromRoleAsync(It.IsAny<RegisteredUser>(), "RegisteredUser"))
                 .ReturnsAsync(IdentityResult.Success);
             _mockDbContext.Setup(x => x.SaveChangesAsync(default))
                 .ReturnsAsync(1);
+            _mockDbContext.Setup(x => x.Card).ReturnsDbSet(cards);
+            _mockUserManager.Setup(um => um.AddToRoleAsync(It.IsAny<PremiumUser>(), "PremiumUser"))
+                .ReturnsAsync(IdentityResult.Success);
+            _mockUserManager.Setup(um => um.FindByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(premiumUser);
+            _mockSignInManager.Setup(s => s.SignOutAsync())
+                .Returns(Task.FromResult(0));
 
             // Act
             var result = await _controller.EditCard(new Card
@@ -581,22 +651,29 @@ namespace Tests
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            Assert.AreEqual("Index", (result as RedirectToActionResult).ActionName);
 
             // Assert that the user is no longer in the database
             Assert.AreEqual(0, registeredUserList.Count());
+            Assert.AreEqual(4, premiumUserList.Count());
+            Assert.AreEqual(1, progressList.Count());
+            Assert.AreEqual(5, addedProgress.Count());
+            Assert.IsTrue(addedProgress.All(x => x.PremiumUser.UserName == premiumUserList[3].UserName));
+            Assert.AreEqual("Test", premiumUserList[3].FullName);
+            Assert.AreEqual(21, premiumUserList[3].Age);
+            Assert.AreEqual(2000, premiumUserList[3].Points);
+            Assert.AreEqual("1", premiumUserList[3].AspUserId);
+            Assert.AreEqual("test", premiumUserList[3].UserName);
+            Assert.AreEqual("hashPassword", premiumUserList[3].PasswordHash);
+            Assert.AreEqual("test123!", premiumUserList[3].NutriPassword);
+            Assert.AreEqual("test", premiumUserList[3].NutriUsername);
+            Assert.AreEqual("test@example.com", premiumUserList[3].EmailAddress);
+            Assert.AreEqual(180, premiumUserList[3].Height);
+            Assert.AreEqual(80, premiumUserList[3].Weight);
+            Assert.AreEqual("Edinburgh", premiumUserList[3].City);
 
-            // Verify that the user's information was updated
-           /* var updatedUser = _mockDbContext.Object.RegisteredUser.SingleOrDefault(u => u.Id == userId);
-            Assert.IsNotNull(updatedUser);
-            Assert.AreEqual("New FullName", updatedUser.FullName);
-            Assert.AreEqual("newemail@example.com", updatedUser.Email);
-            Assert.AreEqual("newNutriUsername", updatedUser.NutriUsername);
-            Assert.AreEqual("newPassword", updatedUser.NutriPassword);
-            Assert.AreEqual(70, updatedUser.Weight);
-            Assert.AreEqual(180, updatedUser.Height);
-            Assert.AreEqual("New City", updatedUser.City);
-            Assert.AreEqual(25, updatedUser.Age);*/
+            _mockSignInManager.Verify(m => m.SignOutAsync(), Times.Once);
+            _mockUserManager.Verify(m => m.UpdateSecurityStampAsync(It.IsAny<PremiumUser>()), Times.Once);
+            _mockSignInManager.Verify(m => m.SignInAsync(It.IsAny<PremiumUser>(), false, null), Times.Once);
         }
 
     }
