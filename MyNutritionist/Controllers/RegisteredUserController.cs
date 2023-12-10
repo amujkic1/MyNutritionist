@@ -405,7 +405,8 @@ namespace MyNutritionist.Controllers
                 return Problem("Entity set 'ApplicationDbContext.RegisteredUser'  is null.");
             }
 
-            var registeredUser = await _context.RegisteredUser.FindAsync(id);
+            var registeredUser = await _context.RegisteredUser
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (registeredUser == null)
             {
                 // Return a "Not Found" response if the RegisteredUser is not found
@@ -434,9 +435,9 @@ namespace MyNutritionist.Controllers
 
             // Save changes to the database
             await _context.SaveChangesAsync();
-            // Sign out the user
+            
             await _signInManager.SignOutAsync();
-
+            
             // Redirect to the Index action of the Home controller
             return RedirectToAction("Index", "Home");
         }
