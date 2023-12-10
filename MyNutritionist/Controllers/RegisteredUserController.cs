@@ -474,10 +474,10 @@ namespace MyNutritionist.Controllers
             var snacksQuantity = 0;
 
             // Parse quantities from the request form
-            if (int.TryParse(Request.Form["breakfast-quantity"], out breakfastQuantity) &&
-                    int.TryParse(Request.Form["lunch-quantity"], out lunchQuantity) &&
-                    int.TryParse(Request.Form["dinner-quantity"], out dinnerQuantity) &&
-                    int.TryParse(Request.Form["snacks-quantity"], out snacksQuantity))
+            if (int.TryParse(_httpContextAccessor.HttpContext.Request.Form["breakfast-quantity"], out breakfastQuantity) &&
+                    int.TryParse(_httpContextAccessor.HttpContext.Request.Form["lunch-quantity"], out lunchQuantity) &&
+                    int.TryParse(_httpContextAccessor.HttpContext.Request.Form["dinner-quantity"], out dinnerQuantity) &&
+                    int.TryParse(_httpContextAccessor.HttpContext.Request.Form["snacks-quantity"], out snacksQuantity))
             {
                 // Calculate total consumed calories
                 var consumedCalories = 0;
@@ -495,78 +495,44 @@ namespace MyNutritionist.Controllers
                     consumedCalories += snacksQuantity * snacksIngredient.Calories;
 
                 var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+                
+                var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.Id == userId);
+                var registeredUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Id == userId);
 
+                if(premiumUser == null && registeredUser == null)
+                {
+                    return NotFound();
+                }
+
+                var progress = new Progress {
+                    Date = DateTime.Now,
+                    BurnedCalories = 0,
+                    ConsumedCalories = consumedCalories,
+                    RegisteredUser = registeredUser,
+                    PremiumUser = premiumUser
+                };
+
+                // Calculate burned calories and points
+                    progress.BurnedCalories = progress.CalculateBurnedCalories(model.PhysicalActivity);
+                    var points = progress.CalculatePoints(consumedCalories, progress.BurnedCalories);
+                
+                // Add the progress entry to the database
+                    _context.Progress.Add(progress);
+                    _context.SaveChanges();
 
                 // Check user role and calculate points accordingly
                 if (_httpContextAccessor.HttpContext.User.IsInRole("RegisteredUser"))
                 {
-                    var currentUser = await _context.RegisteredUser.FirstOrDefaultAsync(u => u.Id == userId);
-
-                    if (currentUser == null)
-                    {
-                        return NotFound();
-                    }
-
-                    // Create a new progress entry for the user
-                    var progress = new Progress
-                    {
-                        Date = DateTime.Now,
-                        BurnedCalories = 0,
-                        ConsumedCalories = consumedCalories,
-                        RegisteredUser = currentUser,
-                        PremiumUser = null
-                    };
-
-                    // Calculate burned calories and points
-                    progress.BurnedCalories = progress.CalculateBurnedCalories(model.PhysicalActivity);
-                    var points = progress.CalculatePoints(consumedCalories, progress.BurnedCalories);
-
                     // Update user points and save changes to the database
-                    currentUser.Points += points;
-                    _context.SaveChanges();
-
-                    // Add the progress entry to the database
-                    _context.Progress.Add(progress);
-                    _context.SaveChanges();
-                }
+                    registeredUser.Points += points;
+                    _context.SaveChanges();                }
                 else
                 {
-
-                    // Retrieve premium user based on the user ID
-                    var currentUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.Id == userId);
-
-                    if (currentUser == null)
-                    {
-                        return NotFound();
-                    }
-
-                    // Create a new progress entry for the user
-                    var progress = new Progress
-                    {
-                        Date = DateTime.Now,
-                        BurnedCalories = 0,
-                        ConsumedCalories = consumedCalories,
-                        RegisteredUser = null,
-                        PremiumUser = currentUser
-                    };
-
-                    // Calculate burned calories and points
-                    progress.BurnedCalories = progress.CalculateBurnedCalories(model.PhysicalActivity);
-
-                    var points = progress.CalculatePoints(consumedCalories, progress.BurnedCalories);
-
                     // Update user points and save changes to the database
-                    currentUser.Points += points;
+                    premiumUser.Points += points;
                     _context.SaveChanges();
-
-                    // Add the progress entry to the database
-                    _context.Progress.Add(progress);
-                    _context.SaveChanges();
-
                 }
             }
-
-
             // Redirect to the Index action of the Home controller
             return RedirectToAction("Index", "Home");
         }
