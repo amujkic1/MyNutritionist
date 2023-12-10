@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Xml;
 
 namespace Tests
 {
@@ -497,6 +498,165 @@ namespace Tests
 
         }
 
+        public static IEnumerable<object[]> ReadXML()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load("Data/RegisteredController.xml");
+
+            foreach (XmlNode userNode in doc.DocumentElement.ChildNodes)
+            {
+                int breakfast = int.Parse(userNode.SelectSingleNode("Breakfast")?.InnerText.Trim());
+                int breakfastQuantity = int.Parse(userNode.SelectSingleNode("BreakfastQuantity")?.InnerText.Trim());
+                int lunch = int.Parse(userNode.SelectSingleNode("Lunch")?.InnerText.Trim());
+                int lunchQuantity = int.Parse(userNode.SelectSingleNode("LunchQuantity")?.InnerText.Trim());
+                int dinner = int.Parse(userNode.SelectSingleNode("Dinner")?.InnerText.Trim());
+                int dinnerQuantity = int.Parse(userNode.SelectSingleNode("DinnerQuantity")?.InnerText.Trim());
+                int snacks = int.Parse(userNode.SelectSingleNode("Snacks")?.InnerText.Trim());
+                int snacksQuantity = int.Parse(userNode.SelectSingleNode("SnacksQuantity")?.InnerText.Trim());
+                int paId = int.Parse(userNode.SelectSingleNode("PAID")?.InnerText.Trim());
+                ActivityType activityType = Enum.Parse<ActivityType>(userNode.SelectSingleNode("ActivityType")?.InnerText.Trim());
+                int duration = int.Parse(userNode.SelectSingleNode("Duration")?.InnerText.Trim());
+                int numberOfPoints = int.Parse(userNode.SelectSingleNode("NumberOfPoints")?.InnerText.Trim());
+                int points = int.Parse(userNode.SelectSingleNode("Points")?.InnerText.Trim());
+
+                yield return new object[]
+                {
+            breakfast, breakfastQuantity, lunch, lunchQuantity,
+            dinner, dinnerQuantity, snacks, snacksQuantity,
+            paId, activityType, duration, numberOfPoints, points
+                };
+            }
+        }
+
+        static IEnumerable<object[]> RegisteredUserXML
+        {
+            get
+            {
+                return ReadXML();
+            }
+        }
+
+        [TestMethod]
+        [DynamicData("RegisteredUserXML")]
+        public async Task Save_PremiumUser(
+    int breakfast, int breakfastQuantity, int lunch, int lunchQuantity,
+    int dinner, int dinnerQuantity, int snacks, int snacksQuantity,
+    int paId, ActivityType activityType, int duration, int numberOfPoints, int Points)
+        {
+            // Mock the UserManager
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("userId");
+
+            var ingredients = new List<Ingredient>
+    {
+        new Ingredient { FoodName = "Breakfast", Calories = breakfast },
+        new Ingredient { FoodName = "Lunch", Calories = lunch },
+        new Ingredient { FoodName = "Dinner", Calories = dinner },
+        new Ingredient { FoodName = "Snacks", Calories = snacks }
+    };
+
+            _mockDbContext.Setup(c => c.Ingredient).ReturnsDbSet(ingredients);
+
+            // Mock PremiumUser and RegisteredUser lists
+            var mockPremiumUsers = new List<PremiumUser> { new PremiumUser { Id = "userId" } };
+            var mockRegisteredUsers = new List<RegisteredUser> { new RegisteredUser { Id = "userId", Points = 0 } };
+            _mockDbContext.Setup(c => c.PremiumUser).ReturnsDbSet(mockPremiumUsers);
+            _mockDbContext.Setup(c => c.RegisteredUser).ReturnsDbSet(mockRegisteredUsers);
+            _mockHttpContextAccessor.Setup(c => c.HttpContext.User.IsInRole("PremiumUser")).Returns(true);
+
+            var mockProgressSet = new List<Progress>();
+            _mockDbContext.Setup(c => c.Progress).ReturnsDbSet(mockProgressSet);
+            _mockDbContext
+                .Setup(db => db.Progress.Add(It.IsAny<Progress>()))
+                .Callback<Progress>(entity => mockProgressSet.Add(entity));
+
+
+            var model = new EnterActivityAndFoodViewModel
+            {
+                Breakfast = new Ingredient { FoodName = "Breakfast" },
+                Lunch = new Ingredient { FoodName = "Lunch" },
+                Dinner = new Ingredient { FoodName = "Dinner" },
+                Snacks = new Ingredient { FoodName = "Snacks" },
+                BreakfastQuantity = breakfastQuantity,
+                LunchQuantity = lunchQuantity,
+                DinnerQuantity = dinnerQuantity,
+                SnacksQuantity = snacksQuantity,
+                PhysicalActivity = new PhysicalActivity
+                {
+                    PAID = paId,
+                    ActivityType = activityType,
+                    Duration = duration,
+                    NumberOfPoints = numberOfPoints
+                }
+            };
+            // Act
+            var result = await _controller.Save(model);
+
+            var premiumUserFromDb = mockPremiumUsers.Find(u => u.Id == "userId");
+
+            Assert.IsNotNull(mockProgressSet);
+            Assert.AreEqual(1, mockProgressSet.Count);
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            var redirectResult = (RedirectToActionResult)result;
+            Assert.AreEqual("Index", redirectResult.ActionName);
+            Assert.AreEqual("Home", redirectResult.ControllerName);
+
+            Assert.AreEqual(Points, premiumUserFromDb.Points);
+        }
+
+        [TestMethod]
+        public async Task Save_UsersNull_ReturnsNotFound()
+        {
+            // Mock the UserManager
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns("userId");
+
+            var ingredients = new List<Ingredient>
+    {
+        new Ingredient { FoodName = "Breakfast", Calories = 1 },
+        new Ingredient { FoodName = "Lunch", Calories = 2 },
+        new Ingredient { FoodName = "Dinner", Calories = 3 },
+        new Ingredient { FoodName = "Snacks", Calories = 4 }
+    };
+
+            _mockDbContext.Setup(c => c.Ingredient).ReturnsDbSet(ingredients);
+
+            // Mock PremiumUser and RegisteredUser lists
+            var mockPremiumUsers = new List<PremiumUser> { new PremiumUser { Id = "userId1" } };
+            var mockRegisteredUsers = new List<RegisteredUser> { new RegisteredUser { Id = "userId1", Points = 0 } };
+            _mockDbContext.Setup(c => c.PremiumUser).ReturnsDbSet(mockPremiumUsers);
+            _mockDbContext.Setup(c => c.RegisteredUser).ReturnsDbSet(mockRegisteredUsers);
+            _mockHttpContextAccessor.Setup(c => c.HttpContext.User.IsInRole("PremiumUser")).Returns(true);
+
+
+
+            var model = new EnterActivityAndFoodViewModel
+            {
+                Breakfast = new Ingredient { FoodName = "Breakfast" },
+                Lunch = new Ingredient { FoodName = "Lunch" },
+                Dinner = new Ingredient { FoodName = "Dinner" },
+                Snacks = new Ingredient { FoodName = "Snacks" },
+                BreakfastQuantity = 0,
+                LunchQuantity = 1,
+                DinnerQuantity = 2,
+                SnacksQuantity = 3,
+                PhysicalActivity = new PhysicalActivity
+                {
+                    PAID = 2,
+                    ActivityType = ActivityType.CYCLING,
+                    Duration = 34,
+                    NumberOfPoints = 2
+                }
+            };
+            // Act
+            var result = await _controller.Save(model);
+
+           
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+
+            
+        }
 
         [TestMethod]
         public async Task EditCardHttp_WhenRegisteredUserIsNull_ReturnsNotFound()
