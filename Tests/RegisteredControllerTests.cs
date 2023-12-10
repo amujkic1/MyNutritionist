@@ -16,9 +16,9 @@ using Castle.Core.Resource;
 using MyNutritionist.Utilities;
 using Moq.EntityFrameworkCore;
 using NuGet.ContentModel;
-using NSubstitute;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Tests
 {
@@ -137,7 +137,6 @@ namespace Tests
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
-        // ... (existing code)
 
         [TestMethod]
         public async Task Edit_WhenRegisteredUserIsNotNull_UpdatesUserAndRedirectsToIndex()
@@ -293,8 +292,6 @@ namespace Tests
 
             // Assert that the user is no longer in the database
             Assert.AreEqual(0,registeredUserList.Count());
-
-
         }
 
         [TestMethod]
@@ -382,6 +379,125 @@ namespace Tests
             Assert.IsNotNull(model);
             Assert.IsNotNull(model.Ingredients);
             CollectionAssert.AreEqual(ingredientList, model.Ingredients.ToList());
+        }
+
+        [TestMethod]
+        public async Task EditCardHttp_WhenRegisteredUserIsNull_ReturnsNotFound()
+        {
+            var registeredUserList = new List<RegisteredUser>
+            {
+                new RegisteredUser { Id = "userId"},
+             };
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("userId1");
+
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+
+            // Act
+            var result = await _controller.EditCard(new Card { Balance = 60});
+
+            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        }
+
+        [TestMethod]
+        public async Task EditCardHttp_WhenBalanceIsLessThan50_Redirect()
+        {
+            var registeredUserList = new List<RegisteredUser>
+            {
+                new RegisteredUser { Id = "userId"},
+             };
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("userId");
+
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+            //_controller = new RegisteredUserController(_mockDbContext.Object, _mockHttpContextAccessor.Object, _mockUserManager.Object, _mockSignInManager.Object);
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            _controller.TempData = tempData;
+
+            // Act
+            var result = await _controller.EditCard(new Card { Balance = 30 });
+
+            Assert.AreEqual("Your card balance has to be 50 or above to finish this transaction.", _controller.TempData["NotificationMessage"]);
+
+            // Check if the action is redirected to the expected action
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirectToActionResult = (RedirectToActionResult)result;
+            Assert.AreEqual("Index", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public async Task EditCard_WhenRegisteredUserIsNotNull_UpdatesUserAndRedirectsToIndex()
+        {
+            // Arrange
+            var userId = "userId";
+            var registeredUserList = new List<RegisteredUser>
+            {
+                  new RegisteredUser { 
+                      Id = userId, 
+                      FullName="Test", 
+                      Age = 21, 
+                      Points = 2000, 
+                      AspUserId = "1", 
+                      UserName = "test", 
+                      PasswordHash = "hashPassword", 
+                      NutriPassword = "test123!",
+                      NutriUsername = "test",
+                      EmailAddress = "test@example.com",
+                      Email = "test@example.com",
+                      EmailConfirmed = true,
+                      Height = 180,
+                      Weight = 80,
+                      City = "Edinburgh"
+                  },
+            };
+            _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns(userId);
+            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+            var progressList = new List<Progress>
+            {
+                new Progress { PRId = 1, Date = DateTime.Now, BurnedCalories = 1000, ConsumedCalories = 2000, RegisteredUser = registeredUserList[0], PremiumUser = null},
+                new Progress { PRId = 2, Date = DateTime.Now.AddDays(-1), BurnedCalories = 1500, ConsumedCalories = 2300, RegisteredUser = registeredUserList[0], PremiumUser = null},
+                new Progress { PRId = 3, Date = DateTime.Now.AddDays(-3), BurnedCalories = 400, ConsumedCalories = 2600, RegisteredUser = registeredUserList[0], PremiumUser = null},
+                new Progress { PRId = 4, Date = DateTime.Now.AddDays(-4), BurnedCalories = 800, ConsumedCalories = 3000, RegisteredUser = registeredUserList[0], PremiumUser = null},
+                new Progress { PRId = 5, Date = DateTime.Now.AddDays(-6), BurnedCalories = 400, ConsumedCalories = 2550, RegisteredUser = registeredUserList[0], PremiumUser = null},
+                new Progress { PRId = 5, Date = DateTime.Now.AddDays(-6), BurnedCalories = 400, ConsumedCalories = 2550, RegisteredUser = new RegisteredUser { Id = "123" }, PremiumUser = null}
+            };
+
+            _mockDbContext.Setup(db => db.Progress).ReturnsDbSet(progressList);
+            _mockDbContext.Setup(db => db.Progress.RemoveRange(It.IsAny<List<Progress>>()))
+                .Callback<List<Progress>>(progressList => progressList.RemoveAll(x => x.RegisteredUser != null && x.RegisteredUser.Id == userId));
+            _mockDbContext.Setup(db => db.RegisteredUser.Remove(It.IsAny<RegisteredUser>()))
+                .Callback<RegisteredUser>(user => registeredUserList.Remove(user));
+            _mockUserManager.Setup(x => x.RemoveFromRoleAsync(It.IsAny<RegisteredUser>(), "RegisteredUser"))
+                .ReturnsAsync(IdentityResult.Success);
+            _mockDbContext.Setup(x => x.SaveChangesAsync(default))
+                .ReturnsAsync(1);
+
+            // Act
+            var result = await _controller.EditCard(new Card
+            {
+                Balance = 1000,
+                CardNumber = 123456789,
+            });
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            Assert.AreEqual("Index", (result as RedirectToActionResult).ActionName);
+
+            // Assert that the user is no longer in the database
+            Assert.AreEqual(0, registeredUserList.Count());
+
+            // Verify that the user's information was updated
+           /* var updatedUser = _mockDbContext.Object.RegisteredUser.SingleOrDefault(u => u.Id == userId);
+            Assert.IsNotNull(updatedUser);
+            Assert.AreEqual("New FullName", updatedUser.FullName);
+            Assert.AreEqual("newemail@example.com", updatedUser.Email);
+            Assert.AreEqual("newNutriUsername", updatedUser.NutriUsername);
+            Assert.AreEqual("newPassword", updatedUser.NutriPassword);
+            Assert.AreEqual(70, updatedUser.Weight);
+            Assert.AreEqual(180, updatedUser.Height);
+            Assert.AreEqual("New City", updatedUser.City);
+            Assert.AreEqual(25, updatedUser.Age);*/
         }
 
     }
