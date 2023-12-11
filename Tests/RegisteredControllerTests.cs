@@ -232,7 +232,6 @@ namespace Tests
             {
              new Ingredient { IId = 1, FoodName = "Ingredient1", Calories = 100, Carbs = 20, Protein = 10, Sugar = 5, Fat = 8, SaturatedFat = 3, VitaminA = 50, VitaminC = 30, Calcium = 15, Iron = 2, Sodium = 100 },
              new Ingredient { IId = 2, FoodName = "Ingredient2", Calories = 150, Carbs = 30, Protein = 15, Sugar = 7, Fat = 10, SaturatedFat = 4, VitaminA = 70, VitaminC = 40, Calcium = 20, Iron = 3, Sodium = 120 },
-        // Add more ingredients...
             };
 
             _mockDbContext.Setup(db => db.Ingredient).ReturnsDbSet(ingredientList);
@@ -250,10 +249,8 @@ namespace Tests
 
                 var model = viewResult.Model as List<Ingredient>;
 
-                // Add more specific assertions based on your expectations
                 Assert.AreEqual(ingredientList.Count, model.Count);
 
-                // Example: Assert that the first ingredient's name is as expected
                 Assert.AreEqual("Ingredient1", model[0].FoodName);
             }
            
@@ -293,7 +290,6 @@ namespace Tests
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
 
-            // You can further assert the properties of the RedirectToActionResult if needed
             var redirectResult = (RedirectToActionResult)result;
             Assert.AreEqual("Index", redirectResult.ActionName);
             Assert.AreEqual("Home", redirectResult.ControllerName);
@@ -383,7 +379,6 @@ namespace Tests
 
             var model = result.Model as EnterActivityAndFoodViewModel;
 
-            // Additional assertions based on your model and data
             Assert.IsNotNull(model);
             Assert.IsNotNull(model.Ingredients);
             CollectionAssert.AreEqual(ingredientList, model.Ingredients.ToList());
@@ -688,7 +683,7 @@ namespace Tests
 
             _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
 
-            //_controller = new RegisteredUserController(_mockDbContext.Object, _mockHttpContextAccessor.Object, _mockUserManager.Object, _mockSignInManager.Object);
+            
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             _controller.TempData = tempData;
 
@@ -878,7 +873,6 @@ namespace Tests
                 var consumedCaloriesProgressData = viewResult.ViewData["ConsumedCaloriesProgressData"];
                 var burnedCaloriesProgressData = viewResult.ViewData["BurnedCaloriesProgressData"];
 
-                // Add your assertions for the ViewData values here
                 Assert.IsNotNull(consumedCaloriesProgressData);
                 Assert.IsNotNull(burnedCaloriesProgressData);
             }
@@ -962,7 +956,6 @@ namespace Tests
                 var consumedCaloriesProgressData = viewResult.ViewData["ConsumedCaloriesProgressData"];
                 var burnedCaloriesProgressData = viewResult.ViewData["BurnedCaloriesProgressData"];
 
-                // Add your assertions for the ViewData values here
                 Assert.IsNotNull(consumedCaloriesProgressData);
                 Assert.IsNotNull(burnedCaloriesProgressData);
             }
