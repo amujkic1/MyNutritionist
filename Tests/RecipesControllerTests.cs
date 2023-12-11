@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System.Xml;
 using MyNutritionist.Controllers;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
@@ -14,6 +15,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using CsvHelper;
+using System.Globalization;
 
 namespace Tests
 {
@@ -26,6 +30,62 @@ namespace Tests
         private Mock<Microsoft.AspNetCore.Identity.UserManager<ApplicationUser>> _mockUserManager;
         private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private Mock<ApplicationDbContext> _mockDbContext;
+        public static IEnumerable<object[]> ReadRecipesXML()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load("C:\\Users\\Edna Basic\\Desktop\\MyNutritionist\\MyNutritionist\\Tests\\Data\\RecipesControllerXML.xml");
+
+            foreach (XmlNode recipeNode in doc.DocumentElement.ChildNodes)
+            {
+                string name = recipeNode.SelectSingleNode("Name")?.InnerText.Trim();
+                string recipeLink = recipeNode.SelectSingleNode("RecipeLink")?.InnerText.Trim();
+                int calories;
+                if (int.TryParse(recipeNode.SelectSingleNode("Calories")?.InnerText.Trim(), out calories))
+                {
+                    yield return new object[]
+                    {
+                name,
+                recipeLink,
+                calories
+                    };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> RecipesXML
+        {
+            get
+            {
+                return ReadRecipesXML();
+            }
+        }
+
+        public static IEnumerable<object[]> ReadRecipesCSV()
+        {
+            using (var reader = new StreamReader("C:\\Users\\Edna Basic\\Desktop\\MyNutritionist\\MyNutritionist\\Tests\\Data\\RecipesController.csv"))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                var rows = csv.GetRecords<dynamic>();
+                foreach (var row in rows)
+                {
+                    yield return new object[] {
+                row.Name,
+                row.RecipeLink,
+                Convert.ToInt32(row.Calories)
+            };
+                }
+            }
+        }
+
+        public static IEnumerable<object[]> RecipesCSV
+        {
+            get
+            {
+                return ReadRecipesCSV();
+            }
+        }
+
+
 
         [TestInitialize]
         public void Setup()
@@ -76,20 +136,14 @@ namespace Tests
         {
             // Arrange
             var loggedInNutritionist = new ApplicationUser { Id = "userId" };
-            _mockUserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
-                .ReturnsAsync(loggedInNutritionist);
+            _mockUserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(loggedInNutritionist);
 
             var nutritionist = new Nutritionist { Id = "userId" };
             _mockDbContext.Setup(x => x.Nutritionist.FindAsync("userId")).ReturnsAsync(nutritionist);
 
             var recipeViewModel = new RecipeViewModel
             {
-                input = new Recipe
-                {
-                    NameOfRecipe = "Test Recipe",
-                    RecipeLink = "https://www.spendwithpennies.com/classic-chicken-salad-recipe/",
-                    TotalCalories = 500
-                }
+                input = new Recipe{NameOfRecipe = "Test Recipe",RecipeLink = "https://www.spendwithpennies.com/classic-chicken-salad-recipe/",TotalCalories = 500}
             };
 
             // Act
@@ -98,14 +152,6 @@ namespace Tests
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("Index", result.ActionName);
-        }
-        [TestMethod]
-        public async Task NutritionistIsNull()
-        {
-
-            var nutritionist = new Nutritionist { Id = null };
-            _mockDbContext.Setup(x => x.Nutritionist.FindAsync(null)).ReturnsAsync(nutritionist);
-
         }
         [TestMethod]
         public async Task Create_Post_NutritionistNotFound_ReturnsNotFound()
@@ -120,12 +166,7 @@ namespace Tests
 
             var recipeViewModel = new RecipeViewModel
             {
-                input = new Recipe
-                {
-                    NameOfRecipe = "Test Recipe",
-                    RecipeLink = "https://example.com",
-                    TotalCalories = 500
-                }
+                input = new Recipe{ NameOfRecipe = "Test Recipe", RecipeLink = "https://example.com",TotalCalories = 500}
             };
 
             // Act
@@ -222,8 +263,81 @@ namespace Tests
             Assert.IsNotNull(result);
             Assert.AreEqual("Index", result.ActionName);
         }
-    }
+        [TestMethod]
+        [DynamicData("RecipesXML")]
+        public async Task Create_Post_ValidRecipe_RedirectsToIndex_DynamicData(string name, string recipeLink, int calories)
+        {
+            // Arrange
+            var loggedInNutritionist = new ApplicationUser { Id = "userId" };
+            _mockUserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .ReturnsAsync(loggedInNutritionist);
 
+            var nutritionist = new Nutritionist { Id = "userId" };
+            _mockDbContext.Setup(x => x.Nutritionist.FindAsync("userId")).ReturnsAsync(nutritionist);
+
+            var recipeViewModel = new RecipeViewModel
+            {
+                input = new Recipe{NameOfRecipe = name, RecipeLink = recipeLink, TotalCalories = calories}
+            };
+
+            // Act
+            var result = await _controller.Create(recipeViewModel) as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index", result.ActionName);
+        }
+
+        [TestMethod]
+        [DynamicData("RecipesCSV")]
+        public async Task Create_Post_ValidRecipe_RedirectsToIndex_DynamicDataCSV(string name, string recipeLink, int calories)
+        {
+            // Arrange
+            var loggedInNutritionist = new ApplicationUser { Id = "userId" };
+            _mockUserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .ReturnsAsync(loggedInNutritionist);
+
+            var nutritionist = new Nutritionist { Id = "userId" };
+            _mockDbContext.Setup(x => x.Nutritionist.FindAsync("userId")).ReturnsAsync(nutritionist);
+
+            var recipeViewModel = new RecipeViewModel
+            {
+                input = new Recipe
+                {
+                    NameOfRecipe = name,
+                    RecipeLink = recipeLink,
+                    TotalCalories = calories
+                }
+            };
+
+            // Act
+            var result = await _controller.Create(recipeViewModel) as RedirectToActionResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Index", result.ActionName);
+        }
+        [TestMethod]
+        public void RecipesToDisplay_IsEmptyList_WhenContextAndRecipeNull()
+        {
+            // Arrange
+            _mockDbContext.Setup(x => x.Recipe).Returns(MockDbSet<Recipe>(null));
+
+            // Act
+            var result = _controller.Create() as ViewResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+
+            var resultModel = result.Model as RecipeViewModel;
+            Assert.IsNotNull(resultModel);
+
+            // RecipesToDisplay should be an empty list when both _context and _context.Recipe are null
+            CollectionAssert.AreEqual(new List<Recipe>(), resultModel.recipesToDisplay.ToList());
+        }
+
+
+    }
 }
 
 
