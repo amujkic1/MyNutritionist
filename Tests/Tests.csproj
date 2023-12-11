@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="Data\NutritionistControllerXML.xml" />
+    <None Remove="Data\RegisteredController.xml" />
     <None Remove="Data\RegisteredUserControllerCSV.csv" />
   </ItemGroup>
 
@@ -19,6 +20,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\NutritionistControllerXML.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\RegisteredController.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\RegisteredUserControllerCSV.csv">
@@ -35,7 +39,6 @@
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
     <PackageReference Include="coverlet.collector" Version="3.2.0" />
-    <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="System.Security.Claims" Version="4.3.0" />
   </ItemGroup>
 

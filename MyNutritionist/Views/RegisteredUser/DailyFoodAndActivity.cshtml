@@ -59,9 +59,9 @@
                             }
                         </select>
                     </div>
-                    <label for="breakfast-quantity">Quantity:</label>
+                    <label asp-for="BreakfastQuantity"></label>
                     <div class="input-group">
-                        <input type="number" id="breakfast-quantity" name="breakfast-quantity" class="form-control" min="0" />
+                        <input asp-for="BreakfastQuantity" class="form-control" style="margin-bottom: 20px;" min="0" value="0" />
                     </div>
                 </div>
 
@@ -75,9 +75,9 @@
                             }
                         </select>
                     </div>
-                    <label for="lunch-quantity">Quantity:</label>
+                    <label asp-for="LunchQuantity"></label>
                     <div class="input-group">
-                        <input type="number" id="lunch-quantity" name="lunch-quantity" class="form-control" min="0" />
+                        <input asp-for="LunchQuantity" class="form-control" style="margin-bottom: 20px;" min="0" value="0" />
                     </div>
                 </div>
 
@@ -91,9 +91,9 @@
                             }
                         </select>
                     </div>
-                    <label for="dinner-quantity">Quantity:</label>
+                    <label asp-for="DinnerQuantity"></label>
                     <div class="input-group">
-                        <input type="number" id="dinner-quantity" name="dinner-quantity" class="form-control" min="0" />
+                        <input asp-for="DinnerQuantity" class="form-control" style="margin-bottom: 20px;" min="0" value="0" />
                     </div>
                 </div>
 
@@ -107,9 +107,9 @@
                             }
                         </select>
                     </div>
-                    <label for="snacks-quantity">Quantity:</label>
+                    <label asp-for="SnacksQuantity"></label>
                     <div class="input-group">
-                        <input type="number" id="snacks-quantity" name="snacks-quantity" class="form-control" min="0" />
+                        <input asp-for="SnacksQuantity" class="form-control" style="margin-bottom: 20px;" min="0" value="0" />
                     </div>
                 </div>
             </div>
@@ -120,7 +120,7 @@
                 <div class="input-container">
                     <label asp-for="PhysicalActivity.Duration"></label>
                     <div class="input-group">
-                        <input asp-for="PhysicalActivity.Duration" class="form-control" style="margin-bottom: 20px;" min="0" />
+                        <input asp-for="PhysicalActivity.Duration" class="form-control" style="margin-bottom: 20px;" min="0" value="0"/>
                     </div>
                 </div>
 

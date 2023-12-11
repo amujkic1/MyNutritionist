@@ -25,6 +25,7 @@ namespace MyNutritionist.Controllers
             _userManager = userManager;
         }
 
+
         // GET: Recipes/Create
         [Authorize(Roles = "Nutritionist")]
         // Action to display the page for creating a recipe
@@ -33,9 +34,23 @@ namespace MyNutritionist.Controllers
             // Creating a ViewModel object used to transfer data between the controller and the view
             var recipeViewModel = new RecipeViewModel();
             recipeViewModel.input = new Recipe();
-            recipeViewModel.recipesToDisplay = _context.Recipe.ToList();
+
+            // Check if _context and _context.Recipe are not null before calling ToList
+            if (_context != null && _context.Recipe != null)
+            {
+                recipeViewModel.recipesToDisplay = _context.Recipe.ToList();
+            }
+            else
+            {
+                // Handle the case where _context or _context.Recipe is null
+                // You can log a message or take appropriate action
+                // For now, you can set it to an empty list or handle it based on your requirements
+                recipeViewModel.recipesToDisplay = new List<Recipe>();
+            }
+
             return View(recipeViewModel);
         }
+
 
         // POST: Recipes/Create
         // Method that handles the HTTP POST request for creating a new recipe

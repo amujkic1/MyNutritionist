@@ -208,7 +208,6 @@ namespace MyNutritionist.Controllers
             premiumUser.Age = registeredUser.Age;
             premiumUser.Points = registeredUser.Points;
             premiumUser.AspUserId = registeredUser.AspUserId;
-            premiumUser.Age = registeredUser.Age;
             premiumUser.UserName = registeredUser.UserName;
             premiumUser.PasswordHash = registeredUser.PasswordHash;
             premiumUser.NutriPassword = registeredUser.NutriPassword;
@@ -222,19 +221,10 @@ namespace MyNutritionist.Controllers
 
             // Create a new Card instance and populate its properties
             var newCard = new Card();
-            try
-            {
                 newCard = Activator.CreateInstance<Card>();
                 newCard.PremiumUser = premiumUser;
                 newCard.Balance = card.Balance;
                 newCard.CardNumber = card.CardNumber;
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
 
             var progressRecords = await _context.Progress
             .Where(p => p.RegisteredUser.Id == registeredUser.Id)
@@ -255,7 +245,7 @@ namespace MyNutritionist.Controllers
             // Remove the RegisteredUser role and add the PremiumUser role to the user
             await _userManager.RemoveFromRoleAsync(registeredUser, "RegisteredUser");
             await _context.SaveChangesAsync();
-            
+
             // Add the new PremiumUser and Card to the database
             _context.PremiumUser.Add(premiumUser);
             await _context.SaveChangesAsync();
@@ -467,32 +457,20 @@ namespace MyNutritionist.Controllers
             var dinnerIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Dinner.FoodName);
             var snacksIngredient = _context.Ingredient.FirstOrDefault(i => i.FoodName == model.Snacks.FoodName);
 
-            // Initialize quantities for breakfast, lunch, dinner, and snacks
-            var breakfastQuantity = 0;
-            var lunchQuantity = 0;
-            var dinnerQuantity = 0;
-            var snacksQuantity = 0;
-
-            // Parse quantities from the request form
-            if (int.TryParse(_httpContextAccessor.HttpContext.Request.Form["breakfast-quantity"], out breakfastQuantity) &&
-                    int.TryParse(_httpContextAccessor.HttpContext.Request.Form["lunch-quantity"], out lunchQuantity) &&
-                    int.TryParse(_httpContextAccessor.HttpContext.Request.Form["dinner-quantity"], out dinnerQuantity) &&
-                    int.TryParse(_httpContextAccessor.HttpContext.Request.Form["snacks-quantity"], out snacksQuantity))
-            {
                 // Calculate total consumed calories
                 var consumedCalories = 0;
 
                 if (breakfastIngredient != null)
-                    consumedCalories += breakfastQuantity * breakfastIngredient.Calories;
+                    consumedCalories += model.BreakfastQuantity * breakfastIngredient.Calories;
 
                 if (lunchIngredient != null)
-                    consumedCalories += lunchQuantity * lunchIngredient.Calories;
+                    consumedCalories += model.LunchQuantity * lunchIngredient.Calories;
 
                 if (dinnerIngredient != null)
-                    consumedCalories += dinnerQuantity * dinnerIngredient.Calories;
+                    consumedCalories += model.DinnerQuantity * dinnerIngredient.Calories;
 
                 if (snacksIngredient != null)
-                    consumedCalories += snacksQuantity * snacksIngredient.Calories;
+                    consumedCalories += model.SnacksQuantity * snacksIngredient.Calories;
 
                 var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
                 
@@ -525,14 +503,15 @@ namespace MyNutritionist.Controllers
                 {
                     // Update user points and save changes to the database
                     registeredUser.Points += points;
-                    _context.SaveChanges();                }
+                    _context.SaveChanges();               
+                
+                }
                 else
                 {
                     // Update user points and save changes to the database
                     premiumUser.Points += points;
                     _context.SaveChanges();
                 }
-            }
             // Redirect to the Index action of the Home controller
             return RedirectToAction("Index", "Home");
         }
