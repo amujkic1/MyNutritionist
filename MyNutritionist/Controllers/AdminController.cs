@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.Rename;
 using Microsoft.EntityFrameworkCore;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
+using MyNutritionist.Utilities;
 
 namespace MyNutritionist.Controllers
 {
