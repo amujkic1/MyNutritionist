@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <None Remove="Data\NutritionistControllerXML.xml" />
+    <None Remove="Data\RecipesController.csv" />
+    <None Remove="Data\RecipesControllerXML.xml" />
     <None Remove="Data\RegisteredController.xml" />
     <None Remove="Data\RegisteredUserControllerCSV.csv" />
   </ItemGroup>
@@ -20,6 +22,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\NutritionistControllerXML.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\RecipesController.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\RecipesControllerXML.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\RegisteredController.xml">
