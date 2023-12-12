@@ -29,7 +29,7 @@ namespace MyNutritionist.Controllers
         }
 
 
-        private async Task<List<List<object>>> SetProgressData(PremiumUser premiumUser)
+        async Task<List<List<object>>> SetProgressData(PremiumUser premiumUser)
         {
 
             // Current date information
@@ -108,9 +108,13 @@ namespace MyNutritionist.Controllers
             // Call SetProgressData method to retrieve progress data for the user
             var list = await SetProgressData(premiumUser);
 
-            // Set ViewBag properties to pass consumed and burned calories progress data to the view
-            ViewBag.ConsumedCaloriesProgressData = list[0];
-            ViewBag.BurnedCaloriesProgressData = list[1];
+
+            if (list.Count != 0)
+            {
+                // Set ViewBag properties to pass consumed and burned calories progress data to the view
+                ViewBag.ConsumedCaloriesProgressData = list[0];
+                ViewBag.BurnedCaloriesProgressData = list[1];
+            }
 
             // Returns the view associated with the PremiumUser passing the PremiumUser object
             return View(premiumUser);
@@ -267,7 +271,6 @@ namespace MyNutritionist.Controllers
                 // Return a "Not Found" response if the user is not found
                 return NotFound();
             }
-
             // Return the view associated with the delete confirmation passing the PremiumUser object
             return View(premiumUser);
         }
@@ -289,7 +292,7 @@ namespace MyNutritionist.Controllers
             }
 
             // Find the PremiumUser to delete from the database using the ID
-            var premiumUser = await _context.PremiumUser.FindAsync(id);
+            var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(m => m.Id.Equals(id));
 
             // Check if PremiumUser is not found
             if (premiumUser == null)
@@ -343,10 +346,9 @@ namespace MyNutritionist.Controllers
         public async Task<IActionResult> Leaderboard()
         {
             // Retrieve the current user using UserManager
-            var currentUser = await _userManager.GetUserAsync(User);
-
-            // Find the PremiumUser associated with the current user's ID from the database
-            var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.Id == currentUser.Id);
+            //var currentUser = await _userManager.GetUserAsync(User);
+            var id = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(u => u.Id.Equals(id));
 
             // Check if the PremiumUser is not found
             if (premiumUser == null)
@@ -354,6 +356,7 @@ namespace MyNutritionist.Controllers
                 // Return a "Not Found" response if the user is not found
                 return NotFound();
             }
+
 
             // Retrieve the singleton instance of the Leaderboard class
             Leaderboard leaderboard = MyNutritionist.Models.Leaderboard.getInstance();

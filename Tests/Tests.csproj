@@ -54,4 +54,13 @@
     <ProjectReference Include="..\MyNutritionist\MyNutritionist.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\PremiumUserControllerCSV.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\PremiumUserControllerXML.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
