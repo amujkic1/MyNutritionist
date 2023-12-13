@@ -379,6 +379,13 @@ namespace MyNutritionist.Controllers
             return View(leaderboard);
         }
 
+        public async Task<IActionResult> GetQuote()
+        {
+			var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+			var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(p => p.Id == userId);
+            return View(premiumUser);
+		}
+
     }
 
 }
