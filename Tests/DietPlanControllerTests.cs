@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Xml;
+using CsvHelper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,13 +21,6 @@ using MyNutritionist.Utilities;
 
 namespace Tests
 {
-    public class DatabaseContextHelper
-    {
-        public static void ExecuteSqlRaw(DatabaseFacade databaseFacade, string sql, params object[] parameters)
-        {
-            databaseFacade.ExecuteSqlRaw(sql, parameters);
-        }
-    }
 
 
     [TestClass]
@@ -35,6 +31,58 @@ namespace Tests
         private DietPlanController _controller;
         private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private ApplicationDbContext _context;
+
+        public static IEnumerable<object[]> ReadCSV()
+        {
+            using (var reader = new StreamReader("../../../Data/DietPlanControllerCSV.csv"))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                var rows = csv.GetRecords<dynamic>();
+                foreach (var row in rows)
+                {
+                    yield return new object[] {
+                    row.Id
+                    };
+                }
+            }
+        }
+
+        static IEnumerable<object[]> PremiumUsersListCSV
+        {
+            get
+            {
+                return ReadCSV();
+            }
+        }
+
+        public static IEnumerable<object[]> ReadXML()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load("../../../Data/DietPlanControllerXML.xml");
+
+            XmlNodeList premiumUserNodes = doc.SelectNodes("//PremiumUser");
+            if (premiumUserNodes != null)
+            {
+                foreach (XmlNode premiumUserNode in premiumUserNodes)
+                {
+                    string premiumUserId = premiumUserNode.SelectSingleNode("Id")?.InnerText.Trim();
+                    yield return new object[]
+                    {
+                        premiumUserId
+                    };
+
+                }
+            }
+
+            
+        }
+        static IEnumerable<object[]> PremiumUsersListXML
+        {
+            get
+            {
+                return ReadXML();
+            }
+        }
 
 
         [TestInitialize]
@@ -111,9 +159,10 @@ namespace Tests
 
 
         [TestMethod]
-        public async Task Index_WhenUserIsPremium_ReturnsView()
+        [DynamicData("PremiumUsersListXML")]
+        public async Task Index_WhenUserIsPremium_ReturnsView(String PremiumUserId)
         {
-            var user = new PremiumUser { AspUserId = "1" };
+            var user = new PremiumUser { AspUserId = PremiumUserId };
             _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
 
             var dietPlan = new DietPlan { PremiumUser = user };
@@ -124,7 +173,7 @@ namespace Tests
 
             // Set up Recipe DbSet
             _mockDbContext.Setup(db => db.Recipe)
-                .ReturnsDbSet((IEnumerable<Recipe>)new List<Recipe>()); // You can add data as needed
+                .ReturnsDbSet((IEnumerable<Recipe>)new List<Recipe>()); 
 
             var result = await _controller.Index();
 
@@ -183,7 +232,8 @@ namespace Tests
         }
 
         [TestMethod]
-        public async Task Create_WhenDietPlanCreationSuccess_ReturnsRedirectToNutritionistIndex()
+        [DynamicData("PremiumUsersListCSV")]
+        public async Task Create_WhenDietPlanCreationSuccess_ReturnsRedirectToNutritionistIndex(string PremiumUserId)
         {
             // Arrange
             var nutritionist = new ApplicationUser { Id = "1" };
@@ -198,12 +248,12 @@ namespace Tests
 
             _mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("1");
             _mockDbContext.Setup(db => db.Nutritionist).ReturnsDbSet((IEnumerable<Nutritionist>)new List<Nutritionist> { new Nutritionist { Id = "1", AspUserId = "1" } });
-            _mockDbContext.Setup(db => db.DietPlan).ReturnsDbSet((IEnumerable<DietPlan>)new List<DietPlan> { new DietPlan { PremiumUser = new PremiumUser { Id = "userId" } } });
+            _mockDbContext.Setup(db => db.DietPlan).ReturnsDbSet((IEnumerable<DietPlan>)new List<DietPlan> { new DietPlan { PremiumUser = new PremiumUser { Id = PremiumUserId } } });
             _mockDbContext.Setup(db => db.Recipe).ReturnsDbSet((IEnumerable<Recipe>)new List<Recipe> { new Recipe { RID = 1 }, new Recipe { RID = 2 } });
-            _mockDbContext.Setup(db => db.PremiumUser).ReturnsDbSet(new List<PremiumUser> { new PremiumUser { Id = "userId" } });
-            
+            _mockDbContext.Setup(db => db.PremiumUser).ReturnsDbSet(new List<PremiumUser> { new PremiumUser { Id = PremiumUserId }, new PremiumUser { Id = PremiumUserId + "1" }, new PremiumUser { Id = PremiumUserId + "2" } });
+
             // Act
-            var result = await _controller.Create("userId", dietPlanVm);
+            var result = await _controller.Create(PremiumUserId, dietPlanVm);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -211,6 +261,7 @@ namespace Tests
             Assert.AreEqual("Index", redirectResult.ActionName);
             Assert.AreEqual("Nutritionist", redirectResult.ControllerName);
         }
+
 
         [TestMethod]
         public void Create_ReturnsViewWithEditDietPlanVM()
