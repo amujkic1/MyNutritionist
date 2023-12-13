@@ -17,15 +17,17 @@ namespace MyNutritionist.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+		//private readonly QuoteController _quoteController;
 
-        // Constructor to initialize the PremiumUserController with required dependencies
-        public PremiumUserController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+		// Constructor to initialize the PremiumUserController with required dependencies
+		public PremiumUserController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             // Assigning the provided instances of dependencies to corresponding private fields
             _context = context; 
             _httpContextAccessor = httpContextAccessor;  
             _userManager = userManager;
             _signInManager = signInManager;
+            //_quoteController = quoteController;
         }
 
 
@@ -105,6 +107,9 @@ namespace MyNutritionist.Controllers
                 return NotFound();
             }
 
+            var _quoteController = new QuoteController(_context);
+
+            var randomQuote = await _quoteController.GetQuote();
             // Call SetProgressData method to retrieve progress data for the user
             var list = await SetProgressData(premiumUser);
 
@@ -116,13 +121,11 @@ namespace MyNutritionist.Controllers
                 ViewBag.BurnedCaloriesProgressData = list[1];
             }
 
-            //call getQuote function
-            await GetQuote();
+            ViewBag.RandomQuote = randomQuote;
 
-            // Returns the view associated with the PremiumUser passing the PremiumUser object
-            return View(premiumUser);
+			// Returns the view associated with the PremiumUser passing the PremiumUser object
+			return View(premiumUser);
         }
-
 
         // Method to calculate progress percentage based on a value and an average value
         private double CalculateProgressPercentage(double value, double averageValue)
@@ -382,11 +385,9 @@ namespace MyNutritionist.Controllers
             return View(leaderboard);
         }
 
-        public async Task<NutritionTipsAndQuotes> GetQuote()
+        /*public async Task<NutritionTipsAndQuotes> GetQuote()
         {
-			var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-			var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(p => p.Id == userId);
-
+			
 			// Retrieve a random quote from the NutritionTipsAndQuotes table
 			var randomQuote = await _context.NutritionTipsAndQuotes
 				.OrderBy(x => Guid.NewGuid()) // Randomize the order
@@ -407,7 +408,7 @@ namespace MyNutritionist.Controllers
                 };
             }
 			
-		}
+		}*/
 
     }
 

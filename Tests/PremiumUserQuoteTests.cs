@@ -92,8 +92,8 @@ namespace Tests
 
             // Assert
             Assert.IsNotNull(result);
-            //var user = result.Model as PremiumUser;
-            //Assert.IsNotNull(user);
+            var user = result.Model as PremiumUser;
+            Assert.IsNotNull(user);
             //Assert.AreEqual("userId", user.Id);
 			//var htmlContent = result.ViewData["quoteMessage"] as string;
 			//Assert.IsFalse(string.IsNullOrWhiteSpace(htmlContent), "HTML sadržaj je prazan.");
