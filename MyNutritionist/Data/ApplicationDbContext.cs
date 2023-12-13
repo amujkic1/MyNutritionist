@@ -26,6 +26,7 @@ namespace MyNutritionist.Data
         public virtual DbSet<Progress> Progress { get; set; }
         //public DbSet<Recipe_Ingredient> RecipeIngredient { get; set; }
         public virtual DbSet<Nutritionist> Nutritionist { get; set; }
+        public virtual DbSet<NutritionTipsAndQuotes> NutritionTipsAndQuotes { get; set;} 
         //public DbSet<Leaderboard> Leaderboard { get; set; }
         //public DbSet<PhysicalActivity> PhysicalActivity { get; set; }
         //public DbSet<DietPlanRecipe> DietPlanRecipes { get; set; }
@@ -47,6 +48,7 @@ namespace MyNutritionist.Data
             //builder.Entity<PhysicalActivity>().ToTable("PhysicalActivity");
             builder.Entity<Nutritionist>().ToTable("Nutritionist");
             //builder.Entity<DietPlanRecipe>().ToTable("DietPlanRecipe");
+            builder.Entity<NutritionTipsAndQuotes>().ToTable("NutritionTipsAndQuotes");
 
             builder.Entity<ApplicationUser>()
                 .Property(e => e.FullName);
