@@ -33,7 +33,7 @@ namespace Tests
         public static IEnumerable<object[]> ReadRecipesXML()
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load("C:\\Users\\Edna Basic\\Desktop\\MyNutritionist\\MyNutritionist\\Tests\\Data\\RecipesControllerXML.xml");
+            doc.Load("Data/RecipesControllerXML.xml");
 
             foreach (XmlNode recipeNode in doc.DocumentElement.ChildNodes)
             {
@@ -62,7 +62,7 @@ namespace Tests
 
         public static IEnumerable<object[]> ReadRecipesCSV()
         {
-            using (var reader = new StreamReader("C:\\Users\\Edna Basic\\Desktop\\MyNutritionist\\MyNutritionist\\Tests\\Data\\RecipesController.csv"))
+            using (var reader = new StreamReader("Data/RecipesController.csv"))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 var rows = csv.GetRecords<dynamic>();

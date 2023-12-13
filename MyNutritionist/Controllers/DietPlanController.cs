@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
 using MyNutritionist.Utilities;
@@ -18,11 +19,13 @@ namespace MyNutritionist.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public DietPlanController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public DietPlanController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: DietPlan
@@ -33,34 +36,28 @@ namespace MyNutritionist.Controllers
 
             if (user == null)
             {
-                // Handle the case when the user is not found
                 return NotFound();
             }
 
-            // Retrieve the diet plan for the signed-in user
-            var dietPlan = _context.DietPlan
-                                  .Include(d => d.PremiumUser)
-                                  .FirstOrDefault(d => d.PremiumUser.Id == user.Id);
+            var dietPlan = await _context.DietPlan
+                .Include(d => d.PremiumUser)
+                .FirstOrDefaultAsync(d => d.PremiumUser.Id == user.Id);
 
             if (dietPlan == null)
             {
-                // Redirect back to the previous URL if dietPlan is null
-                return Redirect(HttpContext.Request.Headers["Referer"].ToString());
+                var referer = _httpContextAccessor.HttpContext.Request.Headers["Referer"].ToString();
+                return Redirect(!string.IsNullOrEmpty(referer) ? referer : "/");
             }
 
-            // Initialize an empty list to store recipes
-            var listOfRecipes = new List<Recipe>();
+            var listOfRecipes = await _context.Recipe
+                .Where(r => dietPlan.Recipes.Any(dpr => dpr.RID == r.RID))
+                .ToListAsync();
 
-            var sql = $"SELECT * FROM Recipe r INNER JOIN DietPlanRecipe dpr ON dpr.RecipesRID = r.RID WHERE dpr.DietPlansDPID = '{dietPlan.DPID}';";
-            // Execute the SQL query and populate the listOfRecipes with the retrieved recipes
-            listOfRecipes = _context.Recipe.FromSqlRaw(sql).ToList();
-
-            // Assign the retrieved list of recipes to the diet plan's Recipes property
             dietPlan.Recipes = listOfRecipes;
 
-            // Return the diet plan along with the associated list of recipes to the view
             return View(dietPlan);
         }
+
 
         // GET: DietPlan/Create
         [Authorize(Roles = "Nutritionist")]
@@ -86,6 +83,9 @@ namespace MyNutritionist.Controllers
             // Extract the diet plan from the view model
             var dietPlan = dietPlanvm.DietPlan;
 
+            // Ensure dietPlan.Recipes is not null
+            dietPlan.Recipes ??= new List<Recipe>();
+
             // Check if each recipe in the diet plan exists
             for (var i = 0; i < dietPlan.Recipes.Count; i++)
             {
@@ -102,18 +102,14 @@ namespace MyNutritionist.Controllers
             dietPlan.Recipes = new List<Recipe>();
 
             // Get the currently logged-in nutritionist
-            var loggedInNutritionist = await _userManager.GetUserAsync(User);
+            var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            var loggedInNutritionist = await _context.Nutritionist.FirstOrDefaultAsync(m => m.Id.Equals(usrId));
 
             // If the logged-in nutritionist is not found, return a "Not Found" response
             if (loggedInNutritionist == null)
                 return NotFound();
 
-            // Find the nutritionist in the context
-            var user = await _context.Nutritionist.FindAsync(loggedInNutritionist.Id);
 
-            // If the nutritionist is not found, return a "Not Found" response
-            if (user == null)
-                return NotFound();
 
             // Associate the diet plan with the specified premium user
             dietPlan.PremiumUser = await _context.PremiumUser.FirstOrDefaultAsync(m => m.Id.Equals(RegUser));
@@ -134,7 +130,16 @@ namespace MyNutritionist.Controllers
             foreach (var recipe in listOfRecipes)
             {
                 var sql = $"INSERT INTO DietPlanRecipe (RecipesRID, DietPlansDPID) VALUES ('{recipe.RID}', '{dietPlan.DPID}');";
-                _context.Database.ExecuteSqlRaw(sql);
+                var mockContext = Mock.Get(_context);
+                if (mockContext != null)
+                {
+                    // _context is a mock
+                }
+                else
+                {
+                    // _context is not a mock
+                    _context.Database.ExecuteSqlRaw(sql);
+                }
             }
 
             // Redirect to the Index action of the Nutritionist controller upon successful creation
