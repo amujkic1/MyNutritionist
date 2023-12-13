@@ -18,5 +18,7 @@ namespace MyNutritionist.Models
         public string AspUserId { get; set; }
 
         public PremiumUser() { }
-    }
+
+	
+	}
 }

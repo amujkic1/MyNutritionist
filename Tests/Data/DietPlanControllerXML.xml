@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<PremiumUsers>
+	<PremiumUser>
+		<Id>userId</Id>
+	</PremiumUser>
+	<PremiumUser>
+		<Id>username123</Id>
+	</PremiumUser>
+	<PremiumUser>
+		<Id>23100</Id>
+	</PremiumUser>
+	<PremiumUser>
+		<Id>!premiumUser</Id>
+	</PremiumUser>
+</PremiumUsers>
