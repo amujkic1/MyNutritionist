@@ -150,48 +150,56 @@
 	<body>
 		<h1 style="text-align:center">Check out your progress for this week!</h1>
 
- <div class="main-container">
-    <div class="header">
-        Daily activity last 7 days
-    </div>
-    <div class="week-stats">
-		@foreach (var progressData in ViewBag.BurnedCaloriesProgressData as List<object>)
-		{
-			var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
-			var heightPercentage = (int)progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
-			var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
+	 <div class="main-container">
+		<div class="header">
+			Daily activity last 7 days
+		</div>
+		<div class="week-stats">
+			@foreach (var progressData in ViewBag.BurnedCaloriesProgressData as List<object>)
+			{
+				var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
+				var heightPercentage = (int)progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
+				var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
 
-			<div class="day-group @(isSelectedDay ? "selected" : "")">
-				<div class="bar" style="height: @(heightPercentage)%"></div>
-				<p class="day">@dayOfWeek</p>
-			</div>
-		}
-    </div>
-</div>
-
-
+				<div class="day-group @(isSelectedDay ? "selected" : "")">
+					<div class="bar" style="height: @(heightPercentage)%"></div>
+					<p class="day">@dayOfWeek</p>
+				</div>
+			}
+		</div>
+	</div>
 
 
-<div class="main-container">
-    <div class="header">
-        Calories intake last 7 days
-    </div>
-    <div class="week-stats">
-		 @foreach (var progressData in ViewBag.ConsumedCaloriesProgressData as List<object>)
-		{
-			var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
-			var heightPercentage = (int)progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
-			var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
 
-			<div class="day-group @(isSelectedDay ? "selected" : "")">
-				<div class="bar" style="height: @(heightPercentage)%"></div>
-				<p class="day">@dayOfWeek</p>
-			</div>
-		}
-    </div>
-</div>
+
+	<div class="main-container">
+		<div class="header">
+			Calories intake last 7 days
+		</div>
+		<div class="week-stats">
+			 @foreach (var progressData in ViewBag.ConsumedCaloriesProgressData as List<object>)
+			{
+				var dayOfWeek = progressData.GetType().GetProperty("DayOfWeek").GetValue(progressData);
+				var heightPercentage = (int)progressData.GetType().GetProperty("HeightPercentage").GetValue(progressData);
+				var isSelectedDay = (bool)progressData.GetType().GetProperty("IsSelectedDay").GetValue(progressData);
+
+				<div class="day-group @(isSelectedDay ? "selected" : "")">
+					<div class="bar" style="height: @(heightPercentage)%"></div>
+					<p class="day">@dayOfWeek</p>
+				</div>
+			}
+		</div>
+	</div>
+
 	<div class="quotes">
-		<p>Ovde je određeni tekst koji želite ispisati.</p>
+		@if (ViewBag.RandomQuote != null)
+		{
+			<p><em>@ViewBag.RandomQuote.QuoteText</em></p>
+		}
+		else
+		{
+			<p><em>No quote available</em></p>
+		}
 	</div>
 
 

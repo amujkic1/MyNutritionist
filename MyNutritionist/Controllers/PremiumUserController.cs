@@ -116,6 +116,9 @@ namespace MyNutritionist.Controllers
                 ViewBag.BurnedCaloriesProgressData = list[1];
             }
 
+            //call getQuote function
+            await GetQuote();
+
             // Returns the view associated with the PremiumUser passing the PremiumUser object
             return View(premiumUser);
         }
@@ -378,16 +381,32 @@ namespace MyNutritionist.Controllers
             // Return the view with the updated leaderboard data
             return View(leaderboard);
         }
-        public async Task <String> GetQuotes()
-        {
-            return "";
-        }
 
-        public async Task<IActionResult> GetQuote()
+        public async Task<NutritionTipsAndQuotes> GetQuote()
         {
 			var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
 			var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(p => p.Id == userId);
-            return View(premiumUser);
+
+			// Retrieve a random quote from the NutritionTipsAndQuotes table
+			var randomQuote = await _context.NutritionTipsAndQuotes
+				.OrderBy(x => Guid.NewGuid()) // Randomize the order
+				.FirstOrDefaultAsync();
+
+
+			ViewBag.RandomQuote = randomQuote;
+			
+            if(randomQuote!= null)
+            {
+				return randomQuote;
+			}
+            else
+            {
+                return new NutritionTipsAndQuotes
+                {
+                    QuoteText = ""
+                };
+            }
+			
 		}
 
     }
