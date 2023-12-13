@@ -378,6 +378,10 @@ namespace MyNutritionist.Controllers
             // Return the view with the updated leaderboard data
             return View(leaderboard);
         }
+        public async Task <String> GetQuotes()
+        {
+            return "";
+        }
 
     }
 
