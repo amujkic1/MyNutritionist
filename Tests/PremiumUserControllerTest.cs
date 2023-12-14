@@ -168,13 +168,13 @@ namespace Tests
 			_mockDbContext.Setup(db => db.NutritionTipsAndQuotes).ReturnsDbSet(nutritionTips);
 
 			// Act
-			//var result = await _controller.Index() as ViewResult;
+			var result = await _controller.Index() as ViewResult;
 
 			// Assert
-			//Assert.IsNotNull(result);
-			//var user = result.Model as PremiumUser;
-			//Assert.IsNotNull(user);
-			//Assert.AreEqual("userId", user.Id);
+			Assert.IsNotNull(result);
+			var user = result.Model as PremiumUser;
+			Assert.IsNotNull(user);
+			Assert.AreEqual("userId", user.Id);
 		}
 
 
@@ -190,9 +190,9 @@ namespace Tests
 
             _mockDbContext.Setup(db => db.PremiumUser).ReturnsDbSet(premiumUserList);
 
-            //var result = await _controller.Index();
+            var result = await _controller.Index();
 
-            //Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
 
         }
 
