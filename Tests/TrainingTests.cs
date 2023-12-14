@@ -19,12 +19,15 @@ namespace MyNutritionist.Controllers.Tests
         [TestMethod]
         public async Task Training_ReturnsCorrectModel()
         {
+
             var _mockLogger = new Mock<ILogger<HomeController>>();
             var _controller = new HomeController(_mockLogger.Object);
 
             var result = await _controller.Training() as ViewResult;
 
             Assert.IsNotNull(result);
+            var trainingList = result.Model as List<Training>;
+            Assert.IsNotNull(trainingList);
         }
     }
 }
