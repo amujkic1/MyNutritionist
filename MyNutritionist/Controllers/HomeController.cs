@@ -58,7 +58,15 @@ namespace MyNutritionist.Controllers
 
         public async Task<IActionResult> Training()
         {
-            return View("Index");
+            var trainings = new List<Training> {
+                new Training { TID = 1, nameOfTraining="Training", image="image.png", link="", duration = 10},
+                new Training { TID = 2, nameOfTraining="Training", image="image.png", link="", duration = 40},
+                new Training { TID = 3, nameOfTraining="Training", image="image.png", link="", duration = 30},
+                new Training { TID = 4, nameOfTraining="Training", image="image.png", link="", duration = 20},
+                new Training { TID = 5, nameOfTraining="Training", image="image.png", link="", duration = 10},
+                new Training { TID = 6, nameOfTraining="Training", image="image.png", link="", duration = 20}
+            };
+            return View(trainings);
         }
     }
 }
