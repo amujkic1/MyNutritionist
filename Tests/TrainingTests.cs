@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using Moq;
@@ -16,10 +17,16 @@ namespace MyNutritionist.Controllers.Tests
     [TestClass()]
     public class TrainingTests
     {
+        private Mock<ApplicationDbContext> _mockDbContext;
         [TestMethod]
         public async Task Training_ReturnsCorrectModel()
         {
-            var _mockDbContext = new Mock<ApplicationDbContext>();
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(databaseName: "TestDatabase")
+            .Options;
+
+            _mockDbContext = new Mock<ApplicationDbContext>(options);
+
             var _mockLogger = new Mock<ILogger<HomeController>>();
             var _controller = new HomeController(_mockLogger.Object, _mockDbContext.Object);
 
