@@ -67,7 +67,4 @@ namespace MyNutritionist.Utilities
                 return QuickSort(users);
             }
         }
-    }
-
-}
 }
