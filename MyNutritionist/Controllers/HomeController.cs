@@ -58,7 +58,7 @@ namespace MyNutritionist.Controllers
 
         public async Task<IActionResult> Training()
         {
-            return null;
+            return View("Index");
         }
     }
 }
