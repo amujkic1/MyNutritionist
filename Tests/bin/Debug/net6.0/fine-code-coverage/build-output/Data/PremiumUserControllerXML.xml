@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LeaderboardTestData>
+	<TestItem>
+		<UserId>1</UserId>
+		<City>New York</City>
+		<Points>100</Points>
+	</TestItem>
+	<TestItem>
+		<UserId>2</UserId>
+		<City>New York</City>
+		<Points>120</Points>
+	</TestItem>
+	<TestItem>
+		<UserId>3</UserId>
+		<City>Los Angeles</City>
+		<Points>80</Points>
+	</TestItem>
+</LeaderboardTestData>

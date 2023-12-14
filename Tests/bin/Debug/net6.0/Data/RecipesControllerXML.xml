@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<RecipesTestData>
+	<RecipeData>
+		<Name>Test Recipe 1</Name>
+		<RecipeLink>https://www.example.com/recipe1</RecipeLink>
+		<Calories>500</Calories>
+	</RecipeData>
+	<RecipeData>
+		<Name>Test Recipe 2</Name>
+		<RecipeLink>https://www.example.com/recipe2</RecipeLink>
+		<Calories>600</Calories>
+	</RecipeData>
+</RecipesTestData>

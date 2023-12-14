@@ -1,0 +1,4 @@
+Breakfast,BreakfastQuantity,Lunch,LunchQuantity,Dinner,DinnerQuantity,Snacks,SnacksQuantity,PAID,ActivityType,Duration,NumberOfPoints,Points
+100,2,50,3,5,1,40,4,1,RUNNING,30,5,18
+40,1,100,2,20,3,20,4,2,CYCLING,45,7,20
+100,3,100,2,40,1,200,4,3,WALKING,60,10,10
