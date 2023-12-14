@@ -112,19 +112,14 @@ namespace MyNutritionist.Controllers
                 return NotFound();
             }
 
+            // Creates an instance of controller associated with retreiving a quote
             var _quoteController = new QuoteController(_context);
 
-          //  var randomQuoteTask = _quoteController.GetQuote();
-            //var progressDataTask = SetProgressData(premiumUser);
-            var randomQuote = await _quoteController.GetQuote();
+			// Calls function for retreiving a random quote from database
+			var randomQuote = await _quoteController.GetQuote();
+
             // Call SetProgressData method to retrieve progress data for the user
             var list = await SetProgressData(premiumUser);
-
-            //var tasks = new List<Task>() { randomQuoteTask, progressDataTask };
-            //await Task.WhenAll(tasks);
-
-            //var randomQuote = await randomQuoteTask;
-            //var list = await progressDataTask;
 
             if (list.Count != 0)
             {
@@ -133,6 +128,7 @@ namespace MyNutritionist.Controllers
                 ViewBag.BurnedCaloriesProgressData = list[1];
             }
 
+            // Set ViewBag properties for displaying a quote
             ViewBag.RandomQuote = randomQuote;
 
 			// Returns the view associated with the PremiumUser passing the PremiumUser object
@@ -396,31 +392,6 @@ namespace MyNutritionist.Controllers
             // Return the view with the updated leaderboard data
             return View(leaderboard);
         }
-
-        /*public async Task<NutritionTipsAndQuotes> GetQuote()
-        {
-			
-			// Retrieve a random quote from the NutritionTipsAndQuotes table
-			var randomQuote = await _context.NutritionTipsAndQuotes
-				.OrderBy(x => Guid.NewGuid()) // Randomize the order
-				.FirstOrDefaultAsync();
-
-
-			ViewBag.RandomQuote = randomQuote;
-			
-            if(randomQuote!= null)
-            {
-				return randomQuote;
-			}
-            else
-            {
-                return new NutritionTipsAndQuotes
-                {
-                    QuoteText = ""
-                };
-            }
-			
-		}*/
 
     }
 
