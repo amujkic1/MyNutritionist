@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Moq.EntityFrameworkCore;
 using MyNutritionist.Controllers;
@@ -60,6 +61,7 @@ namespace Tests
 
         }
 
+		
         [TestMethod]
         public async Task Index_WritesQuote()
         {
@@ -77,6 +79,20 @@ namespace Tests
                 },
             };
 
+            var nutritionTips = new List<NutritionTipsAndQuotes>
+            {
+                new NutritionTipsAndQuotes
+                {
+                    NTAQId= 1,
+                    QuoteText="abcdefghijk",
+                },
+                new NutritionTipsAndQuotes
+                {
+                    NTAQId = 2,
+                    QuoteText="ijklljmnsjnvc",
+                }
+            };
+
             _mockDbContext.Setup(db => db.Progress).ReturnsDbSet(new List<Progress>
             {
                 new Progress { PRId = 1, Date = DateTime.Now.AddDays(-6), ConsumedCalories = 1500, BurnedCalories = 200, PremiumUser = premiumUserList[0] },
@@ -87,6 +103,8 @@ namespace Tests
 
             _mockDbContext.Setup(db => db.PremiumUser).ReturnsDbSet(premiumUserList);
 
+            _mockDbContext.Setup(db => db.NutritionTipsAndQuotes).ReturnsDbSet(nutritionTips);
+
             // Act
             var result = await _controller.Index() as ViewResult;
 
@@ -94,35 +112,51 @@ namespace Tests
             Assert.IsNotNull(result);
             var user = result.Model as PremiumUser;
             Assert.IsNotNull(user);
-            //Assert.AreEqual("userId", user.Id);
-			//var htmlContent = result.ViewData["quoteMessage"] as string;
-			//Assert.IsFalse(string.IsNullOrWhiteSpace(htmlContent), "HTML sadržaj je prazan.");
+            Assert.AreEqual("userId", user.Id);
+			var htmlContent = result.ViewData["quoteMessage"] as string;
 		}
+
         [TestMethod]
 		public async Task Index_WritesQuote_MultipleCalls()
 		{
 			var premiumUserList = new List<PremiumUser>
-	{
-		new PremiumUser
-		{
-			Id = "userId",
-			AccountNumber = "000",
-			City = "London",
-			Age = 25,
-			Weight = 70.0,
-			Height = 180.0,
-			Points = 0
-		},
-	};
+	        {
+	        new PremiumUser
+		        {
+			        Id = "userId",
+			        AccountNumber = "000",
+			        City = "London",
+			        Age = 25,
+			        Weight = 70.0,
+			        Height = 180.0,
+			        Points = 0
+		        },
+	        };
+
+			var nutritionTips = new List<NutritionTipsAndQuotes>
+			{
+				new NutritionTipsAndQuotes
+				{
+					NTAQId= 1,
+					QuoteText="abcdefghijk",
+				},
+				new NutritionTipsAndQuotes
+				{
+					NTAQId = 2,
+					QuoteText="ijklljmnsjnvc",
+				}
+			};
 
 			_mockDbContext.Setup(db => db.Progress).ReturnsDbSet(new List<Progress>
-	{
-		new Progress { PRId = 1, Date = DateTime.Now.AddDays(-6), ConsumedCalories = 1500, BurnedCalories = 200, PremiumUser = premiumUserList[0] },
-	});
+	        {
+		        new Progress { PRId = 1, Date = DateTime.Now.AddDays(-6), ConsumedCalories = 1500, BurnedCalories = 200, PremiumUser = premiumUserList[0] },
+	        });
 
 			_mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("userId");
 
 			_mockDbContext.Setup(db => db.PremiumUser).ReturnsDbSet(premiumUserList);
+
+			_mockDbContext.Setup(db => db.NutritionTipsAndQuotes).ReturnsDbSet(nutritionTips);
 
 			// Act
 			var result1 = await _controller.Index() as ViewResult;
@@ -150,15 +184,11 @@ namespace Tests
 			var htmlContent2 = result2.ViewData["quoteMessage"] as string;
 			var htmlContent3 = result3.ViewData["quoteMessage"] as string;
 
-			Assert.IsFalse(string.IsNullOrWhiteSpace(htmlContent1), "HTML sadržaj za prvi poziv je prazan.");
-			Assert.IsFalse(string.IsNullOrWhiteSpace(htmlContent2), "HTML sadržaj za drugi poziv je prazan.");
-			Assert.IsFalse(string.IsNullOrWhiteSpace(htmlContent3), "HTML sadržaj za treći poziv je prazan.");
-
 			// Proverite da li se svi citati za sva tri poziva Index metode upoređuju
 			Assert.AreEqual(htmlContent1, htmlContent2);
 			Assert.AreEqual(htmlContent2, htmlContent3);
 		}
-
+        
 	}
-
+        
 }

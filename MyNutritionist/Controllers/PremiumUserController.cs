@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using MyNutritionist.Data;
 using MyNutritionist.Models;
 using System.Globalization;
@@ -17,6 +19,7 @@ namespace MyNutritionist.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+		//private readonly IServiceScopeFactory _serviceScopeFactory;
 		//private readonly QuoteController _quoteController;
 
 		// Constructor to initialize the PremiumUserController with required dependencies
@@ -27,8 +30,9 @@ namespace MyNutritionist.Controllers
             _httpContextAccessor = httpContextAccessor;  
             _userManager = userManager;
             _signInManager = signInManager;
-            //_quoteController = quoteController;
-        }
+			//_serviceScopeFactory = serviceScopeFactory;
+			//_quoteController = quoteController;
+		}
 
 
         async Task<List<List<object>>> SetProgressData(PremiumUser premiumUser)
@@ -92,11 +96,12 @@ namespace MyNutritionist.Controllers
         }
 
 
-        // Action method for the PremiumUser's index page
-        public async Task<IActionResult> Index()
-        {
-            // Retrieves the current user's ID from the HttpContext User using UserManager
-            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+		// Action method for the PremiumUser's index page
+		public async Task<IActionResult> Index()
+		{
+
+			// Retrieves the current user's ID from the HttpContext User using UserManager
+			var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
 
             // Retrieves the PremiumUser associated with the user ID from the database
             var premiumUser = await _context.PremiumUser.FirstOrDefaultAsync(p => p.Id == userId);
@@ -109,10 +114,17 @@ namespace MyNutritionist.Controllers
 
             var _quoteController = new QuoteController(_context);
 
+          //  var randomQuoteTask = _quoteController.GetQuote();
+            //var progressDataTask = SetProgressData(premiumUser);
             var randomQuote = await _quoteController.GetQuote();
             // Call SetProgressData method to retrieve progress data for the user
             var list = await SetProgressData(premiumUser);
 
+            //var tasks = new List<Task>() { randomQuoteTask, progressDataTask };
+            //await Task.WhenAll(tasks);
+
+            //var randomQuote = await randomQuoteTask;
+            //var list = await progressDataTask;
 
             if (list.Count != 0)
             {
@@ -127,8 +139,8 @@ namespace MyNutritionist.Controllers
 			return View(premiumUser);
         }
 
-        // Method to calculate progress percentage based on a value and an average value
-        private double CalculateProgressPercentage(double value, double averageValue)
+		// Method to calculate progress percentage based on a value and an average value
+		private double CalculateProgressPercentage(double value, double averageValue)
         {
             // Calculate the progress percentage using the provided values
             double progress = value / averageValue * 100;
