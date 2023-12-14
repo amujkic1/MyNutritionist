@@ -107,19 +107,29 @@ namespace MyNutritionist.Controllers
             // Retrieve the registered user information based on the user ID
             var registeredUser = await _context.RegisteredUser.FirstOrDefaultAsync(p => p.Id == userId);
 
-            if (registeredUser == null)
+			// Checks if the PremiumUser is not found
+			if (registeredUser == null)
             {
                 return NotFound();
             }
 
-            // Call SetProgressData to retrieve progress data for the user
-            var list = await SetProgressData(registeredUser);
+			// Creates an instance of controller associated with retreiving a quote
+			var _quoteController = new QuoteController(_context);
+
+			// Calls function for retreiving a random quote from database
+			var randomQuote = await _quoteController.GetQuote();
+
+			// Call SetProgressData to retrieve progress data for the user
+			var list = await SetProgressData(registeredUser);
 
             // Set ViewBag properties for the consumed and burned calories progress data
             ViewBag.ConsumedCaloriesProgressData = list[0];
             ViewBag.BurnedCaloriesProgressData = list[1];
 
-            return View(registeredUser);
+			// Set ViewBag properties for displaying a quote
+			ViewBag.RandomQuote = randomQuote;
+
+			return View(registeredUser);
         }
 
         // Method to calculate progress percentage based on actual and average values

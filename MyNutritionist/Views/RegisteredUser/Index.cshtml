@@ -194,6 +194,18 @@
 		}
         </div>
     </div>
+	<div class="quotes">
+		@if (ViewBag.RandomQuote != null)
+		{
+			<p><em>@ViewBag.RandomQuote.QuoteText</em></p>
+		}
+		else
+		{
+			<p><em>No quote available</em></p>
+		}
+	</div>
+
+
 
 
 
