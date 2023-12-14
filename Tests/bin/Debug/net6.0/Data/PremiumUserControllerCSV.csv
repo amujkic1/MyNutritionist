@@ -1,6 +1,0 @@
-﻿Id,City,Age,Weight,Height,Name,Email,NutriUsername,NutriPassword
-1,London,25,80,180,John,user1@example.com,user1,User1123!
-2,Paris,55,75,182,Mary,user2@example.com,user2,User2123!
-3,Amsterdam,28,90,170,Steve,user3@example.com,user3,User3123!
-4,Rome,32,60,170,Andy,user4@example.com,user4,User4123!
-5,Berlin,18,80,168,Kate,user5@example.com,user5,User5123!
