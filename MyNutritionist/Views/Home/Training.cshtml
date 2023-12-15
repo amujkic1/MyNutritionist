@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Training>
+
+@{
+    ViewData["Title"] = "Trainings";
+}
+
+<h1>Trainings</h1>
+
+<div class="row">
+    @foreach (var activity in Model)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <img src="@activity.image" class="card-img-top" alt="Activity Image" style="width: auto; height: 200px;">
+                <div class="card-body">
+                    <h5 class="card-title">@activity.nameOfTraining</h5>
+                    <p class="card-text">Duration: @activity.duration</p>
+                    <a href="@activity.link" class="btn btn-primary d-flex justify-content-center" target="_blank">Details</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

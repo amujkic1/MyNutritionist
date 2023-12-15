@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage;
+using MyNutritionist.Data;
+using MyNutritionist.Migrations;
 using MyNutritionist.Models;
 using System.Diagnostics;
 
@@ -11,15 +14,17 @@ namespace MyNutritionist.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
         /*
          * Konstruktor HomeController klase.
          *
          * @param logger: Logger za snimanje poruka o događajima.
          */
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         /*
@@ -51,6 +56,12 @@ namespace MyNutritionist.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public async Task<IActionResult> Training()
+        {
+            var trainings = _context.Training.ToList();
+            return View(trainings);
         }
     }
 }

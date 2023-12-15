@@ -857,15 +857,31 @@ namespace Tests
             {
                 new RegisteredUser { Id = "userId"},
              };
-            
 
-            _mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+			var nutritionTips = new List<NutritionTipsAndQuotes>
+			{
+				new NutritionTipsAndQuotes
+				{
+					NTAQId= 1,
+					QuoteText="abcdefghijk",
+				},
+				new NutritionTipsAndQuotes
+				{
+					NTAQId = 2,
+					QuoteText="ijklljmnsjnvc",
+				}
+			};
+
+
+			_mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
 
             _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
             _mockDbContext.Setup(c => c.Progress).ReturnsDbSet(new List<Progress>());
 
-            // Act
-            var result = await _controller.Index();
+			_mockDbContext.Setup(db => db.NutritionTipsAndQuotes).ReturnsDbSet(nutritionTips);
+
+			// Act
+			var result = await _controller.Index();
 
             // Assert
             if (result is ViewResult viewResult)
