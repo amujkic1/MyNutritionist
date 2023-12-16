@@ -37,7 +37,7 @@ namespace MyNutritionist.Controllers
         }
 
         // Async method to set progress data for a registered user
-        private async Task<List<List<object>>> SetProgressData(RegisteredUser registeredUser)
+        public async Task<List<List<object>>> SetProgressData(RegisteredUser registeredUser)
         {
 
             // Current date information
