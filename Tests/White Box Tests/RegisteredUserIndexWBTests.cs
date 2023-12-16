@@ -108,7 +108,81 @@ namespace Tests.White_Box_Tests
 			// Check if lists of consumed and burnt calories are both filled with data
 			Assert.AreEqual(2, result.Count);
 
-		} 
+		}
+
+		[TestMethod]
+		public async Task Index_ReturnsViewResult_WithCorrectModelAndProgressData()
+		{
+			// Arrange
+			var userId = "userId";
+			var registeredUserList = new List<RegisteredUser>
+			{
+				new RegisteredUser { Id = "userId"},
+			 };
+
+			var nutritionTips = new List<NutritionTipsAndQuotes>
+			{
+				new NutritionTipsAndQuotes
+				{
+					NTAQId= 1,
+					QuoteText="abcdefghijk",
+				},
+				new NutritionTipsAndQuotes
+				{
+					NTAQId = 2,
+					QuoteText="ijklljmnsjnvc",
+				}
+			};
+
+
+			_mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+			_mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
+			_mockDbContext.Setup(c => c.Progress).ReturnsDbSet(new List<Progress>());
+
+			_mockDbContext.Setup(db => db.NutritionTipsAndQuotes).ReturnsDbSet(nutritionTips);
+
+			// Act
+			var result = await _controller.Index();
+
+			// Assert
+			if (result is ViewResult viewResult)
+			{
+				var consumedCaloriesProgressData = viewResult.ViewData["ConsumedCaloriesProgressData"];
+				var burnedCaloriesProgressData = viewResult.ViewData["BurnedCaloriesProgressData"];
+
+				Assert.IsNotNull(consumedCaloriesProgressData);
+				Assert.IsNotNull(burnedCaloriesProgressData);
+			}
+			else
+			{
+				Assert.Fail("Unexpected result type");
+			}
+		}
+
+		[TestMethod]
+		public async Task Index_ReturnsNotFoundWhenRegisteredUserIsNull()
+		{
+			// Arrange
+			var userId = "userId";
+			var registeredUserList = new List<RegisteredUser>
+			{
+				new RegisteredUser { Id = "userId1"},
+			 };
+
+
+			_mockDbContext.Setup(db => db.RegisteredUser).ReturnsDbSet(registeredUserList);
+
+			_mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
+			_mockDbContext.Setup(c => c.Progress).ReturnsDbSet(new List<Progress>());
+
+			// Act
+			var result = await _controller.Index();
+
+			// Assert
+			Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+
+		}
 
 	}
 }
