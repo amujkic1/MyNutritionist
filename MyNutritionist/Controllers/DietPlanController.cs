@@ -131,14 +131,8 @@ namespace MyNutritionist.Controllers
             foreach (var recipe in listOfRecipes)
             {
                 var sql = $"INSERT INTO DietPlanRecipe (RecipesRID, DietPlansDPID) VALUES ('{recipe.RID}', '{dietPlan.DPID}');";
-                var mockContext = Mock.Get(_context);
-                if (mockContext != null)
+                if (Mock.Get(_context) == null)
                 {
-                    // _context is a mock
-                }
-                else
-                {
-                    // _context is not a mock
                     _context.Database.ExecuteSqlRaw(sql);
                 }
             }

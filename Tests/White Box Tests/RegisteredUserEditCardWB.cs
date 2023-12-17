@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace Tests.White_Box_Tests
 {
     [TestClass]
-    public class RegisteredUserWB
+    public class RegisteredUserEditCardWB
     {
         private ApplicationDbContext _context;
         private RegisteredUserController _controller;
