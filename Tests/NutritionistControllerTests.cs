@@ -386,7 +386,7 @@ namespace MyNutritionist.Controllers.Tests
             var userModel = (Nutritionist)viewResult.Model; // Get the model data
             Assert.AreEqual(userId, userModel.Id);
 
-            var sortedList = premiumUsers.OrderBy(x => x.Points).ToList();
+            var sortedList = premiumUsers.OrderByDescending(x => x.Points).ToList();
             CollectionAssert.AreEqual(sortedList, userModel.PremiumUsers as ICollection, "List is not sorted");
         }
 

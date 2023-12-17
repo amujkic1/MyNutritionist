@@ -109,7 +109,7 @@ namespace MyNutritionist.Controllers
             {
                 return NotFound();
             }
-            user.SortUsers(new SortByNames());
+            user.SortUsers(new SortByNames(), (x, y) => string.Compare(x.FullName, y.FullName, StringComparison.OrdinalIgnoreCase));
             return View("Index", user);
         }
 
@@ -125,7 +125,7 @@ namespace MyNutritionist.Controllers
             {
                 return NotFound();
             }
-            user.SortUsers(new SortByPoints());
+            user.SortUsers(new SortByPoints(), (x, y) => y.Points - x.Points);
             return View("Index", user);
         }
     }
