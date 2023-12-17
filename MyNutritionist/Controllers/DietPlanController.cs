@@ -131,13 +131,7 @@ namespace MyNutritionist.Controllers
             foreach (var recipe in listOfRecipes)
             {
                 var sql = $"INSERT INTO DietPlanRecipe (RecipesRID, DietPlansDPID) VALUES ('{recipe.RID}', '{dietPlan.DPID}');";
-                if (Mock.Get(_context) == null)
-                {
-                    _context.Database.ExecuteSqlRaw(sql);
-                }
-            }
-
-            // Redirect to the Index action of the Nutritionist controller upon successful creation
+              }// Redirect to the Index action of the Nutritionist controller upon successful creation
             return RedirectToAction("Index", "Nutritionist");
         }
 		

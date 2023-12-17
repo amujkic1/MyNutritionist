@@ -381,62 +381,24 @@ namespace Tests.White_Box_Tests
 			Assert.AreEqual("Index", redirectResult.ActionName);
 			Assert.AreEqual("Nutritionist", redirectResult.ControllerName);
 		}
-		/*	[TestMethod]
-			public async Task CreateAction_ContextIsNotMock_ReturnsNotFound()
-			{
-				var nutritionist = new ApplicationUser { Id = "1" };
+		[TestMethod]
+		public async Task Create_WhenNutritionistNotLoggedIn_ReturnsNotFound()
+		{
 
-				DietPlan dp = new DietPlan { DPID = 8, Recipes = new List<Recipe> { new Recipe { RID = 1 } } };
+			_mockUserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync((ApplicationUser)null);
 
-				var dietPlanVm = new EditDietPlanVM
-				{
-					DietPlan = dp,
-				};
-				var premiumUserList = new List<PremiumUser>
-				{
-					new PremiumUser
-					{
-						Id = "userId",
-						AccountNumber = "000",
-						City = "London",
-						Age = 25,
-						Weight = 70.0,
-						Height = 180.0,
-						Points = 0
-					},
-					new PremiumUser
-					{
-						Id = "userId1",
-						AccountNumber = "000",
-						City = "London",
-						Age = 25,
-						Weight = 70.0,
-						Height = 180.0,
-						Points = 0
-					},
-					new PremiumUser
-					{
-						Id = "userId2",
-						AccountNumber = "000",
-						City = "London",
-						Age = 25,
-						Weight = 70.0,
-						Height = 180.0,
-						Points = 0
-					},
-				};
+			_mockDbContext.Setup(x => x.Nutritionist).ReturnsDbSet(new List<Nutritionist>());
 
 
-				// Act
-				var result = await _controller.Create(premiumUserList[0].Id, dietPlanVm);
+			// Arrange
+			var dietPlanVm = new EditDietPlanVM { DietPlan = new DietPlan() };
 
+			// Act
+			var result = await _controller.Create("userId", dietPlanVm);
 
-				// Assert
-				Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-				var redirectResult = (RedirectToActionResult)result;
-				Assert.AreEqual("Index", redirectResult.ActionName);
-				Assert.AreEqual("Nutritionist", redirectResult.ControllerName);
-			}*/
+			// Assert
+			Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+		}
 		[TestMethod]
 		public async Task CreateAction_WithExistingDietPlans_DeletesOldDietPlans()
 		{
@@ -485,7 +447,65 @@ namespace Tests.White_Box_Tests
 			Assert.AreEqual(0, deletedDietPlans.Count, "Old diet plans should be deleted.");
 		}
 
+	
+		[TestMethod]
+		public async Task CreateAction_WhenDeletePlansIsNullButHasPlans_DoesNotRemoveAnyDietPlan()
+		{
+			// Arrange
+			var nutritionist = new ApplicationUser { Id = "1" };
+			var dietPlanVm = new EditDietPlanVM { DietPlan = new DietPlan() };
+
+			_mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("1");
+			_mockDbContext.Setup(db => db.Nutritionist).ReturnsDbSet(new List<Nutritionist> { new Nutritionist { Id = "1", AspUserId = "1" } });
+			_mockDbContext.Setup(db => db.DietPlan).ReturnsDbSet(new List<DietPlan>());
+			_mockDbContext.Setup(db => db.Recipe).ReturnsDbSet(new List<Recipe>());
+			_mockDbContext.Setup(db => db.PremiumUser).ReturnsDbSet(new List<PremiumUser>());
+
+			// Act
+			var result = await _controller.Create("userId", dietPlanVm);
+
+			// Assert
+			Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+			var redirectResult = (RedirectToActionResult)result;
+			Assert.AreEqual("Index", redirectResult.ActionName);
+			Assert.AreEqual("Nutritionist", redirectResult.ControllerName);
+
+			// Provera da li se nisu brisali stari planovi ishrane
+			var deletedDietPlans = _context.DietPlan.ToList();
+			Assert.AreEqual(0, deletedDietPlans.Count, "No diet plans should be deleted.");
+		}
+
+		[TestMethod]
+		public async Task CreateAction_WhenDeletePlansIsNotNullButHasNoPlans_DoesNotRemoveAnyDietPlan()
+		{
+			// Arrange
+			var nutritionist = new ApplicationUser { Id = "1" };
+			var dietPlanVm = new EditDietPlanVM { DietPlan = new DietPlan() };
+
+			_mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("1");
+			_mockDbContext.Setup(db => db.Nutritionist).ReturnsDbSet(new List<Nutritionist> { new Nutritionist { Id = "1", AspUserId = "1" } });
+			_mockDbContext.Setup(db => db.DietPlan).ReturnsDbSet(new List<DietPlan>());
+			_mockDbContext.Setup(db => db.Recipe).ReturnsDbSet(new List<Recipe>());
+			_mockDbContext.Setup(db => db.PremiumUser).ReturnsDbSet(new List<PremiumUser>());
+
+			// Create deletePlans with count = 0
+			var deletePlans = new List<DietPlan>();
+
+			// Act
+			var result = await _controller.Create("userId", dietPlanVm);
+
+			// Assert
+			Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+			var redirectResult = (RedirectToActionResult)result;
+			Assert.AreEqual("Index", redirectResult.ActionName);
+			Assert.AreEqual("Nutritionist", redirectResult.ControllerName);
+
+			// Provera da li se nisu brisali stari planovi ishrane
+			var deletedDietPlans = _context.DietPlan.ToList();
+			Assert.AreEqual(0, deletedDietPlans.Count, "No diet plans should be deleted.");
+		}
 
 	}
 }
+
 
