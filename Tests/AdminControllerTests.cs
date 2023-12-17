@@ -72,26 +72,36 @@ namespace Tests
         {
             // Arrange
 
-            var user = new Admin { Id = "1" };
-            _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(user);
+            var premiumuser1 = new PremiumUser();
+            var premiumuser2 = new PremiumUser();
+            var premiumuser3 = new PremiumUser();
 
-            var premiumUsers = new List<PremiumUser>
+            var nutritionists = new List<Nutritionist>
             {
-                new PremiumUser { UserName = "user1" },
-                new PremiumUser { UserName = "user2" }
+                new Nutritionist { PremiumUsers = new List<PremiumUser> { premiumuser1 } },
+                new Nutritionist { PremiumUsers = new List<PremiumUser>() }
             };
 
-            _mockDbContext.Setup(x => x.PremiumUser).ReturnsDbSet((IEnumerable<PremiumUser>)premiumUsers);
+            var premiumUsersWithoutNutritionist = new List<PremiumUser>
+            {
+                premiumuser1,
+                premiumuser2,
+                premiumuser3
+            };
+
+            _mockDbContext.Setup(c => c.Nutritionist)
+                .ReturnsDbSet(nutritionists);
+
+            _mockDbContext.Setup(c => c.PremiumUser)
+            .ReturnsDbSet(premiumUsersWithoutNutritionist);
 
             // Act
             var result = await _controller.Index();
-
-            //Assert
             var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
+
             Assert.IsInstanceOfType(viewResult.Model, typeof(List<PremiumUser>));
             var model = viewResult.Model as List<PremiumUser>;
-            Assert.AreEqual(premiumUsers.Count, model.Count);
+            Assert.AreEqual(2, model.Count);
         }
 
         [TestMethod]
@@ -199,7 +209,30 @@ namespace Tests
 
         }
 
-        
+        [TestMethod]
+        public async Task UpgradeToPremium_NutritionistNull_ReturnsNotFound()
+        {
+            var nutriUsername = "nutritionistUser";
+            var premiumUsername = "user1";
+            var nutritionistList = new List<Nutritionist>{ };
+
+            var premiumList = new List<PremiumUser>
+            {
+                new PremiumUser {UserName = premiumUsername}
+            };
+
+            _mockDbContext.Setup(db => db.Nutritionist).ReturnsDbSet(nutritionistList);
+
+            _mockDbContext.Setup(db => db.PremiumUser).ReturnsDbSet(premiumList);
+
+            // Act
+            var result = await _controller.UpgradeToPremium(nutriUsername, premiumUsername);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+
+        }
+
 
     }
 }
