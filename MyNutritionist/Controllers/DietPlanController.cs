@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Authorization;
@@ -69,9 +70,8 @@ namespace MyNutritionist.Controllers
                 Recipes = _context.Recipe.ToList()
             };
             dietPlan.DietPlan.PremiumUser.Id = RegUser;
-
-            return View(dietPlan);
-        }
+			return View("dietPlan", dietPlan);
+		}
 
         // POST action to create a new diet plan
         // To protect from overposting attacks, only specific properties are bound
@@ -79,7 +79,9 @@ namespace MyNutritionist.Controllers
         [Authorize(Roles = "Nutritionist")] // Access restricted to users in the "Nutritionist" role
         [ValidateAntiForgeryToken] // Helps prevent cross-site request forgery attacks
         public async Task<IActionResult> Create(string RegUser, [Bind("DietPlan")] EditDietPlanVM dietPlanvm)
+
         {
+
             // Extract the diet plan from the view model
             var dietPlan = dietPlanvm.DietPlan;
 
@@ -89,12 +91,14 @@ namespace MyNutritionist.Controllers
             // Check if each recipe in the diet plan exists
             for (var i = 0; i < dietPlan.Recipes.Count; i++)
             {
-                // Retrieve each recipe from the context by its ID
-                dietPlan.Recipes[i] = await _context.Recipe.FirstOrDefaultAsync(r => r.RID == dietPlan.Recipes[i].RID);
+				// If a recipe is not found, return a "Not Found" response
+				if (dietPlan.Recipes[i] == null)
+					return NotFound();
 
-                // If a recipe is not found, return a "Not Found" response
-                if (dietPlan.Recipes[i] == null)
-                    return NotFound();
+				// Retrieve each recipe from the context by its ID
+				dietPlan.Recipes[i] = await _context.Recipe.FirstOrDefaultAsync(r => r.RID == dietPlan.Recipes[i].RID);
+
+			
             }
 
             // Store the list of recipes temporarily and reset the diet plan's recipes list
@@ -103,13 +107,10 @@ namespace MyNutritionist.Controllers
 
             // Get the currently logged-in nutritionist
             var usrId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
-            var loggedInNutritionist = await _context.Nutritionist.FirstOrDefaultAsync(m => m.Id.Equals(usrId));
-
-            // If the logged-in nutritionist is not found, return a "Not Found" response
-            if (loggedInNutritionist == null)
+			var loggedInNutritionist = await _context.Nutritionist.FirstOrDefaultAsync(m => m.Id.Equals(usrId));
+			// If the logged-in nutritionist is not found, return a "Not Found" response
+			if (loggedInNutritionist == null)
                 return NotFound();
-
-
 
             // Associate the diet plan with the specified premium user
             dietPlan.PremiumUser = await _context.PremiumUser.FirstOrDefaultAsync(m => m.Id.Equals(RegUser));
@@ -145,7 +146,9 @@ namespace MyNutritionist.Controllers
             // Redirect to the Index action of the Nutritionist controller upon successful creation
             return RedirectToAction("Index", "Nutritionist");
         }
+		
 
 
-    }
+
+	}
 }
