@@ -97,7 +97,7 @@ namespace Tests.White_Box_Tests
         }
 
         [TestMethod]
-        public async Task EditCardHttp_WhenBalanceIsLessThan50_Redirect()
+        public async Task EditCard_WhenBalanceIsLessThan50_Redirect()
         {
             var registeredUserList = new List<RegisteredUser>
             {
