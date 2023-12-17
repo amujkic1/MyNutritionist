@@ -8,6 +8,61 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\agentinfo.json" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\extension.xsd" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Core.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Parsing.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Storage.AsyncLocal.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.AspNetCore.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.AspNetCore.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.AspNetCore6Plus.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.AspNetCore6Plus.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.CosmosDb.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.CosmosDb.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Elasticsearch.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Elasticsearch.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.HttpClient.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.HttpClient.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Kafka.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Kafka.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Log4NetLogging.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Log4NetLogging.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.MassTransit.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.MassTransit.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.MassTransitLegacy.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.MassTransitLegacy.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.MicrosoftExtensionsLogging.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.MicrosoftExtensionsLogging.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Misc.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.MongoDb26.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.MongoDb26.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.NLogLogging.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.NLogLogging.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.NServiceBus.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.NServiceBus.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.RabbitMq.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.RabbitMq.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.SerilogLogging.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.SerilogLogging.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Sql.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.Sql.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.StackExchangeRedis.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.StackExchangeRedis.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.StackExchangeRedis2Plus.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\extensions\NewRelic.Providers.Wrapper.StackExchangeRedis2Plus.Instrumentation.xml" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\libNewRelicProfiler.so" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\LICENSE.txt" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\linux-arm64\libNewRelicProfiler.so" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\logs\placeholder" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\NewRelic.Agent.Core.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\NewRelic.Agent.Extensions.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\NewRelic.Api.Agent.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\newrelic.config" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\NewRelic.Profiler.dll" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\newrelic.xsd" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\README.md" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\THIRD_PARTY_NOTICES.txt" />
+    <None Remove="C:\Users\LENOVO\.nuget\packages\newrelic.agent\10.20.1\contentFiles\any\netstandard2.0\newrelic\x86\NewRelic.Profiler.dll" />
     <None Remove="Views\Home\home.PNG" />
   </ItemGroup>
 
