@@ -80,21 +80,26 @@ namespace Tests.White_Box_Tests
 
 				return new[]
 				{
-					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-6), ConsumedCalories = 1500, BurnedCalories = 200, RegisteredUser = registeredUser } },
-					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-5), ConsumedCalories = 1500, BurnedCalories = 200, RegisteredUser = registeredUser } },
-					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-4), ConsumedCalories = 1500, BurnedCalories = 200, RegisteredUser = registeredUser } },
-					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-3), ConsumedCalories = 1500, BurnedCalories = 200, RegisteredUser = registeredUser } },
-					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-2), ConsumedCalories = 1500, BurnedCalories = 200, RegisteredUser = registeredUser } },
-					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-2), ConsumedCalories = 1500, BurnedCalories = 200, RegisteredUser = registeredUser } },
-					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-1), ConsumedCalories = 1500, BurnedCalories = 200, RegisteredUser = registeredUser } },
-					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(0), ConsumedCalories = 1500, BurnedCalories = 200, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-6), ConsumedCalories = 1500, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-5), BurnedCalories = -200, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-5), RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-5), ConsumedCalories = 1500, BurnedCalories = 400, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-5), ConsumedCalories = 1500, BurnedCalories = -200, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-4), ConsumedCalories = 1500, BurnedCalories = 50, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-3), ConsumedCalories = -500, BurnedCalories = 200, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-2), ConsumedCalories = -500, BurnedCalories = -50, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-2), ConsumedCalories = -500, BurnedCalories = 50, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(-1), ConsumedCalories = 50, BurnedCalories = 200, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(0), ConsumedCalories = 50, BurnedCalories = -50, RegisteredUser = registeredUser } },
+					new object[] { nutritionTips, registeredUser, new Progress { Date = DateTime.Now.Date.AddDays(0), ConsumedCalories = 50, BurnedCalories = 50, RegisteredUser = registeredUser } },
 				};
 			}
 		}
 
 		[TestMethod]
 		[DynamicData("ProgressData")]
-		public async Task Index_ReturnsViewResultForDifferentValuesOfProgress_WithCorrectModelAndProgressData(List<NutritionTipsAndQuotes> nutritionTips, RegisteredUser registeredUser, Progress progressData)
+		public async Task Index_ReturnsViewResultForDifferentValuesOfProgress_WithCorrectModelAndProgressData(List<NutritionTipsAndQuotes> nutritionTips, 
+			RegisteredUser registeredUser, Progress progressData)
 		{
 
 			_mockDbContext.Setup(c => c.Progress).ReturnsDbSet(new List<Progress>());
