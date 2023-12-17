@@ -34,7 +34,7 @@ namespace Tests
 
         public static IEnumerable<object[]> ReadCSV()
         {
-            using (var reader = new StreamReader("../../../Data/DietPlanControllerCSV.csv"))
+            using (var reader = new StreamReader("Data/DietPlanControllerCSV.csv"))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 var rows = csv.GetRecords<dynamic>();
@@ -58,7 +58,7 @@ namespace Tests
         public static IEnumerable<object[]> ReadXML()
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load("../../../Data/DietPlanControllerXML.xml");
+            doc.Load("Data/DietPlanControllerXML.xml");
 
             XmlNodeList premiumUserNodes = doc.SelectNodes("//PremiumUser");
             if (premiumUserNodes != null)
