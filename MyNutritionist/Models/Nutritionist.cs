@@ -12,9 +12,9 @@ namespace MyNutritionist.Models
         public ICollection<PremiumUser> PremiumUsers { get; set; } = new List<PremiumUser>();
         public Nutritionist(): base() {
         }
-        public void SortUsers(ISort strategy)
+        public void SortUsers(ISort strategy, Func<PremiumUser, PremiumUser, int> comparison)
         {
-            PremiumUsers = strategy.Sort(PremiumUsers.ToList());
+            PremiumUsers = strategy.Sort(PremiumUsers.ToList(), comparison);
         }
     }
 }

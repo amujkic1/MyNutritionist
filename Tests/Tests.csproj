@@ -55,6 +55,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Data\DietPlanControllerCSV.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\DietPlanControllerXML.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Data\PremiumUserControllerCSV.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

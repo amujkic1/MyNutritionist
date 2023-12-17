@@ -35,11 +35,34 @@ namespace MyNutritionist.Controllers
         public async Task<IActionResult> Index()
         {
             // Retrieve premium users from the database
-            var premiumUsers = _context.PremiumUser.ToList();
+            var premiumUsers = new List<PremiumUser>(); // Create a list to hold premium users
 
-            // Pass premium users to the view
-            return View(premiumUsers);
+            // Retrieve all nutritionists and their associated premium users
+            var nutritionists = _context.Nutritionist.Include(n => n.PremiumUsers).ToList();
+
+            // Loop through each nutritionist
+            for (int i = 0; i < nutritionists.Count; i++)
+            {
+                // Check if the current nutritionist has associated premium users
+                if (nutritionists[i].PremiumUsers != null)
+                {
+                    // Add the premium users associated with this nutritionist to the premiumUsers list
+                    premiumUsers.AddRange(nutritionists[i].PremiumUsers);
+                }
+            }
+
+            // Retrieve all premium users from the database
+            var premiumUsersWithoutNutritionist = _context.PremiumUser.ToList();
+
+            // Filter out premium users that are associated with nutritionists
+            premiumUsersWithoutNutritionist = premiumUsersWithoutNutritionist
+                .Where(x => !premiumUsers.Contains(x))
+                .ToList();
+
+            // Pass the filtered premium users to the view
+            return View(premiumUsersWithoutNutritionist);
         }
+
 
         // GET: AssignNutritionist action
         [HttpGet]
