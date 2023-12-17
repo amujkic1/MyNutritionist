@@ -87,7 +87,6 @@ namespace Tests.White_Box_Tests
 			{
 				new Recipe { RID = 1, NameOfRecipe = "Recipe 1" },
 				new Recipe { RID = 2, NameOfRecipe = "Recipe 2" },
-                // Dodajte dodatne recepte prema potrebi
             }.AsQueryable();
 
 			_mockDbContext.Setup(c => c.Recipe).Returns((DbSet<Recipe>)MockDbSet(mockRecipes));
@@ -97,15 +96,15 @@ namespace Tests.White_Box_Tests
 
 			// Assert
 
-			// Proveravamo da li akcija vraća ViewResult
+			// Provjeravamo da li akcija vraća ViewResult
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(ViewResult));
 
-			// Proveravamo da li akcija koristi ispravan View
+			// Provjeravamo da li akcija koristi ispravan View
 			Assert.AreEqual("dietPlan", result?.ViewName);
 
 
-			// Proveravamo da li ViewModel ima pravilno postavljene vrijednosti
+			// Provjeravamo da li ViewModel ima pravilno postavljene vrijednosti
 			var model = result.Model as EditDietPlanVM;
 			Assert.IsNotNull(model);
 			Assert.IsNotNull(model.DietPlan);
@@ -135,7 +134,6 @@ namespace Tests.White_Box_Tests
 	{
 		new Recipe { RID = 1, NameOfRecipe = "Recipe 1" },
 		new Recipe { RID = 2, NameOfRecipe = "Recipe 2" },
-        // Dodajte dodatne recepte prema potrebi
     }.AsQueryable();
 
 			_mockDbContext.Setup(c => c.Recipe).Returns((DbSet<Recipe>)MockDbSet(mockRecipes));
@@ -145,14 +143,14 @@ namespace Tests.White_Box_Tests
 
 			// Assert
 
-			// Proveravamo da li akcija vraća ViewResult
+			// Provjeravamo da li akcija vraća ViewResult
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(ViewResult));
 
-			// Proveravamo da li akcija koristi ispravan View
+			// Provjeravamo da li akcija koristi ispravan View
 			Assert.AreEqual("dietPlan", result?.ViewName);
 
-			// Proveravamo da li ViewModel ima pravilno postavljene vrednosti
+			// Provjeravamo da li ViewModel ima pravilno postavljene vrednosti
 			var model = result.Model as EditDietPlanVM;
 			Assert.IsNotNull(model);
 			Assert.IsNotNull(model.DietPlan);
@@ -176,14 +174,14 @@ namespace Tests.White_Box_Tests
 
 			// Assert
 
-			// Proveravamo da li akcija vraća ViewResult
+			// Provjeravamo da li akcija vraća ViewResult
 			Assert.IsNotNull(result);
 			Assert.IsInstanceOfType(result, typeof(ViewResult));
 
-			// Proveravamo da li akcija koristi ispravan View
+			// Provjeravamo da li akcija koristi ispravan View
 			Assert.AreEqual("dietPlan", result?.ViewName);
 
-			// Proveravamo da li ViewModel ima pravilno postavljene vrednosti
+			// Provjeravamo da li ViewModel ima pravilno postavljene vrijednosti
 			var model = result.Model as EditDietPlanVM;
 			Assert.IsNotNull(model);
 			Assert.IsNotNull(model.DietPlan);
@@ -222,7 +220,7 @@ namespace Tests.White_Box_Tests
 
 			// Assert
 
-			// Proveravamo da li akcija vraća NotFound rezultat
+			// Provjeravamo da li akcija vraća NotFound rezultat
 			Assert.IsNotNull(result);
 		}
 
@@ -424,7 +422,7 @@ namespace Tests.White_Box_Tests
 			Height = 180.0,
 			Points = 0
 		},
-        // Dodajte još korisnika prema potrebi
+      
     };
 
 			_mockUserManager.Setup(um => um.GetUserId(_mockHttpContextAccessor.Object.HttpContext.User)).Returns("1");
@@ -442,7 +440,7 @@ namespace Tests.White_Box_Tests
 			Assert.AreEqual("Index", redirectResult.ActionName);
 			Assert.AreEqual("Nutritionist", redirectResult.ControllerName);
 
-			// Provera da li su stari planovi ishrane obrisani
+			// Provjera da li su stari planovi ishrane obrisani
 			var deletedDietPlans = _context.DietPlan.ToList();
 			Assert.AreEqual(0, deletedDietPlans.Count, "Old diet plans should be deleted.");
 		}
@@ -470,7 +468,7 @@ namespace Tests.White_Box_Tests
 			Assert.AreEqual("Index", redirectResult.ActionName);
 			Assert.AreEqual("Nutritionist", redirectResult.ControllerName);
 
-			// Provera da li se nisu brisali stari planovi ishrane
+			// Provjera da li se nisu brisali stari planovi ishrane
 			var deletedDietPlans = _context.DietPlan.ToList();
 			Assert.AreEqual(0, deletedDietPlans.Count, "No diet plans should be deleted.");
 		}
@@ -500,7 +498,7 @@ namespace Tests.White_Box_Tests
 			Assert.AreEqual("Index", redirectResult.ActionName);
 			Assert.AreEqual("Nutritionist", redirectResult.ControllerName);
 
-			// Provera da li se nisu brisali stari planovi ishrane
+			// Provjera da li se nisu brisali stari planovi ishrane
 			var deletedDietPlans = _context.DietPlan.ToList();
 			Assert.AreEqual(0, deletedDietPlans.Count, "No diet plans should be deleted.");
 		}
