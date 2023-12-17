@@ -35,7 +35,18 @@ namespace MyNutritionist.Controllers
         public async Task<IActionResult> Index()
         {
             // Retrieve premium users from the database
-            var premiumUsers = _context.PremiumUser.ToList();
+            var premiumUsers = new List<PremiumUser>();
+
+            var nutritionists = _context.Nutritionist.Include(n => n.PremiumUsers).ToList();
+
+            for (int i = 0; i < nutritionists.Count; i++)
+            {
+                if (nutritionists[i].PremiumUsers.Count != null)
+                {
+                    premiumUsers.AddRange(nutritionists[i].PremiumUsers);
+                }
+                    
+            }
 
             // Pass premium users to the view
             return View(premiumUsers);
