@@ -50,16 +50,16 @@ namespace Tests.White_Box_Tests
         {
             new PremiumUser { Weight = 70 },
             new PremiumUser { Weight = 63 },
-            new PremiumUser { Weight = 95 }
+            new PremiumUser { Weight = 5 }
         };
 
             // Act
             List<PremiumUser> result = sorter.Sort(users, (x, y) => x.Weight.CompareTo(y.Weight));
 
             // Assert
-            Assert.AreEqual(63, result[0].Weight);
-            Assert.AreEqual(70, result[1].Weight);
-            Assert.AreEqual(95, result[2].Weight);
+            Assert.AreEqual(5, result[0].Weight);
+            Assert.AreEqual(63, result[1].Weight);
+            Assert.AreEqual(70, result[2].Weight);
         }
 
     }
